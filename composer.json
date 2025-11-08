@@ -1,0 +1,33 @@
+{
+    "name": "/plugins-dixlase-menu",
+    "description": "This is the Dixlase Menu plugin.",
+    "version": "1.0.0",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "exc-D inc.",
+            "email": "office@exc-d.com",
+            "homepage": "https://exc-d.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "some/dependency": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Plugins\\DixlaseMenu\\App\\": "app/"
+        }
+    },
+    "extra": {
+        "display-name": "Dixlase Menu",
+        "keywords": ["laravel", "plugin", "custom"],
+        "slug": "dixlase-menu",
+        "category": "plugin",
+        "laravel": {
+            "providers": [
+                "Plugins\\DixlaseMenu\\App\\Providers\\DixlaseMenuServiceProvider"
+            ]
+        }
+    }
+}
