@@ -40,6 +40,12 @@ return [
 
     // リンクソース
     'link_source' => 'リンクソース',
+    'link_sources' => [
+        'custom_url' => 'カスタムURL',
+        'page' => 'ページ',
+        'category' => 'カテゴリ',
+        'post' => '投稿',
+    ],
     'select_source' => 'ソースを選択',
     'search_content' => 'コンテンツを検索',
 

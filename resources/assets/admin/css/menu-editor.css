@@ -1,0 +1,209 @@
+/**
+ * This file is part of Dixlase Menu.
+ *
+ * Copyright (C) 2025 exc-D inc.
+ * https://exc-d.com
+ *
+ * Menu Editor Styles - ドラッグ&ドロップ用スタイル
+ */
+
+/* メニューアイテムコンテナ */
+.menu-items-container {
+    min-height: 200px;
+}
+
+/* メニューアイテム */
+.menu-item {
+    position: relative;
+    transition: all 0.2s ease;
+    cursor: move;
+}
+
+.menu-item:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* ドラッグ中 */
+.menu-item.dragging {
+    opacity: 0.5;
+    background-color: rgba(59, 130, 246, 0.1);
+    border: 2px dashed #3b82f6;
+}
+
+/* ドロップインジケーター */
+.menu-item.drop-before::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: #3b82f6;
+    border-radius: 2px;
+    z-index: 10;
+}
+
+.menu-item.drop-after::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: #3b82f6;
+    border-radius: 2px;
+    z-index: 10;
+}
+
+/* 階層インデント */
+.menu-item[data-depth="0"] {
+    padding-left: 1rem;
+}
+
+.menu-item[data-depth="1"] {
+    padding-left: 2.5rem;
+}
+
+.menu-item[data-depth="2"] {
+    padding-left: 4rem;
+}
+
+.menu-item[data-depth="3"] {
+    padding-left: 5.5rem;
+}
+
+/* 子アイテムコンテナ */
+.menu-item-children {
+    margin-left: 1.5rem;
+    border-left: 2px solid #e5e7eb;
+}
+
+.dark .menu-item-children {
+    border-left-color: #374151;
+}
+
+/* 展開/折りたたみボタン */
+.toggle-children-btn {
+    transition: transform 0.2s ease;
+}
+
+.toggle-children-btn svg {
+    transition: transform 0.2s ease;
+}
+
+/* ドラッグハンドル */
+.drag-handle {
+    cursor: move;
+    color: #9ca3af;
+    transition: color 0.2s ease;
+}
+
+.drag-handle:hover {
+    color: #6b7280;
+}
+
+.dark .drag-handle {
+    color: #6b7280;
+}
+
+.dark .drag-handle:hover {
+    color: #9ca3af;
+}
+
+/* アイテムアクションボタン */
+.menu-item-actions {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.menu-item:hover .menu-item-actions {
+    opacity: 1;
+}
+
+/* アイテムタイトル */
+.menu-item-title {
+    font-weight: 500;
+    color: #111827;
+}
+
+.dark .menu-item-title {
+    color: #f9fafb;
+}
+
+/* アイテムメタ情報 */
+.menu-item-meta {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.dark .menu-item-meta {
+    color: #9ca3af;
+}
+
+/* 非アクティブアイテム */
+.menu-item.inactive {
+    opacity: 0.6;
+}
+
+.menu-item.inactive .menu-item-title {
+    text-decoration: line-through;
+}
+
+/* 空の状態 */
+.menu-items-empty {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: #9ca3af;
+    border: 2px dashed #e5e7eb;
+    border-radius: 0.5rem;
+}
+
+.dark .menu-items-empty {
+    color: #6b7280;
+    border-color: #374151;
+}
+
+/* ローディング状態 */
+.menu-item.loading {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.menu-item.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #3b82f6;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* レスポンシブ */
+@media (max-width: 640px) {
+    .menu-item[data-depth="1"] {
+        padding-left: 2rem;
+    }
+    
+    .menu-item[data-depth="2"] {
+        padding-left: 3rem;
+    }
+    
+    .menu-item[data-depth="3"] {
+        padding-left: 4rem;
+    }
+    
+    .menu-item-children {
+        margin-left: 1rem;
+    }
+}

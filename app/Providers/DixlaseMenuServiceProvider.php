@@ -24,9 +24,19 @@ namespace Plugins\DixlaseMenu\App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use App\Traits\PluginLoaderTrait;
+use Plugins\DixlaseMenu\App\Services\MenuLinkSourceManager;
+use Plugins\DixlaseMenu\App\Services\MenuLinkSources\CustomUrlSource;
+use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuRepositoryInterface;
+use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuItemRepositoryInterface;
+use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuSettingRepositoryInterface;
+use Plugins\DixlaseMenu\App\Repositories\MenuRepository;
+use Plugins\DixlaseMenu\App\Repositories\MenuItemRepository;
+use Plugins\DixlaseMenu\App\Repositories\MenuSettingRepository;
 
 class DixlaseMenuServiceProvider extends ServiceProvider
 {
+    use PluginLoaderTrait;
     /**
      * Register services.
      */
@@ -37,6 +47,19 @@ class DixlaseMenuServiceProvider extends ServiceProvider
             __DIR__ . '/../../config/dixlase_menu.php',
             'dixlase_menu'
         );
+
+        // 管理画面ナビゲーションをマージ
+        $this->mergeAdminNavigation('DixlaseMenu', __DIR__ . '/../../config/admin.php');
+
+        // MenuLinkSourceManagerをシングルトンとして登録
+        $this->app->singleton(MenuLinkSourceManager::class, function ($app) {
+            return new MenuLinkSourceManager();
+        });
+
+        // リポジトリをバインド
+        $this->app->bind(MenuRepositoryInterface::class, MenuRepository::class);
+        $this->app->bind(MenuItemRepositoryInterface::class, MenuItemRepository::class);
+        $this->app->bind(MenuSettingRepositoryInterface::class, MenuSettingRepository::class);
     }
 
     /**
@@ -53,6 +76,9 @@ class DixlaseMenuServiceProvider extends ServiceProvider
         // マイグレーションの登録
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
 
+        // リンクソースの登録
+        $this->registerLinkSources();
+
         // ルートの登録
         $this->registerRoutes();
 
@@ -66,6 +92,20 @@ class DixlaseMenuServiceProvider extends ServiceProvider
                 __DIR__ . '/../../resources/views' => resource_path('views/vendor/dixlase-menu'),
             ], 'dixlase-menu-views');
         }
+    }
+
+    /**
+     * リンクソースを登録
+     */
+    protected function registerLinkSources(): void
+    {
+        $manager = $this->app->make(MenuLinkSourceManager::class);
+
+        // カスタムURLソースを登録
+        $manager->register(new CustomUrlSource());
+
+        // 他のプラグインがリンクソースを追加できるようにイベントを発火
+        // event(new MenuLinkSourcesRegistering($manager));
     }
 
     /**
