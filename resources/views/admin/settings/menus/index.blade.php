@@ -35,7 +35,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <legend>{{ __('dixlase-menu::admin.settings.basic.menu_structure') }}</legend>
                 
                 <div class="grid grid-cols-1 gap-6">
-                    @include('components::form.number', [
+                    @include('components::form.text', [
+                        'type' => 'number',
                         'name' => 'max_menu_depth',
                         'label' => __('dixlase-menu::admin.settings.basic.max_menu_depth'),
                         'value' => old('max_menu_depth', $settings['max_menu_depth'] ?? 3),
@@ -77,7 +78,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         'help' => __('dixlase-menu::admin.settings.cache.enable_menu_cache_help')
                     ])
 
-                    @include('components::form.number', [
+                    @include('components::form.text', [
+                        'type' => 'number',
                         'name' => 'cache_duration',
                         'label' => __('dixlase-menu::admin.settings.cache.cache_duration'),
                         'value' => old('cache_duration', $settings['cache_duration'] ?? 3600),
@@ -180,10 +182,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script>
 function menuLocations() {
     return {
-        locations: @json(old('available_locations', $settings['available_locations'] ?? [
-            ['key' => 'header', 'label' => 'Header Menu'],
-            ['key' => 'footer', 'label' => 'Footer Menu'],
-        ])),
+        locations: @json(old('available_locations', $settings['available_locations'] ?? [])),
         
         addLocation() {
             this.locations.push({

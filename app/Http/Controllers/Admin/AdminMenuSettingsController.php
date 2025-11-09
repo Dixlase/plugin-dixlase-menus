@@ -64,7 +64,7 @@ class AdminMenuSettingsController extends Controller
 
         $this->viewParams['settings'] = $settings;
 
-        return view('dixlase-menu::admin.settings.index', $this->viewParams);
+        return view('dixlase-menu::admin.settings.menus.index', $this->viewParams);
     }
 
     /**

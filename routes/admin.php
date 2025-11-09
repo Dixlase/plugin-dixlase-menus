@@ -103,7 +103,7 @@ Route::prefix('menu-items')->name('dixlase-menu::admin.menu-items.')->group(func
 */
 Route::prefix('settings')->name('dixlase-menu::admin.settings.')->group(function () {
     // 設定画面
-    Route::get('/menus', [AdminMenuSettingsController::class, 'index'])->name('menus');
+    Route::get('/menus', [AdminMenuSettingsController::class, 'index'])->name('menus.index');
     Route::put('/menus', [AdminMenuSettingsController::class, 'update'])->name('menus.update');
     
     // 設定キャッシュクリア
