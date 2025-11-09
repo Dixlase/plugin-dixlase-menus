@@ -40,6 +40,12 @@ return [
 
     // Link Sources
     'link_source' => 'Link Source',
+    'link_sources' => [
+        'custom_url' => 'Custom URL',
+        'page' => 'Page',
+        'category' => 'Category',
+        'post' => 'Post',
+    ],
     'select_source' => 'Select Source',
     'search_content' => 'Search Content',
 

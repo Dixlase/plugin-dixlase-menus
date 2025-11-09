@@ -1,0 +1,203 @@
+<?php
+
+/**
+ * This file is part of Dixlase Menu.
+ *
+ * Copyright (C) 2025 exc-D inc.
+ * https://exc-d.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+return [
+    // ナビゲーション
+    'nav' => [
+        'settings' => [
+            'menus' => 'メニュー管理',
+        ],
+    ],
+
+    // メニュー一覧
+    'menus' => [
+        'index' => [
+            'heading' => 'メニュー一覧',
+            'create_menu' => 'メニューを作成',
+            'clear_cache' => 'キャッシュをクリア',
+            'no_menus' => 'メニューがありません',
+            'no_menus_description' => '最初のメニューを作成してください',
+            'create_first_menu' => '最初のメニューを作成',
+            'table' => [
+                'name' => 'メニュー名',
+                'location' => '表示位置',
+                'items' => 'アイテム',
+                'items_count' => '件',
+                'status' => 'ステータス',
+                'actions' => 'アクション',
+                'no_location' => '未設定',
+            ],
+        ],
+        'create' => [
+            'heading' => 'メニューを作成',
+            'basic_info' => '基本情報',
+            'name' => 'メニュー名',
+            'name_help' => 'メニューの識別名を入力してください',
+            'slug' => 'スラッグ',
+            'slug_help' => 'URLやコードで使用する識別子（小文字の英数字、ハイフン、アンダースコアのみ）',
+            'description' => '説明',
+            'description_help' => 'メニューの説明（管理画面でのみ表示されます）',
+            'display_settings' => '表示設定',
+            'location' => '表示位置',
+            'location_help' => 'このメニューを表示する位置を選択してください',
+            'select_location' => '位置を選択',
+            'display_order' => '表示順',
+            'display_order_help' => '同じ位置に複数のメニューがある場合の表示順序（小さい数字が先に表示されます）',
+            'is_active' => 'メニューを有効化',
+            'is_active_help' => 'チェックを外すとメニューが非表示になります',
+        ],
+        'edit' => [
+            'heading' => 'メニューを編集',
+            'basic_info' => '基本情報',
+            'name' => 'メニュー名',
+            'slug' => 'スラッグ',
+            'description' => '説明',
+            'display_settings' => '表示設定',
+            'location' => '表示位置',
+            'select_location' => '位置を選択',
+            'display_order' => '表示順',
+            'is_active' => 'メニューを有効化',
+            'menu_items' => 'メニューアイテム',
+            'add_item' => 'アイテムを追加',
+            'no_items' => 'メニューアイテムがありません',
+            'no_items_description' => '最初のメニューアイテムを追加してください',
+            'add_first_item' => '最初のアイテムを追加',
+            'children' => '個の子アイテム',
+            'order' => '順序',
+            'add_child' => '子アイテムを追加',
+            'toggle_children' => '子アイテムを展開/折りたたみ',
+        ],
+    ],
+
+    // メニューアイテム
+    'menu_items' => [
+        'create' => [
+            'heading' => 'メニューアイテムを追加',
+            'parent_item' => '親アイテム',
+            'basic_info' => '基本情報',
+            'title' => 'タイトル',
+            'title_help' => 'メニューに表示されるテキスト',
+            'link_settings' => 'リンク設定',
+            'source_type' => 'リンクタイプ',
+            'url' => 'URL',
+            'url_help' => '完全なURLまたは相対パス（例: https://example.com または /about）',
+            'source_id' => 'ソースID',
+            'source_id_help' => 'リンク先のページやカテゴリのID',
+            'target' => 'リンクターゲット',
+            'target_default' => 'デフォルト設定を使用',
+            'display_settings' => '表示設定',
+            'css_class' => 'CSSクラス',
+            'css_class_help' => 'カスタムCSSクラス（スペース区切りで複数指定可能）',
+            'icon_class' => 'アイコンクラス',
+            'icon_class_help' => 'Font Awesomeなどのアイコンクラス（例: fas fa-home）',
+            'display_order' => '表示順',
+            'is_active' => 'アイテムを有効化',
+            'is_active_help' => 'チェックを外すとアイテムが非表示になります',
+        ],
+        'edit' => [
+            'heading' => 'メニューアイテムを編集',
+            'basic_info' => '基本情報',
+            'title' => 'タイトル',
+            'link_settings' => 'リンク設定',
+            'source_type' => 'リンクタイプ',
+            'url' => 'URL',
+            'source_id' => 'ソースID',
+            'target' => 'リンクターゲット',
+            'target_default' => 'デフォルト設定を使用',
+            'display_settings' => '表示設定',
+            'css_class' => 'CSSクラス',
+            'icon_class' => 'アイコンクラス',
+            'display_order' => '表示順',
+            'is_active' => 'アイテムを有効化',
+        ],
+    ],
+
+    // 設定画面
+    'settings' => [
+        'heading' => 'メニュー設定',
+        
+        'basic' => [
+            'title' => '基本設定',
+            'menu_structure' => 'メニュー構造',
+            'max_menu_depth' => '最大階層深度',
+            'max_menu_depth_help' => 'メニューの階層の深さを設定します（1〜10）',
+            'default_target' => 'デフォルトリンクターゲット',
+            'default_target_help' => 'メニューアイテムのデフォルトのリンクターゲットを設定します',
+            'target_self' => '同じウィンドウ (_self)',
+            'target_blank' => '新しいウィンドウ (_blank)',
+            'target_parent' => '親フレーム (_parent)',
+            'target_top' => '最上位フレーム (_top)',
+        ],
+        
+        'cache' => [
+            'title' => 'キャッシュ設定',
+            'menu_cache' => 'メニューキャッシュ',
+            'enable_menu_cache' => 'メニューキャッシュを有効化',
+            'enable_menu_cache_help' => 'メニューのキャッシュを有効にしてパフォーマンスを向上させます',
+            'cache_duration' => 'キャッシュ有効期間（秒）',
+            'cache_duration_help' => 'メニューキャッシュの有効期間を秒単位で設定します（60〜86400）',
+            'clear_cache' => 'キャッシュをクリア',
+            'clear_cache_help' => 'すべてのメニューキャッシュを削除します',
+            'clear_cache_confirm' => '本当にキャッシュをクリアしますか？',
+        ],
+        
+        'locations' => [
+            'title' => 'メニュー位置設定',
+            'available_locations' => '利用可能なメニュー位置',
+            'location_key' => '位置キー',
+            'location_label' => '位置ラベル',
+            'add_location' => '位置を追加',
+            'locations_help' => 'テーマで使用するメニュー位置を定義します。キーは英数字とアンダースコアのみ使用できます。',
+        ],
+    ],
+
+    // コントローラーメッセージ
+    'messages' => [
+        // メニュー
+        'menu_created' => 'メニューを作成しました',
+        'menu_updated' => 'メニューを更新しました',
+        'menu_deleted' => 'メニューを削除しました',
+        'menu_restored' => 'メニューを復元しました',
+        'menu_not_found' => 'メニューが見つかりません',
+        'slug_already_exists' => 'このスラッグは既に使用されています',
+        
+        // メニューアイテム
+        'menu_item_created' => 'メニューアイテムを作成しました',
+        'menu_item_updated' => 'メニューアイテムを更新しました',
+        'menu_item_deleted' => 'メニューアイテムを削除しました',
+        'menu_item_moved' => 'メニューアイテムを移動しました',
+        'menu_item_not_found' => 'メニューアイテムが見つかりません',
+        'max_depth_exceeded' => '最大階層深度を超えています',
+        'cannot_set_self_as_parent' => '自分自身を親に設定できません',
+        'cannot_set_descendant_as_parent' => '子孫を親に設定できません',
+        
+        // 並び順
+        'order_updated' => '並び順を更新しました',
+        'order_update_failed' => '並び順の更新に失敗しました',
+        'no_items_to_update' => '更新するアイテムがありません',
+        'move_failed' => '移動に失敗しました',
+        
+        // 設定
+        'settings_updated' => '設定を更新しました',
+        'cache_cleared' => 'キャッシュをクリアしました',
+    ],
+];

@@ -12,9 +12,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Register your seeders here
-        // $this->call([
-        //     YourSeeder::class,
-        // ]);
+        // メニュー設定のシーダーを実行
+        $this->call([
+            MenuSettingsSeeder::class,
+        ]);
+
+        // 開発環境でのみサンプルメニューを作成
+        if (!app()->environment('production')) {
+            $this->call([
+                SampleMenuSeeder::class,
+            ]);
+        }
     }
 }
