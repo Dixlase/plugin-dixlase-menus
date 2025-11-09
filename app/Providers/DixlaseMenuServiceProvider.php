@@ -48,9 +48,6 @@ class DixlaseMenuServiceProvider extends ServiceProvider
             'dixlase_menu'
         );
 
-        // 管理画面ナビゲーションをマージ
-        $this->mergeAdminNavigation('DixlaseMenu', __DIR__ . '/../../config/admin.php');
-
         // MenuLinkSourceManagerをシングルトンとして登録
         $this->app->singleton(MenuLinkSourceManager::class, function ($app) {
             return new MenuLinkSourceManager();
@@ -67,6 +64,10 @@ class DixlaseMenuServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // 管理画面ナビゲーションをマージ
+        // IMPORTANT: boot()で実行することで、テーマと同じタイミングで実行
+        $this->mergeAdminNavigation('DixlaseMenu', __DIR__ . '/../../config/admin.php');
+        
         // ビューの登録
         $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'dixlase-menu');
 
