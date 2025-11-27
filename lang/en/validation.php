@@ -44,16 +44,10 @@ return [
     'visibility_condition_json' => 'Visibility condition must be valid JSON',
     
     // Settings
-    'max_menu_depth_required' => 'Maximum menu depth is required',
-    'max_menu_depth_integer' => 'Maximum menu depth must be an integer',
-    'max_menu_depth_min' => 'Maximum menu depth must be at least 1',
-    'max_menu_depth_max' => 'Maximum menu depth must not exceed 10',
-    'cache_duration_required' => 'Cache duration is required',
-    'cache_duration_integer' => 'Cache duration must be an integer',
-    'cache_duration_min' => 'Cache duration must be at least 60 seconds',
-    'cache_duration_max' => 'Cache duration must not exceed 86400 seconds',
-    'default_target_required' => 'Default target is required',
     'default_target_invalid' => 'Invalid default target value',
-    'location_key_required' => 'Location key is required',
-    'location_label_required' => 'Location label is required',
+    'menu_label_required' => 'Menu label is required',
+    'menu_label_max' => 'Menu label must not exceed 255 characters',
+    'menu_url_max' => 'URL must not exceed 2048 characters',
+    'menu_target_invalid' => 'Invalid target value',
+    'menu_children_max' => 'Maximum 3 child menus allowed',
 ];

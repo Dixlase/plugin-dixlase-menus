@@ -27,197 +27,377 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         @csrf
         @method('PUT')
         
-        <!-- 基本設定 -->
-        <section class="mb-8">
-            <h2 class="text-xl font-semibold mb-4">{{ __('dixlase-menu::admin.settings.basic.title') }}</h2>
+        <!-- メニューアイテム設定 -->
+        <section class="mb-8" x-data="menuItems()">
+            <h2 class="text-xl font-semibold mb-4">{{ __('dixlase-menu::admin.settings.menu_items.title') }}</h2>
             
             <fieldset>
-                <legend>{{ __('dixlase-menu::admin.settings.basic.menu_structure') }}</legend>
+                <legend>{{ __('dixlase-menu::admin.settings.menu_items.title') }}</legend>
                 
-                <div class="grid grid-cols-1 gap-6">
-                    @include('components::form.text', [
-                        'type' => 'number',
-                        'name' => 'max_menu_depth',
-                        'label' => __('dixlase-menu::admin.settings.basic.max_menu_depth'),
-                        'value' => old('max_menu_depth', $settings['max_menu_depth'] ?? 3),
-                        'required' => true,
-                        'min' => 1,
-                        'max' => 10,
-                        'help' => __('dixlase-menu::admin.settings.basic.max_menu_depth_help')
-                    ])
-
-                    @include('components::form.select', [
-                        'name' => 'default_target',
-                        'label' => __('dixlase-menu::admin.settings.basic.default_target'),
-                        'options' => [
-                            '_self' => __('dixlase-menu::admin.settings.basic.target_self'),
-                            '_blank' => __('dixlase-menu::admin.settings.basic.target_blank'),
-                            '_parent' => __('dixlase-menu::admin.settings.basic.target_parent'),
-                            '_top' => __('dixlase-menu::admin.settings.basic.target_top'),
-                        ],
-                        'value' => old('default_target', $settings['default_target'] ?? '_self'),
-                        'required' => true,
-                        'help' => __('dixlase-menu::admin.settings.basic.default_target_help')
-                    ])
-                </div>
-            </fieldset>
-        </section>
-
-        <!-- キャッシュ設定 -->
-        <section class="mb-8">
-            <h2 class="text-xl font-semibold mb-4">{{ __('dixlase-menu::admin.settings.cache.title') }}</h2>
-            
-            <fieldset>
-                <legend>{{ __('dixlase-menu::admin.settings.cache.menu_cache') }}</legend>
-                
-                <div class="grid grid-cols-1 gap-6">
-                    @include('components::form.checkbox', [
-                        'name' => 'enable_menu_cache',
-                        'label' => __('dixlase-menu::admin.settings.cache.enable_menu_cache'),
-                        'checked' => old('enable_menu_cache', $settings['enable_menu_cache'] ?? true),
-                        'help' => __('dixlase-menu::admin.settings.cache.enable_menu_cache_help')
-                    ])
-
-                    @include('components::form.text', [
-                        'type' => 'number',
-                        'name' => 'cache_duration',
-                        'label' => __('dixlase-menu::admin.settings.cache.cache_duration'),
-                        'value' => old('cache_duration', $settings['cache_duration'] ?? 3600),
-                        'required' => true,
-                        'min' => 60,
-                        'max' => 86400,
-                        'help' => __('dixlase-menu::admin.settings.cache.cache_duration_help')
-                    ])
-                </div>
-            </fieldset>
-
-            <!-- キャッシュクリアボタン -->
-            <div class="mt-6">
-                <button type="button" 
-                        onclick="clearMenuCache()"
-                        class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md shadow-sm transition-colors duration-150">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                    {{ __('dixlase-menu::admin.settings.cache.clear_cache') }}
-                </button>
-                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                    {{ __('dixlase-menu::admin.settings.cache.clear_cache_help') }}
-                </p>
-            </div>
-        </section>
-
-        <!-- メニュー位置設定 -->
-        <section class="mb-8" x-data="menuLocations()">
-            <h2 class="text-xl font-semibold mb-4">{{ __('dixlase-menu::admin.settings.locations.title') }}</h2>
-            
-            <fieldset>
-                <legend>{{ __('dixlase-menu::admin.settings.locations.available_locations') }}</legend>
-                
-                <div class="space-y-4">
-                    <template x-for="(location, index) in locations" :key="index">
-                        <div class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-md">
-                            <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        {{ __('dixlase-menu::admin.settings.locations.location_key') }}
-                                    </label>
-                                    <input type="text"
-                                           :name="'available_locations[' + index + '][key]'"
-                                           x-model="location.key"
-                                           class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                           required>
+                <!-- メニューリスト（ドラッグ＆ドロップ対応） -->
+                <div id="menu-list" class="space-y-4">
+                    <template x-for="(item, index) in items" :key="item.id || index">
+                        <div class="menu-item bg-gray-50 dark:bg-gray-700 rounded-md" :data-index="index">
+                            <!-- 親メニュー -->
+                            <div class="flex items-center gap-2 p-4">
+                                <!-- ドラッグハンドル -->
+                                <div class="drag-handle cursor-move p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
+                                    </svg>
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        {{ __('dixlase-menu::admin.settings.locations.location_label') }}
-                                    </label>
-                                    <input type="text"
-                                           :name="'available_locations[' + index + '][label]'"
-                                           x-model="location.label"
-                                           class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                           required>
+                                
+                                <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <!-- ラベル -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            {{ __('dixlase-menu::admin.settings.menu_items.label') }}
+                                        </label>
+                                        <input type="text"
+                                               :name="'menu_items[' + index + '][label]'"
+                                               x-model="item.label"
+                                               placeholder="{{ __('dixlase-menu::admin.settings.menu_items.label_placeholder') }}"
+                                               class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                               required>
+                                    </div>
+                                    
+                                    <!-- URL / コンテンツ選択 -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            {{ __('dixlase-menu::admin.settings.menu_items.url') }}
+                                        </label>
+                                        <div class="flex gap-2">
+                                            <input type="text"
+                                                   :name="'menu_items[' + index + '][url]'"
+                                                   x-model="item.url"
+                                                   placeholder="{{ __('dixlase-menu::admin.settings.menu_items.url_placeholder') }}"
+                                                   class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                            @if(!empty($linkableProviders))
+                                            <button type="button"
+                                                    @click="openContentSelector(index, null)"
+                                                    class="px-3 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 rounded-md transition-colors"
+                                                    title="{{ __('dixlase-menu::admin.settings.menu_items.source_select') }}">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                                                </svg>
+                                            </button>
+                                            @endif
+                                        </div>
+                                        <!-- 隠しフィールド：ソース情報 -->
+                                        <input type="hidden" :name="'menu_items[' + index + '][source_type]'" x-model="item.source_type">
+                                        <input type="hidden" :name="'menu_items[' + index + '][source_id]'" x-model="item.source_id">
+                                        <input type="hidden" :name="'menu_items[' + index + '][source_provider]'" x-model="item.source_provider">
+                                    </div>
+                                    
+                                    <!-- ターゲット -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            {{ __('dixlase-menu::admin.settings.menu_items.target') }}
+                                        </label>
+                                        <select :name="'menu_items[' + index + '][target]'"
+                                                x-model="item.target"
+                                                class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                            <option value="_self">{{ __('dixlase-menu::admin.settings.basic.target_self') }}</option>
+                                            <option value="_blank">{{ __('dixlase-menu::admin.settings.basic.target_blank') }}</option>
+                                            <option value="_parent">{{ __('dixlase-menu::admin.settings.basic.target_parent') }}</option>
+                                            <option value="_top">{{ __('dixlase-menu::admin.settings.basic.target_top') }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- アクションボタン -->
+                                <div class="flex items-center gap-1">
+                                    <!-- 子メニュー追加ボタン -->
+                                    <button type="button"
+                                            @click="addChildItem(index)"
+                                            x-show="(item.children?.length || 0) < 3"
+                                            class="p-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                                            title="{{ __('dixlase-menu::admin.settings.menu_items.add_child') }}">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                        </svg>
+                                    </button>
+                                    
+                                    <!-- 削除ボタン -->
+                                    <button type="button"
+                                            @click="removeItem(index)"
+                                            class="p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
-                            <button type="button"
-                                    @click="removeLocation(index)"
-                                    class="mt-6 p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
+                            
+                            <!-- 子メニュー -->
+                            <template x-if="item.children && item.children.length > 0">
+                                <div class="ml-8 border-l-2 border-gray-300 dark:border-gray-600 pl-4 pb-4 space-y-3">
+                                    <template x-for="(child, childIndex) in item.children" :key="child.id || childIndex">
+                                        <div class="child-menu-item flex items-center gap-2 p-3 bg-gray-100 dark:bg-gray-600 rounded-md">
+                                            <!-- ドラッグハンドル -->
+                                            <div class="child-drag-handle cursor-move p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
+                                                </svg>
+                                            </div>
+                                            
+                                            <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
+                                                <!-- ラベル -->
+                                                <div>
+                                                    <input type="text"
+                                                           :name="'menu_items[' + index + '][children][' + childIndex + '][label]'"
+                                                           x-model="child.label"
+                                                           placeholder="{{ __('dixlase-menu::admin.settings.menu_items.label_placeholder') }}"
+                                                           class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                                           required>
+                                                </div>
+                                                
+                                                <!-- URL -->
+                                                <div>
+                                                    <div class="flex gap-1">
+                                                        <input type="text"
+                                                               :name="'menu_items[' + index + '][children][' + childIndex + '][url]'"
+                                                               x-model="child.url"
+                                                               placeholder="{{ __('dixlase-menu::admin.settings.menu_items.url_placeholder') }}"
+                                                               class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                                        @if(!empty($linkableProviders))
+                                                        <button type="button"
+                                                                @click="openContentSelector(index, childIndex)"
+                                                                class="px-2 py-1.5 bg-gray-200 dark:bg-gray-500 hover:bg-gray-300 dark:hover:bg-gray-400 text-gray-700 dark:text-gray-200 rounded-md transition-colors"
+                                                                title="{{ __('dixlase-menu::admin.settings.menu_items.source_select') }}">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                                                            </svg>
+                                                        </button>
+                                                        @endif
+                                                    </div>
+                                                    <!-- 隠しフィールド：ソース情報 -->
+                                                    <input type="hidden" :name="'menu_items[' + index + '][children][' + childIndex + '][source_type]'" x-model="child.source_type">
+                                                    <input type="hidden" :name="'menu_items[' + index + '][children][' + childIndex + '][source_id]'" x-model="child.source_id">
+                                                    <input type="hidden" :name="'menu_items[' + index + '][children][' + childIndex + '][source_provider]'" x-model="child.source_provider">
+                                                </div>
+                                                
+                                                <!-- ターゲット -->
+                                                <div>
+                                                    <select :name="'menu_items[' + index + '][children][' + childIndex + '][target]'"
+                                                            x-model="child.target"
+                                                            class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                                        <option value="_self">{{ __('dixlase-menu::admin.settings.basic.target_self') }}</option>
+                                                        <option value="_blank">{{ __('dixlase-menu::admin.settings.basic.target_blank') }}</option>
+                                                        <option value="_parent">{{ __('dixlase-menu::admin.settings.basic.target_parent') }}</option>
+                                                        <option value="_top">{{ __('dixlase-menu::admin.settings.basic.target_top') }}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- 削除ボタン -->
+                                            <button type="button"
+                                                    @click="removeChildItem(index, childIndex)"
+                                                    class="p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
                         </div>
                     </template>
+                </div>
 
+                <!-- 親メニュー追加ボタン -->
+                <div class="mt-4">
                     <button type="button"
-                            @click="addLocation()"
+                            @click="addItem()"
                             class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition-colors duration-150">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
-                        {{ __('dixlase-menu::admin.settings.locations.add_location') }}
+                        {{ __('dixlase-menu::admin.settings.menu_items.add_item') }}
                     </button>
                 </div>
 
                 <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                    {{ __('dixlase-menu::admin.settings.locations.locations_help') }}
+                    {{ __('dixlase-menu::admin.settings.menu_items.items_help') }}
                 </p>
             </fieldset>
+            
+            <!-- コンテンツ選択モーダル -->
+            @if(!empty($linkableProviders))
+            <div x-show="showContentSelector" 
+                 x-cloak
+                 class="fixed inset-0 z-50 overflow-y-auto"
+                 @keydown.escape.window="showContentSelector = false">
+                <div class="flex items-center justify-center min-h-screen px-4">
+                    <div class="fixed inset-0 bg-black bg-opacity-50" @click="showContentSelector = false"></div>
+                    
+                    <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                                {{ __('dixlase-menu::admin.settings.menu_items.select_content') }}
+                            </h3>
+                        </div>
+                        
+                        <div class="p-6 overflow-y-auto max-h-[60vh]">
+                            @foreach($linkableProviders as $provider)
+                            <div class="mb-6">
+                                <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center">
+                                    @if($provider['icon'])
+                                    <i class="{{ $provider['icon'] }} mr-2"></i>
+                                    @endif
+                                    {{ $provider['label'] }}
+                                </h4>
+                                <div class="space-y-2">
+                                    @foreach($provider['items'] as $item)
+                                    <button type="button"
+                                            @click="selectContent('{{ $item['id'] }}', '{{ addslashes($item['title']) }}', '{{ $item['url'] }}', '{{ $item['type'] }}', '{{ $provider['key'] }}')"
+                                            class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors">
+                                        <span class="block text-sm font-medium text-gray-900 dark:text-white">{{ $item['title'] }}</span>
+                                        <span class="block text-xs text-gray-500 dark:text-gray-400">{{ $item['url'] }}</span>
+                                    </button>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        
+                        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+                            <button type="button"
+                                    @click="showContentSelector = false"
+                                    class="px-4 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 rounded-md transition-colors">
+                                {{ __('common.cancel') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
         </section>
 
-        <!-- 保存ボタン -->
-        <div class="flex items-center justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <button type="submit"
-                    class="inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md shadow-sm transition-colors duration-150">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                {{ __('common.save') }}
-            </button>
-        </div>
     </form>
 @endsection
 
+@section('save')
+    @include('components.save', [
+        'id_confirmation' => 'confirmMenuSettingsModal',
+        'label' => __('common.save'),
+        'title' => __('dixlase-menu::admin.settings.confirm.title'),
+        'message' => __('dixlase-menu::admin.settings.confirm.message'),
+        'confirm_label' => __('common.save'),
+        'cancel_label' => __('common.cancel'),
+        'form' => 'menu-settings-form',
+    ])
+@endsection
+
 @push('scripts')
+<!-- SortableJS for drag and drop -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
-function menuLocations() {
+function menuItems() {
     return {
-        locations: @json(old('available_locations', $settings['available_locations'] ?? [])),
+        items: @json(old('menu_items', $settings['menu_items'] ?? [])),
+        showContentSelector: false,
+        currentItemIndex: null,
+        currentChildIndex: null,
+        defaultTarget: '{{ $settings['default_target'] ?? '_self' }}',
+        sortableInstance: null,
         
-        addLocation() {
-            this.locations.push({
-                key: '',
-                label: ''
+        init() {
+            // 親メニューのドラッグ＆ドロップ初期化
+            this.$nextTick(() => {
+                this.initSortable();
             });
         },
         
-        removeLocation(index) {
-            this.locations.splice(index, 1);
+        initSortable() {
+            const menuList = document.getElementById('menu-list');
+            if (menuList && typeof Sortable !== 'undefined') {
+                this.sortableInstance = new Sortable(menuList, {
+                    handle: '.drag-handle',
+                    animation: 150,
+                    ghostClass: 'opacity-50',
+                    onEnd: (evt) => {
+                        // 配列の順序を更新
+                        const item = this.items.splice(evt.oldIndex, 1)[0];
+                        this.items.splice(evt.newIndex, 0, item);
+                    }
+                });
+            }
+        },
+        
+        generateId() {
+            return 'menu_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        },
+        
+        addItem() {
+            this.items.push({
+                id: this.generateId(),
+                label: '',
+                url: '',
+                target: this.defaultTarget,
+                source_type: 'custom',
+                source_id: null,
+                source_provider: null,
+                children: []
+            });
+        },
+        
+        removeItem(index) {
+            this.items.splice(index, 1);
+        },
+        
+        addChildItem(parentIndex) {
+            if (!this.items[parentIndex].children) {
+                this.items[parentIndex].children = [];
+            }
+            if (this.items[parentIndex].children.length < 3) {
+                this.items[parentIndex].children.push({
+                    id: this.generateId(),
+                    label: '',
+                    url: '',
+                    target: this.defaultTarget,
+                    source_type: 'custom',
+                    source_id: null,
+                    source_provider: null
+                });
+            }
+        },
+        
+        removeChildItem(parentIndex, childIndex) {
+            this.items[parentIndex].children.splice(childIndex, 1);
+        },
+        
+        openContentSelector(parentIndex, childIndex) {
+            this.currentItemIndex = parentIndex;
+            this.currentChildIndex = childIndex;
+            this.showContentSelector = true;
+        },
+        
+        selectContent(id, title, url, type, provider) {
+            if (this.currentItemIndex !== null) {
+                let target;
+                if (this.currentChildIndex !== null) {
+                    // 子メニューに設定
+                    target = this.items[this.currentItemIndex].children[this.currentChildIndex];
+                } else {
+                    // 親メニューに設定
+                    target = this.items[this.currentItemIndex];
+                }
+                
+                if (target) {
+                    target.label = title;
+                    target.url = url;
+                    target.source_type = type;
+                    target.source_id = id;
+                    target.source_provider = provider;
+                }
+            }
+            this.showContentSelector = false;
+            this.currentItemIndex = null;
+            this.currentChildIndex = null;
         }
     }
-}
-
-function clearMenuCache() {
-    if (!confirm('{{ __("dixlase-menu::admin.settings.cache.clear_cache_confirm") }}')) {
-        return;
-    }
-    
-    fetch('{{ route("admin.dixlase-menu::admin.settings.menus.cache.clear") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert('{{ __("dixlase-menu::admin.messages.cache_cleared") }}');
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('{{ __("common.error") }}');
-    });
 }
 </script>
 @endpush

@@ -26,6 +26,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use App\Traits\AdminInterfaceTrait;
 use App\Traits\AdminLoggedInTrait;
+use App\Contracts\PluginIntegration\LinkableProviderInterface;
 use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuSettingRepositoryInterface;
 use Plugins\DixlaseMenu\App\Http\Requests\AdminMenuSettingsUpdateRequest;
 
@@ -55,16 +56,49 @@ class AdminMenuSettingsController extends Controller
     public function index()
     {
         $settings = [
-            'max_menu_depth' => $this->settingRepository->getInteger('max_menu_depth', 3),
-            'enable_menu_cache' => $this->settingRepository->getBoolean('enable_menu_cache', true),
-            'cache_duration' => $this->settingRepository->getInteger('cache_duration', 3600),
             'default_target' => $this->settingRepository->get('default_target', '_self'),
-            'available_locations' => $this->settingRepository->getJson('available_locations', []),
+            'menu_items' => $this->settingRepository->getJson('menu_items', []),
         ];
 
+        // LinkableProviderを取得
+        $linkableProviders = $this->getLinkableProviders();
+
         $this->viewParams['settings'] = $settings;
+        $this->viewParams['linkableProviders'] = $linkableProviders;
 
         return view('dixlase-menu::admin.settings.menus.index', $this->viewParams);
+    }
+
+    /**
+     * 登録されているLinkableProviderを取得
+     *
+     * @return array
+     */
+    protected function getLinkableProviders(): array
+    {
+        $providers = [];
+
+        try {
+            $taggedProviders = app()->tagged('linkable.providers');
+
+            foreach ($taggedProviders as $provider) {
+                if ($provider instanceof LinkableProviderInterface && $provider->isAvailable()) {
+                    $items = $provider->getAvailableItems();
+
+                    $providers[] = [
+                        'key' => $provider->getProviderKey(),
+                        'label' => $provider->getProviderLabel(),
+                        'icon' => $provider->getProviderIcon(),
+                        'items' => array_map(fn($item) => $item->toArray(), $items),
+                    ];
+                }
+            }
+        } catch (\Exception $e) {
+            // プロバイダーが登録されていない場合は空配列
+            \Log::debug('LinkableProviders not found: ' . $e->getMessage());
+        }
+
+        return $providers;
     }
 
     /**
@@ -77,46 +111,23 @@ class AdminMenuSettingsController extends Controller
     {
         $validated = $request->validated();
 
-        // 各設定を保存
-        $this->settingRepository->set(
-            'max_menu_depth',
-            $validated['max_menu_depth'],
-            'integer',
-            'メニューの最大階層深度'
-        );
-
-        $this->settingRepository->set(
-            'enable_menu_cache',
-            $validated['enable_menu_cache'] ?? false,
-            'boolean',
-            'メニューキャッシュの有効化'
-        );
-
-        $this->settingRepository->set(
-            'cache_duration',
-            $validated['cache_duration'],
-            'integer',
-            'キャッシュ有効期間（秒）'
-        );
-
+        // デフォルトターゲットを保存
         $this->settingRepository->set(
             'default_target',
-            $validated['default_target'],
+            $validated['default_target'] ?? '_self',
             'string',
             'デフォルトのリンクターゲット'
         );
 
-        // available_locationsは配列として保存
-        if (isset($validated['available_locations'])) {
-            $locations = array_filter($validated['available_locations'], function ($location) {
-                return !empty($location['key']) && !empty($location['label']);
-            });
+        // メニューアイテムを保存
+        if (isset($validated['menu_items'])) {
+            $menuItems = $this->sanitizeMenuItems($validated['menu_items']);
 
             $this->settingRepository->set(
-                'available_locations',
-                $locations,
+                'menu_items',
+                $menuItems,
                 'json',
-                '利用可能なメニュー位置'
+                'メニューアイテム'
             );
         }
 
@@ -126,6 +137,53 @@ class AdminMenuSettingsController extends Controller
         return redirect()
             ->back()
             ->with('success', __('dixlase-menu::admin.messages.settings_updated'));
+    }
+
+    /**
+     * メニューアイテムをサニタイズ
+     *
+     * @param array $items
+     * @return array
+     */
+    protected function sanitizeMenuItems(array $items): array
+    {
+        return array_values(array_filter(array_map(function ($item) {
+            if (empty($item['label'])) {
+                return null;
+            }
+
+            $sanitized = [
+                'id' => $item['id'] ?? uniqid('menu_'),
+                'label' => $item['label'],
+                'url' => $item['url'] ?? '',
+                'target' => $item['target'] ?? '_self',
+                'source_type' => $item['source_type'] ?? 'custom',
+                'source_id' => $item['source_id'] ?? null,
+                'source_provider' => $item['source_provider'] ?? null,
+                'children' => [],
+            ];
+
+            // 子メニューを処理
+            if (!empty($item['children']) && is_array($item['children'])) {
+                $sanitized['children'] = array_values(array_filter(array_map(function ($child) {
+                    if (empty($child['label'])) {
+                        return null;
+                    }
+
+                    return [
+                        'id' => $child['id'] ?? uniqid('child_'),
+                        'label' => $child['label'],
+                        'url' => $child['url'] ?? '',
+                        'target' => $child['target'] ?? '_self',
+                        'source_type' => $child['source_type'] ?? 'custom',
+                        'source_id' => $child['source_id'] ?? null,
+                        'source_provider' => $child['source_provider'] ?? null,
+                    ];
+                }, $item['children'])));
+            }
+
+            return $sanitized;
+        }, $items)));
     }
 
     /**

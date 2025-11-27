@@ -160,13 +160,26 @@ return [
             'clear_cache_confirm' => 'Are you sure you want to clear the cache?',
         ],
         
-        'locations' => [
-            'title' => 'Menu Locations',
-            'available_locations' => 'Available Menu Locations',
-            'location_key' => 'Location Key',
-            'location_label' => 'Location Label',
-            'add_location' => 'Add Location',
-            'locations_help' => 'Define menu locations for use in themes. Keys can only contain alphanumeric characters and underscores.',
+        'menu_items' => [
+            'title' => 'Menu Items',
+            'add_item' => 'Add Menu',
+            'add_child' => 'Add Child Menu',
+            'label' => 'Label',
+            'label_placeholder' => 'Text to display in menu',
+            'url' => 'URL',
+            'url_placeholder' => 'https://example.com or /about',
+            'target' => 'Target',
+            'source_type' => 'Link Type',
+            'source_custom' => 'Custom URL',
+            'source_select' => 'Select Content',
+            'select_content' => 'Select content...',
+            'no_providers' => 'No content providers available',
+            'items_help' => 'Add menu items. Drag and drop to reorder. Each parent menu can have up to 3 child menus.',
+        ],
+        
+        'confirm' => [
+            'title' => 'Save Settings',
+            'message' => 'Are you sure you want to save the menu settings?',
         ],
     ],
 
