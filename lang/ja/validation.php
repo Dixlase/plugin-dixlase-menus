@@ -44,16 +44,10 @@ return [
     'visibility_condition_json' => '表示条件は正しいJSON形式で入力してください',
     
     // 設定
-    'max_menu_depth_required' => '最大階層深度は必須です',
-    'max_menu_depth_integer' => '最大階層深度は整数で入力してください',
-    'max_menu_depth_min' => '最大階層深度は1以上で入力してください',
-    'max_menu_depth_max' => '最大階層深度は10以下で入力してください',
-    'cache_duration_required' => 'キャッシュ有効期間は必須です',
-    'cache_duration_integer' => 'キャッシュ有効期間は整数で入力してください',
-    'cache_duration_min' => 'キャッシュ有効期間は60秒以上で入力してください',
-    'cache_duration_max' => 'キャッシュ有効期間は86400秒以下で入力してください',
-    'default_target_required' => 'デフォルトターゲットは必須です',
     'default_target_invalid' => 'デフォルトターゲットの値が不正です',
-    'location_key_required' => '位置キーは必須です',
-    'location_label_required' => '位置ラベルは必須です',
+    'menu_label_required' => 'メニューラベルは必須です',
+    'menu_label_max' => 'メニューラベルは255文字以内で入力してください',
+    'menu_url_max' => 'URLは2048文字以内で入力してください',
+    'menu_target_invalid' => 'ターゲットの値が不正です',
+    'menu_children_max' => '子メニューは最大3つまでです',
 ];

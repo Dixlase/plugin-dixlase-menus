@@ -160,13 +160,26 @@ return [
             'clear_cache_confirm' => '本当にキャッシュをクリアしますか？',
         ],
         
-        'locations' => [
-            'title' => 'メニュー位置設定',
-            'available_locations' => '利用可能なメニュー位置',
-            'location_key' => '位置キー',
-            'location_label' => '位置ラベル',
-            'add_location' => '位置を追加',
-            'locations_help' => 'テーマで使用するメニュー位置を定義します。キーは英数字とアンダースコアのみ使用できます。',
+        'menu_items' => [
+            'title' => 'メニューアイテム',
+            'add_item' => 'メニューを追加',
+            'add_child' => '子メニューを追加',
+            'label' => 'ラベル',
+            'label_placeholder' => 'メニューに表示するテキスト',
+            'url' => 'URL',
+            'url_placeholder' => 'https://example.com または /about',
+            'target' => 'ターゲット',
+            'source_type' => 'リンクタイプ',
+            'source_custom' => 'カスタムURL',
+            'source_select' => 'コンテンツを選択',
+            'select_content' => 'コンテンツを選択...',
+            'no_providers' => '利用可能なコンテンツプロバイダーがありません',
+            'items_help' => 'メニューアイテムを追加してください。ドラッグ＆ドロップで順序を変更できます。各親メニューには最大3つの子メニューを追加できます。',
+        ],
+        
+        'confirm' => [
+            'title' => '設定の保存',
+            'message' => 'メニュー設定を保存してもよろしいですか？',
         ],
     ],
 
