@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menu_settings', function (Blueprint $table) {
+        Schema::create('plg_dixlase_menu_settings', function (Blueprint $table) {
             $table->id();
             $table->string('key')->unique()->comment('設定キー');
             $table->text('value')->nullable()->comment('設定値（JSON形式も可）');
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('menu_settings');
+        Schema::dropIfExists('plg_dixlase_menu_settings');
     }
 };

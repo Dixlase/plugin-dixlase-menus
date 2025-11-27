@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menu_items', function (Blueprint $table) {
+        Schema::create('plg_dixlase_menu_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('menu_id')->constrained('menus')->onDelete('cascade')->comment('所属メニューID');
-            $table->foreignId('parent_id')->nullable()->constrained('menu_items')->onDelete('cascade')->comment('親アイテムID（階層構造用）');
+            $table->foreignId('menu_id')->constrained('plg_dixlase_menus')->onDelete('cascade')->comment('所属メニューID');
+            $table->foreignId('parent_id')->nullable()->constrained('plg_dixlase_menu_items')->onDelete('cascade')->comment('親アイテムID（階層構造用）');
             
             // リンク情報
             $table->string('title')->comment('表示テキスト');
@@ -58,6 +58,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('menu_items');
+        Schema::dropIfExists('plg_dixlase_menu_items');
     }
 };

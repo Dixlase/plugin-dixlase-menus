@@ -1,6 +1,7 @@
 {
     "name": "/plugins-dixlase-menu",
     "description": "This is the Dixlase Menu plugin.",
+    "type": "dixlase-plugin",
     "version": "1.0.0",
     "license": "GPL",
     "authors": [
@@ -21,7 +22,11 @@
     },
     "extra": {
         "display-name": "Dixlase Menu",
-        "keywords": ["laravel", "plugin", "custom"],
+        "keywords": [
+            "laravel",
+            "plugin",
+            "custom"
+        ],
         "slug": "dixlase-menu",
         "category": "plugin",
         "laravel": {

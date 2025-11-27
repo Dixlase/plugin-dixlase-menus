@@ -60,7 +60,7 @@ class MenuItem extends Model
      *
      * @var string
      */
-    protected $table = 'menu_items';
+    protected $table = 'plg_dixlase_menu_items';
 
     /**
      * 複数代入可能な属性

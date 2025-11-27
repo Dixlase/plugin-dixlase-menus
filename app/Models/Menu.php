@@ -50,7 +50,7 @@ class Menu extends Model
      *
      * @var string
      */
-    protected $table = 'menus';
+    protected $table = 'plg_dixlase_menus';
 
     /**
      * 複数代入可能な属性

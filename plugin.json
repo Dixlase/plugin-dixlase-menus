@@ -1,0 +1,33 @@
+{
+    "name": "Dixlase Menu",
+    "package_name": "dixlase/dixlase-menu",
+    "slug": "dixlase-menu",
+    "version": "1.0.0",
+    "description": {
+        "ja": "メニュー管理機能を提供するプラグインです。",
+        "en": "This plugin provides menu management functionality."
+    },
+    "author": "exc-D inc.",
+    "email": "office@exc-d.com",
+    "url": "https://exc-d.com",
+    "license": "GPL-3.0",
+    "license_template": "license-gpl.txt",
+    "namespace": "Plugins\\DixlaseMenu",
+    "type": "dixlase-plugin",
+    "category": "navigation",
+    "tags": [
+        "menu",
+        "navigation",
+        "cms"
+    ],
+    "requires": {
+        "dixlase": ">=1.0.0",
+        "php": ">=8.0"
+    },
+    "provides": {
+        "admin_menu": true,
+        "front_routes": false,
+        "api_routes": false,
+        "settings_page": true
+    }
+}
