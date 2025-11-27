@@ -45,7 +45,7 @@ class MenuSetting extends Model
      *
      * @var string
      */
-    protected $table = 'menu_settings';
+    protected $table = 'plg_dixlase_menu_settings';
 
     /**
      * 複数代入可能な属性
