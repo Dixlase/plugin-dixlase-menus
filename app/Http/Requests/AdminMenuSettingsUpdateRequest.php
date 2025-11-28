@@ -38,6 +38,19 @@ class AdminMenuSettingsUpdateRequest extends FormRequest
     {
         return true;
     }
+    
+    /**
+     * バリデーション失敗時のリダイレクト先
+     */
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        \Log::warning('AdminMenuSettingsUpdateRequest validation failed', [
+            'errors' => $validator->errors()->toArray(),
+            'input' => $this->all(),
+        ]);
+        
+        parent::failedValidation($validator);
+    }
 
     /**
      * バリデーションルール
@@ -55,7 +68,7 @@ class AdminMenuSettingsUpdateRequest extends FormRequest
             'menu_items.*.source_type' => ['nullable', 'string', 'max:50'],
             'menu_items.*.source_id' => ['nullable', 'string', 'max:255'],
             'menu_items.*.source_provider' => ['nullable', 'string', 'max:255'],
-            'menu_items.*.children' => ['nullable', 'array', 'max:3'],
+            'menu_items.*.children' => ['nullable', 'array'],
             'menu_items.*.children.*.label' => ['required', 'string', 'max:255'],
             'menu_items.*.children.*.url' => ['nullable', 'string', 'max:2048'],
             'menu_items.*.children.*.target' => ['nullable', 'string', 'in:_self,_blank,_parent,_top'],
@@ -78,7 +91,6 @@ class AdminMenuSettingsUpdateRequest extends FormRequest
             'menu_items.*.label.max' => __('dixlase-menu::validation.menu_label_max'),
             'menu_items.*.url.max' => __('dixlase-menu::validation.menu_url_max'),
             'menu_items.*.target.in' => __('dixlase-menu::validation.menu_target_invalid'),
-            'menu_items.*.children.max' => __('dixlase-menu::validation.menu_children_max'),
             'menu_items.*.children.*.label.required' => __('dixlase-menu::validation.menu_label_required'),
             'menu_items.*.children.*.label.max' => __('dixlase-menu::validation.menu_label_max'),
             'menu_items.*.children.*.url.max' => __('dixlase-menu::validation.menu_url_max'),

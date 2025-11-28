@@ -108,7 +108,7 @@ class AdminMenuSettingsController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(AdminMenuSettingsUpdateRequest $request)
-    {
+    {        
         $validated = $request->validated();
 
         // デフォルトターゲットを保存

@@ -48,6 +48,5 @@ return [
     'menu_label_required' => 'メニューラベルは必須です',
     'menu_label_max' => 'メニューラベルは255文字以内で入力してください',
     'menu_url_max' => 'URLは2048文字以内で入力してください',
-    'menu_target_invalid' => 'ターゲットの値が不正です',
-    'menu_children_max' => '子メニューは最大3つまでです',
+    'menu_target_invalid' => 'ターゲットの値が無効です',
 ];

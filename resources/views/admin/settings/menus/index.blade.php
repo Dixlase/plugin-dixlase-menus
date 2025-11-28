@@ -25,7 +25,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 @section('content')
     <form id="menu-settings-form" action="{{ route('admin.dixlase-menu::admin.settings.menus.update') }}" method="POST">
         @csrf
-        @method('PUT')
         
         <!-- メニューアイテム設定 -->
         <section class="mb-8" x-data="menuItems()">
@@ -110,7 +109,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     <!-- 子メニュー追加ボタン -->
                                     <button type="button"
                                             @click="addChildItem(index)"
-                                            x-show="(item.children?.length || 0) < 3"
                                             class="p-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                                             title="{{ __('dixlase-menu::admin.settings.menu_items.add_child') }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,7 +129,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             
                             <!-- 子メニュー -->
                             <template x-if="item.children && item.children.length > 0">
-                                <div class="ml-8 border-l-2 border-gray-300 dark:border-gray-600 pl-4 pb-4 space-y-3">
+                                <div class="children-list ml-8 border-l-2 border-gray-300 dark:border-gray-600 pl-4 pb-4 space-y-3" :data-parent-index="index">
                                     <template x-for="(child, childIndex) in item.children" :key="child.id || childIndex">
                                         <div class="child-menu-item flex items-center gap-2 p-3 bg-gray-100 dark:bg-gray-600 rounded-md">
                                             <!-- ドラッグハンドル -->
@@ -323,7 +321,33 @@ function menuItems() {
                         this.items.splice(evt.newIndex, 0, item);
                     }
                 });
+                
+                // 子メニューのドラッグ＆ドロップ初期化
+                this.initChildSortables();
             }
+        },
+        
+        initChildSortables() {
+            // 既存の子メニューリストにSortableを適用
+            this.$nextTick(() => {
+                document.querySelectorAll('.children-list').forEach((childList) => {
+                    if (!childList._sortable) {
+                        const parentIndex = parseInt(childList.dataset.parentIndex);
+                        childList._sortable = new Sortable(childList, {
+                            handle: '.child-drag-handle',
+                            animation: 150,
+                            ghostClass: 'opacity-50',
+                            onEnd: (evt) => {
+                                // 子配列の順序を更新
+                                if (this.items[parentIndex] && this.items[parentIndex].children) {
+                                    const child = this.items[parentIndex].children.splice(evt.oldIndex, 1)[0];
+                                    this.items[parentIndex].children.splice(evt.newIndex, 0, child);
+                                }
+                            }
+                        });
+                    }
+                });
+            });
         },
         
         generateId() {
@@ -351,17 +375,17 @@ function menuItems() {
             if (!this.items[parentIndex].children) {
                 this.items[parentIndex].children = [];
             }
-            if (this.items[parentIndex].children.length < 3) {
-                this.items[parentIndex].children.push({
-                    id: this.generateId(),
-                    label: '',
-                    url: '',
-                    target: this.defaultTarget,
-                    source_type: 'custom',
-                    source_id: null,
-                    source_provider: null
-                });
-            }
+            this.items[parentIndex].children.push({
+                id: this.generateId(),
+                label: '',
+                url: '',
+                target: this.defaultTarget,
+                source_type: 'custom',
+                source_id: null,
+                source_provider: null
+            });
+            // 新しい子メニューリストにSortableを適用
+            this.initChildSortables();
         },
         
         removeChildItem(parentIndex, childIndex) {

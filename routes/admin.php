@@ -101,11 +101,10 @@ Route::prefix('menu-items')->name('dixlase-menu::admin.menu-items.')->group(func
 | メニュープラグイン設定
 |--------------------------------------------------------------------------
 */
-Route::prefix('settings')->name('dixlase-menu::admin.settings.')->group(function () {
-    // 設定画面
-    Route::get('/menus', [AdminMenuSettingsController::class, 'index'])->name('menus.index');
-    Route::put('/menus', [AdminMenuSettingsController::class, 'update'])->name('menus.update');
-    
-    // 設定キャッシュクリア
-    Route::post('/menus/cache/clear', [AdminMenuSettingsController::class, 'clearCache'])->name('menus.cache.clear');
-});
+Route::prefix('settings')
+    ->name('dixlase-menu::admin.settings.')
+    ->group(function () {
+        Route::get('/menus', [AdminMenuSettingsController::class, 'index'])->name('menus');
+        Route::post('/menus', [AdminMenuSettingsController::class, 'update'])->name('menus.update');
+        
+    });
