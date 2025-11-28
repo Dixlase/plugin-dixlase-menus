@@ -24,8 +24,10 @@ namespace Plugins\DixlaseMenu\App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Traits\PluginLoaderTrait;
+use App\Helpers\PluginHelper;
 use Plugins\DixlaseMenu\App\Services\MenuLinkSourceManager;
 use Plugins\DixlaseMenu\App\Services\MenuLinkSources\CustomUrlSource;
+use Plugins\DixlaseMenu\App\Shortcodes\MenuShortcode;
 use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuRepositoryInterface;
 use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuItemRepositoryInterface;
 use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuSettingRepositoryInterface;
@@ -78,6 +80,9 @@ class DixlaseMenuServiceProvider extends ServiceProvider
         // リンクソースの登録
         $this->registerLinkSources();
 
+        // ショートコードの登録
+        $this->registerShortcodes();
+
         // 注: ルート（routes/web.php, routes/admin.php）はPluginServiceProviderが自動読み込み
 
         // 公開可能なアセット
@@ -97,13 +102,20 @@ class DixlaseMenuServiceProvider extends ServiceProvider
      */
     protected function registerLinkSources(): void
     {
+        // MenuLinkSourceManagerに直接登録（自プラグイン内）
         $manager = $this->app->make(MenuLinkSourceManager::class);
-
-        // カスタムURLソースを登録
         $manager->register(new CustomUrlSource());
 
         // 他のプラグインがリンクソースを追加できるようにイベントを発火
         // event(new MenuLinkSourcesRegistering($manager));
     }
 
+    /**
+     * ショートコードを登録
+     */
+    protected function registerShortcodes(): void
+    {
+        // コアのPluginHelperを使用してショートコードを登録
+        PluginHelper::registerShortcode('menu', MenuShortcode::class);
+    }
 }
