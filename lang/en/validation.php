@@ -49,5 +49,4 @@ return [
     'menu_label_max' => 'Menu label must not exceed 255 characters',
     'menu_url_max' => 'URL must not exceed 2048 characters',
     'menu_target_invalid' => 'Invalid target value',
-    'menu_children_max' => 'Maximum 3 child menus allowed',
 ];

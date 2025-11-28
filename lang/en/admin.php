@@ -174,7 +174,7 @@ return [
             'source_select' => 'Select Content',
             'select_content' => 'Select content...',
             'no_providers' => 'No content providers available',
-            'items_help' => 'Add menu items. Drag and drop to reorder. Each parent menu can have up to 3 child menus.',
+            'items_help' => 'Add menu items. Drag and drop to reorder.',
         ],
         
         'confirm' => [

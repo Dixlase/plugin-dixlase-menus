@@ -23,7 +23,6 @@
 namespace Plugins\DixlaseMenu\App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Route;
 use App\Traits\PluginLoaderTrait;
 use Plugins\DixlaseMenu\App\Services\MenuLinkSourceManager;
 use Plugins\DixlaseMenu\App\Services\MenuLinkSources\CustomUrlSource;
@@ -42,6 +41,9 @@ class DixlaseMenuServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // 管理画面ナビゲーションをマージ
+        $this->mergeAdminNavigation('DixlaseMenu', __DIR__ . '/../../config/admin.php');
+        
         // 設定ファイルをマージ
         $this->mergeConfigFrom(
             __DIR__ . '/../../config/dixlase_menu.php',
@@ -64,10 +66,6 @@ class DixlaseMenuServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // 管理画面ナビゲーションをマージ
-        // IMPORTANT: boot()で実行することで、テーマと同じタイミングで実行
-        $this->mergeAdminNavigation('DixlaseMenu', __DIR__ . '/../../config/admin.php');
-        
         // ビューの登録
         $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'dixlase-menu');
 
@@ -80,8 +78,7 @@ class DixlaseMenuServiceProvider extends ServiceProvider
         // リンクソースの登録
         $this->registerLinkSources();
 
-        // ルートの登録
-        $this->registerRoutes();
+        // 注: ルート（routes/web.php, routes/admin.php）はPluginServiceProviderが自動読み込み
 
         // 公開可能なアセット
         if ($this->app->runningInConsole()) {
@@ -109,36 +106,4 @@ class DixlaseMenuServiceProvider extends ServiceProvider
         // event(new MenuLinkSourcesRegistering($manager));
     }
 
-    /**
-     * ルートを登録
-     * 
-     * 注意: plugin.web と plugin.admin ミドルウェアグループは
-     * コアによって強制的にセキュリティミドルウェアが適用されます。
-     * これらのミドルウェアグループを変更しないでください。
-     */
-    protected function registerRoutes(): void
-    {
-        // Web routes (フロントエンド)
-        // plugin.web グループにより以下が自動適用されます:
-        // - セッション管理
-        // - CSRF保護
-        // - IP制限（front.ip）← コアにより強制
-        if (file_exists(__DIR__ . '/../../routes/web.php')) {
-            Route::middleware(['plugin.web'])
-                ->group(__DIR__ . '/../../routes/web.php');
-        }
-
-        // Admin routes (管理画面)
-        // plugin.admin グループにより以下が自動適用されます:
-        // - セッション管理
-        // - CSRF保護
-        // - 認証（auth:member）← コアにより強制
-        // - IP制限（admin.ip）← コアにより強制
-        if (file_exists(__DIR__ . '/../../routes/admin.php')) {
-            Route::middleware(['plugin.admin'])
-                ->prefix(config('admin.url', 'admin'))
-                ->name('admin.')
-                ->group(__DIR__ . '/../../routes/admin.php');
-        }
-    }
 }

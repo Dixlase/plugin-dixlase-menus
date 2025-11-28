@@ -22,7 +22,7 @@
 
 return [
     // プラグイン設定画面のルート名
-    'settings_route' => 'dixlase-menu::admin.settings.menus.index',
+    'settings_route' => 'admin.dixlase-menu::admin.settings.menus',
 
     /*
     |--------------------------------------------------------------------------
@@ -37,7 +37,7 @@ return [
             'children' => [
                 'menus' => [
                     'text' => 'dixlase-menu::admin.nav.settings.menus',
-                    'route' => 'dixlase-menu::admin.settings.menus.index',
+                    'route' => 'admin.dixlase-menu::admin.settings.menus',
                     'icon' => 'fas fa-fw fa-bars',
                     'can' => 'admin',
                 ],
