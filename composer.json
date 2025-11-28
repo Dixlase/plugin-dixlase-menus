@@ -18,7 +18,10 @@
     "autoload": {
         "psr-4": {
             "Plugins\\DixlaseMenu\\App\\": "app/"
-        }
+        },
+        "files": [
+            "helpers.php"
+        ]
     },
     "extra": {
         "display-name": "Dixlase Menu",
