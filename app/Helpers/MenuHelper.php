@@ -22,6 +22,7 @@
 
 namespace Plugins\DixlaseMenu\App\Helpers;
 
+use Plugins\DixlaseMenu\App\Services\MenuService;
 use Plugins\DixlaseMenu\App\Repositories\MenuSettingRepository;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
@@ -29,17 +30,60 @@ use Illuminate\Support\Facades\Log;
 class MenuHelper
 {
     /**
-     * メニューアイテムを取得
+     * メニューアイテムを取得（デフォルトメニュー）
      *
      * @return array
      */
     public static function getMenuItems(): array
     {
         try {
-            $repository = app(MenuSettingRepository::class);
-            return $repository->getJson('menu_items', []);
+            $menuService = app(MenuService::class);
+            $menu = $menuService->getDefaultMenu();
+            return $menu ? ($menu['items'] ?? []) : [];
         } catch (\Exception $e) {
             Log::error('MenuHelper: Failed to get menu items', [
+                'error' => $e->getMessage(),
+            ]);
+            return [];
+        }
+    }
+
+    /**
+     * スラッグでメニューアイテムを取得
+     *
+     * @param string $slug
+     * @return array
+     */
+    public static function getMenuItemsBySlug(string $slug): array
+    {
+        try {
+            $menuService = app(MenuService::class);
+            $menu = $menuService->getMenuBySlug($slug);
+            return $menu ? ($menu['items'] ?? []) : [];
+        } catch (\Exception $e) {
+            Log::error('MenuHelper: Failed to get menu items by slug', [
+                'slug' => $slug,
+                'error' => $e->getMessage(),
+            ]);
+            return [];
+        }
+    }
+
+    /**
+     * ロケーションでメニューアイテムを取得
+     *
+     * @param string $location
+     * @return array
+     */
+    public static function getMenuItemsByLocation(string $location): array
+    {
+        try {
+            $menuService = app(MenuService::class);
+            $menu = $menuService->getMenuByLocation($location);
+            return $menu ? ($menu['items'] ?? []) : [];
+        } catch (\Exception $e) {
+            Log::error('MenuHelper: Failed to get menu items by location', [
+                'location' => $location,
                 'error' => $e->getMessage(),
             ]);
             return [];
@@ -65,6 +109,8 @@ class MenuHelper
      * メニューをHTMLとしてレンダリング
      *
      * @param array $options オプション
+     *   - slug: メニューのスラッグ（指定しない場合はデフォルトメニュー）
+     *   - location: メニューのロケーション
      *   - template: 使用するテンプレート名 (default: 'default')
      *   - class: メニューのCSSクラス
      *   - id: メニューのID
@@ -74,7 +120,14 @@ class MenuHelper
      */
     public static function render(array $options = []): string
     {
-        $items = self::getMenuItems();
+        // メニューアイテムを取得
+        if (!empty($options['slug'])) {
+            $items = self::getMenuItemsBySlug($options['slug']);
+        } elseif (!empty($options['location'])) {
+            $items = self::getMenuItemsByLocation($options['location']);
+        } else {
+            $items = self::getMenuItems();
+        }
         
         if (empty($items)) {
             return '';
@@ -107,11 +160,12 @@ class MenuHelper
      * メニューアイテムをリスト形式で取得（カスタム表示用）
      *
      * @param bool $includeChildren 子メニューを含めるか
+     * @param string|null $slug メニューのスラッグ
      * @return array
      */
-    public static function getItems(bool $includeChildren = true): array
+    public static function getItems(bool $includeChildren = true, ?string $slug = null): array
     {
-        $items = self::getMenuItems();
+        $items = $slug ? self::getMenuItemsBySlug($slug) : self::getMenuItems();
         
         if (!$includeChildren) {
             return array_map(function ($item) {
@@ -126,10 +180,12 @@ class MenuHelper
     /**
      * メニューが存在するか確認
      *
+     * @param string|null $slug メニューのスラッグ
      * @return bool
      */
-    public static function hasMenu(): bool
+    public static function hasMenu(?string $slug = null): bool
     {
-        return !empty(self::getMenuItems());
+        $items = $slug ? self::getMenuItemsBySlug($slug) : self::getMenuItems();
+        return !empty($items);
     }
 }

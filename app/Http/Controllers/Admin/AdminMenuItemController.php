@@ -30,6 +30,7 @@ use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuItemRepositoryInterface;
 use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuRepositoryInterface;
 use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuSettingRepositoryInterface;
 use Plugins\DixlaseMenu\App\Services\MenuLinkSourceManager;
+use Plugins\DixlaseMenu\App\Services\MenuService;
 use Plugins\DixlaseMenu\App\Http\Requests\AdminMenuItemStoreRequest;
 use Plugins\DixlaseMenu\App\Http\Requests\AdminMenuItemUpdateRequest;
 
@@ -48,7 +49,8 @@ class AdminMenuItemController extends Controller
         private MenuItemRepositoryInterface $menuItemRepository,
         private MenuRepositoryInterface $menuRepository,
         private MenuSettingRepositoryInterface $settingRepository,
-        private MenuLinkSourceManager $linkSourceManager
+        private MenuLinkSourceManager $linkSourceManager,
+        private MenuService $menuService
     ) {
         $this->initialize();
         $this->initializeAfterLogin();
@@ -297,5 +299,64 @@ class AdminMenuItemController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * メニューアイテムを一括保存（Ajax）
+     *
+     * @param Request $request
+     * @param int $menuId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function syncItems(Request $request, int $menuId)
+    {
+        $menu = $this->menuRepository->find($menuId);
+
+        if (!$menu) {
+            return response()->json([
+                'success' => false,
+                'message' => __('dixlase-menu::admin.messages.menu_not_found'),
+            ], 404);
+        }
+
+        $items = $request->input('items', []);
+
+        $result = $this->menuService->syncMenuItems($menuId, $items);
+
+        if ($result) {
+            return response()->json([
+                'success' => true,
+                'message' => __('dixlase-menu::admin.messages.menu_items_saved'),
+                'items' => $this->menuService->getMenuHierarchy($menuId),
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => __('dixlase-menu::admin.messages.menu_items_save_failed'),
+        ], 500);
+    }
+
+    /**
+     * メニューアイテムを取得（Ajax）
+     *
+     * @param int $menuId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getItems(int $menuId)
+    {
+        $menu = $this->menuRepository->find($menuId);
+
+        if (!$menu) {
+            return response()->json([
+                'success' => false,
+                'message' => __('dixlase-menu::admin.messages.menu_not_found'),
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'items' => $this->menuService->getMenuHierarchy($menuId),
+        ]);
     }
 }

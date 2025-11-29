@@ -73,6 +73,12 @@ Route::prefix('menus')->name('dixlase-menu::admin.menus.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('menus/{menuId}/items')->name('dixlase-menu::admin.menus.items.')->group(function () {
+    // メニューアイテム一覧取得（Ajax）
+    Route::get('/', [AdminMenuItemController::class, 'getItems'])->name('index');
+    
+    // メニューアイテム一括保存（Ajax）
+    Route::post('/sync', [AdminMenuItemController::class, 'syncItems'])->name('sync');
+    
     // メニューアイテム作成
     Route::get('/create', [AdminMenuItemController::class, 'create'])->name('create');
     Route::post('/', [AdminMenuItemController::class, 'store'])->name('store');

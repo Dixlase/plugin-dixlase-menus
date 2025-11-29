@@ -34,6 +34,7 @@ use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuSettingRepositoryInterfac
 use Plugins\DixlaseMenu\App\Repositories\MenuRepository;
 use Plugins\DixlaseMenu\App\Repositories\MenuItemRepository;
 use Plugins\DixlaseMenu\App\Repositories\MenuSettingRepository;
+use Plugins\DixlaseMenu\App\Services\MenuService;
 
 class DixlaseMenuServiceProvider extends ServiceProvider
 {
@@ -61,6 +62,14 @@ class DixlaseMenuServiceProvider extends ServiceProvider
         $this->app->bind(MenuRepositoryInterface::class, MenuRepository::class);
         $this->app->bind(MenuItemRepositoryInterface::class, MenuItemRepository::class);
         $this->app->bind(MenuSettingRepositoryInterface::class, MenuSettingRepository::class);
+
+        // MenuServiceをシングルトンとして登録
+        $this->app->singleton(MenuService::class, function ($app) {
+            return new MenuService(
+                $app->make(MenuRepositoryInterface::class),
+                $app->make(MenuItemRepositoryInterface::class)
+            );
+        });
     }
 
     /**
