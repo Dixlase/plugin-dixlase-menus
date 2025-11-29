@@ -212,5 +212,9 @@ return [
         // 設定
         'settings_updated' => '設定を更新しました',
         'cache_cleared' => 'キャッシュをクリアしました',
+        
+        // 一括保存
+        'menu_items_saved' => 'メニューアイテムを保存しました',
+        'menu_items_save_failed' => 'メニューアイテムの保存に失敗しました',
     ],
 ];

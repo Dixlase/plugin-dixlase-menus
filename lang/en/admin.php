@@ -212,5 +212,9 @@ return [
         // Settings
         'settings_updated' => 'Settings updated successfully',
         'cache_cleared' => 'Cache cleared successfully',
+        
+        // Bulk save
+        'menu_items_saved' => 'Menu items saved successfully',
+        'menu_items_save_failed' => 'Failed to save menu items',
     ],
 ];
