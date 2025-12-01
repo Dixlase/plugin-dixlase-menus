@@ -23,7 +23,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 @section('title', __('dixlase-menu::admin.menu_items.edit.heading'))
 
 @section('content')
-<div class="max-w-4xl mx-auto">
+<div class="mx-auto">
     <!-- ヘッダー -->
     <div class="mb-6">
         <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-2">

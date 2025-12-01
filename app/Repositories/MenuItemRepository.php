@@ -316,4 +316,92 @@ class MenuItemRepository implements MenuItemRepositoryInterface
             $this->recalculateItemDepth($child, $depth + 1);
         }
     }
+
+    /**
+     * メニューのすべてのアイテムを削除
+     *
+     * @param int $menuId
+     * @return bool
+     */
+    public function deleteByMenuId(int $menuId): bool
+    {
+        return MenuItem::where('menu_id', $menuId)->forceDelete() > 0;
+    }
+
+    /**
+     * メニューアイテムを一括同期（既存を削除して新規作成）
+     *
+     * @param int $menuId
+     * @param array $items
+     * @return Collection
+     */
+    public function syncItems(int $menuId, array $items): Collection
+    {
+        DB::beginTransaction();
+        try {
+            // 既存のアイテムを削除
+            $this->deleteByMenuId($menuId);
+            
+            // 新しいアイテムを作成
+            $createdItems = $this->createItemsRecursively($menuId, $items, null, 0);
+            
+            DB::commit();
+            
+            // 階層構造で取得して返す
+            return $this->getHierarchy($menuId);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * メニューアイテムを再帰的に作成
+     *
+     * @param int $menuId
+     * @param array $items
+     * @param int|null $parentId
+     * @param int $depth
+     * @return array
+     */
+    protected function createItemsRecursively(int $menuId, array $items, ?int $parentId, int $depth): array
+    {
+        $created = [];
+        $order = 0;
+        
+        foreach ($items as $itemData) {
+            // 空のラベルはスキップ
+            $label = $itemData['label'] ?? $itemData['title'] ?? '';
+            if (empty($label)) {
+                continue;
+            }
+            
+            $item = MenuItem::create([
+                'menu_id' => $menuId,
+                'parent_id' => $parentId,
+                'title' => $label,
+                'title_en' => $itemData['title_en'] ?? null,
+                'title_ja' => $itemData['title_ja'] ?? null,
+                'url' => $itemData['url'] ?? '',
+                'source_type' => $itemData['source_type'] ?? 'custom_url',
+                'source_id' => $itemData['source_id'] ?? null,
+                'target' => $itemData['target'] ?? '_self',
+                'css_class' => $itemData['css_class'] ?? null,
+                'icon_class' => $itemData['icon_class'] ?? null,
+                'depth' => $depth,
+                'display_order' => $order++,
+                'is_active' => true,
+                'is_visible' => true,
+            ]);
+            
+            $created[] = $item;
+            
+            // 子アイテムがある場合は再帰的に作成
+            if (!empty($itemData['children']) && is_array($itemData['children'])) {
+                $this->createItemsRecursively($menuId, $itemData['children'], $item->id, $depth + 1);
+            }
+        }
+        
+        return $created;
+    }
 }

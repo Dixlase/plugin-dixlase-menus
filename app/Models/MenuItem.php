@@ -35,6 +35,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property int $menu_id
  * @property int|null $parent_id
  * @property string $title
+ * @property string|null $title_en
+ * @property string|null $title_ja
  * @property string|null $url
  * @property string|null $source_type
  * @property string|null $source_id
@@ -71,6 +73,8 @@ class MenuItem extends Model
         'menu_id',
         'parent_id',
         'title',
+        'title_en',
+        'title_ja',
         'url',
         'source_type',
         'source_id',
@@ -348,5 +352,37 @@ class MenuItem extends Model
         $path[] = $this->title;
 
         return implode($separator, $path);
+    }
+
+    /**
+     * 現在のロケールに応じたタイトルを取得
+     *
+     * @param string|null $locale
+     * @return string
+     */
+    public function getLocalizedTitle(?string $locale = null): string
+    {
+        $locale = $locale ?? app()->getLocale();
+        
+        // ロケール別のタイトルを取得
+        $localizedTitle = match ($locale) {
+            'en' => $this->title_en,
+            'ja' => $this->title_ja,
+            default => null,
+        };
+        
+        // ロケール別タイトルがない場合はデフォルトのtitleを返す
+        return $localizedTitle ?: $this->title;
+    }
+
+    /**
+     * ラベル（表示用タイトル）を取得するアクセサ
+     * フロントエンド表示用に現在のロケールに応じたタイトルを返す
+     *
+     * @return string
+     */
+    public function getLabelAttribute(): string
+    {
+        return $this->getLocalizedTitle();
     }
 }

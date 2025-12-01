@@ -144,6 +144,8 @@ class MenuService
             'menu_id' => $menuId,
             'parent_id' => $parentId,
             'title' => $data['label'] ?? $data['title'] ?? '',
+            'title_en' => $data['title_en'] ?? null,
+            'title_ja' => $data['title_ja'] ?? null,
             'url' => $data['url'] ?? '',
             'source_type' => $data['source_type'] ?? 'custom_url',
             'source_id' => $data['source_id'] ?? null,
@@ -240,8 +242,10 @@ class MenuService
     {
         return [
             'id' => $item->id,
-            'label' => $item->title,
+            'label' => $item->getLocalizedTitle(), // 現在のロケールに応じたタイトル
             'title' => $item->title,
+            'title_en' => $item->title_en,
+            'title_ja' => $item->title_ja,
             'url' => $item->url,
             'target' => $item->target,
             'source_type' => $item->source_type,
