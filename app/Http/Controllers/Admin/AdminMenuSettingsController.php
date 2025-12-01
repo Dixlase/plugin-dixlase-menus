@@ -28,6 +28,8 @@ use App\Traits\AdminInterfaceTrait;
 use App\Traits\AdminLoggedInTrait;
 use App\Contracts\PluginIntegration\LinkableProviderInterface;
 use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuSettingRepositoryInterface;
+use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuRepositoryInterface;
+use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuItemRepositoryInterface;
 use Plugins\DixlaseMenu\App\Http\Requests\AdminMenuSettingsUpdateRequest;
 
 /**
@@ -42,7 +44,9 @@ class AdminMenuSettingsController extends Controller
      * コンストラクタ
      */
     public function __construct(
-        private MenuSettingRepositoryInterface $settingRepository
+        private MenuSettingRepositoryInterface $settingRepository,
+        private MenuRepositoryInterface $menuRepository,
+        private MenuItemRepositoryInterface $menuItemRepository
     ) {
         $this->initialize();
         $this->initializeAfterLogin();
@@ -55,18 +59,52 @@ class AdminMenuSettingsController extends Controller
      */
     public function index()
     {
+        // デフォルトメニューを取得または作成
+        $menu = $this->menuRepository->getFirstOrCreateDefault();
+        
+        // メニューアイテムを階層構造で取得
+        $menuItems = $this->menuItemRepository->getHierarchy($menu->id);
+        
+        // メニューアイテムをフロントエンド用の配列に変換
+        $menuItemsArray = $this->convertMenuItemsToArray($menuItems);
+        
         $settings = [
             'default_target' => $this->settingRepository->get('default_target', '_self'),
-            'menu_items' => $this->settingRepository->getJson('menu_items', []),
+            'menu_items' => $menuItemsArray,
         ];
 
         // LinkableProviderを取得
         $linkableProviders = $this->getLinkableProviders();
 
         $this->viewParams['settings'] = $settings;
+        $this->viewParams['menu'] = $menu;
         $this->viewParams['linkableProviders'] = $linkableProviders;
 
         return view('dixlase-menu::admin.settings.menus.index', $this->viewParams);
+    }
+    
+    /**
+     * メニューアイテムをフロントエンド用の配列に変換
+     *
+     * @param \Illuminate\Database\Eloquent\Collection $items
+     * @return array
+     */
+    protected function convertMenuItemsToArray($items): array
+    {
+        return $items->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'label' => $item->title,
+                'title_en' => $item->title_en,
+                'title_ja' => $item->title_ja,
+                'url' => $item->url,
+                'target' => $item->target,
+                'source_type' => $item->source_type ?? 'custom',
+                'source_id' => $item->source_id,
+                'source_provider' => null,
+                'children' => $item->children ? $this->convertMenuItemsToArray($item->children) : [],
+            ];
+        })->toArray();
     }
 
     /**
@@ -111,7 +149,7 @@ class AdminMenuSettingsController extends Controller
     {        
         $validated = $request->validated();
 
-        // デフォルトターゲットを保存
+        // デフォルトターゲットを保存（プラグイン全体の設定）
         $this->settingRepository->set(
             'default_target',
             $validated['default_target'] ?? '_self',
@@ -119,20 +157,20 @@ class AdminMenuSettingsController extends Controller
             'デフォルトのリンクターゲット'
         );
 
-        // メニューアイテムを保存
+        // デフォルトメニューを取得または作成
+        $menu = $this->menuRepository->getFirstOrCreateDefault();
+
+        // メニューアイテムをDBに保存
         if (isset($validated['menu_items'])) {
             $menuItems = $this->sanitizeMenuItems($validated['menu_items']);
-
-            $this->settingRepository->set(
-                'menu_items',
-                $menuItems,
-                'json',
-                'メニューアイテム'
-            );
+            
+            // メニューアイテムを同期（既存を削除して新規作成）
+            $this->menuItemRepository->syncItems($menu->id, $menuItems);
         }
 
         // キャッシュをクリア
         $this->settingRepository->clearCache();
+        $this->menuRepository->clearCache($menu->slug);
 
         return redirect()
             ->back()
@@ -153,13 +191,13 @@ class AdminMenuSettingsController extends Controller
             }
 
             $sanitized = [
-                'id' => $item['id'] ?? uniqid('menu_'),
                 'label' => $item['label'],
+                'title_en' => $item['title_en'] ?? null,
+                'title_ja' => $item['title_ja'] ?? null,
                 'url' => $item['url'] ?? '',
                 'target' => $item['target'] ?? '_self',
-                'source_type' => $item['source_type'] ?? 'custom',
+                'source_type' => $item['source_type'] ?? 'custom_url',
                 'source_id' => $item['source_id'] ?? null,
-                'source_provider' => $item['source_provider'] ?? null,
                 'children' => [],
             ];
 
@@ -171,13 +209,13 @@ class AdminMenuSettingsController extends Controller
                     }
 
                     return [
-                        'id' => $child['id'] ?? uniqid('child_'),
                         'label' => $child['label'],
+                        'title_en' => $child['title_en'] ?? null,
+                        'title_ja' => $child['title_ja'] ?? null,
                         'url' => $child['url'] ?? '',
                         'target' => $child['target'] ?? '_self',
-                        'source_type' => $child['source_type'] ?? 'custom',
+                        'source_type' => $child['source_type'] ?? 'custom_url',
                         'source_id' => $child['source_id'] ?? null,
-                        'source_provider' => $child['source_provider'] ?? null,
                     ];
                 }, $item['children'])));
             }

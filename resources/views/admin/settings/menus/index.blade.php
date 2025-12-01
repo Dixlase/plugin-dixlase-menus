@@ -46,61 +46,90 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     </svg>
                                 </div>
                                 
-                                <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <!-- ラベル -->
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            {{ __('dixlase-menu::admin.settings.menu_items.label') }}
-                                        </label>
-                                        <input type="text"
-                                               :name="'menu_items[' + index + '][label]'"
-                                               x-model="item.label"
-                                               placeholder="{{ __('dixlase-menu::admin.settings.menu_items.label_placeholder') }}"
-                                               class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                               required>
-                                    </div>
-                                    
-                                    <!-- URL / コンテンツ選択 -->
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            {{ __('dixlase-menu::admin.settings.menu_items.url') }}
-                                        </label>
-                                        <div class="flex gap-2">
+                                <div class="flex-1 space-y-3">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <!-- ラベル（デフォルト） -->
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                                {{ __('dixlase-menu::admin.settings.menu_items.label') }}
+                                            </label>
                                             <input type="text"
-                                                   :name="'menu_items[' + index + '][url]'"
-                                                   x-model="item.url"
-                                                   placeholder="{{ __('dixlase-menu::admin.settings.menu_items.url_placeholder') }}"
-                                                   class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                            @if(!empty($linkableProviders))
-                                            <button type="button"
-                                                    @click="openContentSelector(index, null)"
-                                                    class="px-3 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 rounded-md transition-colors"
-                                                    title="{{ __('dixlase-menu::admin.settings.menu_items.source_select') }}">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                                                </svg>
-                                            </button>
-                                            @endif
+                                                   :name="'menu_items[' + index + '][label]'"
+                                                   x-model="item.label"
+                                                   placeholder="{{ __('dixlase-menu::admin.settings.menu_items.label_placeholder') }}"
+                                                   class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                                   required>
                                         </div>
-                                        <!-- 隠しフィールド：ソース情報 -->
-                                        <input type="hidden" :name="'menu_items[' + index + '][source_type]'" x-model="item.source_type">
-                                        <input type="hidden" :name="'menu_items[' + index + '][source_id]'" x-model="item.source_id">
-                                        <input type="hidden" :name="'menu_items[' + index + '][source_provider]'" x-model="item.source_provider">
+                                        
+                                        <!-- URL / コンテンツ選択 -->
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                                {{ __('dixlase-menu::admin.settings.menu_items.url') }}
+                                            </label>
+                                            <div class="flex gap-2">
+                                                <input type="text"
+                                                       :name="'menu_items[' + index + '][url]'"
+                                                       x-model="item.url"
+                                                       placeholder="{{ __('dixlase-menu::admin.settings.menu_items.url_placeholder') }}"
+                                                       class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                                @if(!empty($linkableProviders))
+                                                <button type="button"
+                                                        @click="openContentSelector(index, null)"
+                                                        class="px-3 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 rounded-md transition-colors"
+                                                        title="{{ __('dixlase-menu::admin.settings.menu_items.source_select') }}">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                                                    </svg>
+                                                </button>
+                                                @endif
+                                            </div>
+                                            <!-- 隠しフィールド：ソース情報 -->
+                                            <input type="hidden" :name="'menu_items[' + index + '][source_type]'" x-model="item.source_type">
+                                            <input type="hidden" :name="'menu_items[' + index + '][source_id]'" x-model="item.source_id">
+                                            <input type="hidden" :name="'menu_items[' + index + '][source_provider]'" x-model="item.source_provider">
+                                        </div>
+                                        
+                                        <!-- ターゲット -->
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                                {{ __('dixlase-menu::admin.settings.menu_items.target') }}
+                                            </label>
+                                            <select :name="'menu_items[' + index + '][target]'"
+                                                    x-model="item.target"
+                                                    class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                                <option value="_self">{{ __('dixlase-menu::admin.settings.basic.target_self') }}</option>
+                                                <option value="_blank">{{ __('dixlase-menu::admin.settings.basic.target_blank') }}</option>
+                                                <option value="_parent">{{ __('dixlase-menu::admin.settings.basic.target_parent') }}</option>
+                                                <option value="_top">{{ __('dixlase-menu::admin.settings.basic.target_top') }}</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     
-                                    <!-- ターゲット -->
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            {{ __('dixlase-menu::admin.settings.menu_items.target') }}
-                                        </label>
-                                        <select :name="'menu_items[' + index + '][target]'"
-                                                x-model="item.target"
-                                                class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                            <option value="_self">{{ __('dixlase-menu::admin.settings.basic.target_self') }}</option>
-                                            <option value="_blank">{{ __('dixlase-menu::admin.settings.basic.target_blank') }}</option>
-                                            <option value="_parent">{{ __('dixlase-menu::admin.settings.basic.target_parent') }}</option>
-                                            <option value="_top">{{ __('dixlase-menu::admin.settings.basic.target_top') }}</option>
-                                        </select>
+                                    <!-- 多言語ラベル -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-gray-200 dark:border-gray-600">
+                                        <!-- 英語ラベル -->
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+                                                🇺🇸 English
+                                            </label>
+                                            <input type="text"
+                                                   :name="'menu_items[' + index + '][title_en]'"
+                                                   x-model="item.title_en"
+                                                   placeholder="English label"
+                                                   class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        </div>
+                                        
+                                        <!-- 日本語ラベル -->
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+                                                🇯🇵 日本語
+                                            </label>
+                                            <input type="text"
+                                                   :name="'menu_items[' + index + '][title_ja]'"
+                                                   x-model="item.title_ja"
+                                                   placeholder="日本語ラベル"
+                                                   class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        </div>
                                     </div>
                                 </div>
                                 
@@ -139,52 +168,68 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                 </svg>
                                             </div>
                                             
-                                            <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
-                                                <!-- ラベル -->
-                                                <div>
-                                                    <input type="text"
-                                                           :name="'menu_items[' + index + '][children][' + childIndex + '][label]'"
-                                                           x-model="child.label"
-                                                           placeholder="{{ __('dixlase-menu::admin.settings.menu_items.label_placeholder') }}"
-                                                           class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                                           required>
-                                                </div>
-                                                
-                                                <!-- URL -->
-                                                <div>
-                                                    <div class="flex gap-1">
+                                            <div class="flex-1 space-y-2">
+                                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                                    <!-- ラベル -->
+                                                    <div>
                                                         <input type="text"
-                                                               :name="'menu_items[' + index + '][children][' + childIndex + '][url]'"
-                                                               x-model="child.url"
-                                                               placeholder="{{ __('dixlase-menu::admin.settings.menu_items.url_placeholder') }}"
-                                                               class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                                                        @if(!empty($linkableProviders))
-                                                        <button type="button"
-                                                                @click="openContentSelector(index, childIndex)"
-                                                                class="px-2 py-1.5 bg-gray-200 dark:bg-gray-500 hover:bg-gray-300 dark:hover:bg-gray-400 text-gray-700 dark:text-gray-200 rounded-md transition-colors"
-                                                                title="{{ __('dixlase-menu::admin.settings.menu_items.source_select') }}">
-                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                                                            </svg>
-                                                        </button>
-                                                        @endif
+                                                               :name="'menu_items[' + index + '][children][' + childIndex + '][label]'"
+                                                               x-model="child.label"
+                                                               placeholder="{{ __('dixlase-menu::admin.settings.menu_items.label_placeholder') }}"
+                                                               class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                                               required>
                                                     </div>
-                                                    <!-- 隠しフィールド：ソース情報 -->
-                                                    <input type="hidden" :name="'menu_items[' + index + '][children][' + childIndex + '][source_type]'" x-model="child.source_type">
-                                                    <input type="hidden" :name="'menu_items[' + index + '][children][' + childIndex + '][source_id]'" x-model="child.source_id">
-                                                    <input type="hidden" :name="'menu_items[' + index + '][children][' + childIndex + '][source_provider]'" x-model="child.source_provider">
+                                                    
+                                                    <!-- URL -->
+                                                    <div>
+                                                        <div class="flex gap-1">
+                                                            <input type="text"
+                                                                   :name="'menu_items[' + index + '][children][' + childIndex + '][url]'"
+                                                                   x-model="child.url"
+                                                                   placeholder="{{ __('dixlase-menu::admin.settings.menu_items.url_placeholder') }}"
+                                                                   class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                                            @if(!empty($linkableProviders))
+                                                            <button type="button"
+                                                                    @click="openContentSelector(index, childIndex)"
+                                                                    class="px-2 py-1.5 bg-gray-200 dark:bg-gray-500 hover:bg-gray-300 dark:hover:bg-gray-400 text-gray-700 dark:text-gray-200 rounded-md transition-colors"
+                                                                    title="{{ __('dixlase-menu::admin.settings.menu_items.source_select') }}">
+                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                                                                </svg>
+                                                            </button>
+                                                            @endif
+                                                        </div>
+                                                        <!-- 隠しフィールド：ソース情報 -->
+                                                        <input type="hidden" :name="'menu_items[' + index + '][children][' + childIndex + '][source_type]'" x-model="child.source_type">
+                                                        <input type="hidden" :name="'menu_items[' + index + '][children][' + childIndex + '][source_id]'" x-model="child.source_id">
+                                                        <input type="hidden" :name="'menu_items[' + index + '][children][' + childIndex + '][source_provider]'" x-model="child.source_provider">
+                                                    </div>
+                                                    
+                                                    <!-- ターゲット -->
+                                                    <div>
+                                                        <select :name="'menu_items[' + index + '][children][' + childIndex + '][target]'"
+                                                                x-model="child.target"
+                                                                class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                                            <option value="_self">{{ __('dixlase-menu::admin.settings.basic.target_self') }}</option>
+                                                            <option value="_blank">{{ __('dixlase-menu::admin.settings.basic.target_blank') }}</option>
+                                                            <option value="_parent">{{ __('dixlase-menu::admin.settings.basic.target_parent') }}</option>
+                                                            <option value="_top">{{ __('dixlase-menu::admin.settings.basic.target_top') }}</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
                                                 
-                                                <!-- ターゲット -->
-                                                <div>
-                                                    <select :name="'menu_items[' + index + '][children][' + childIndex + '][target]'"
-                                                            x-model="child.target"
-                                                            class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                                                        <option value="_self">{{ __('dixlase-menu::admin.settings.basic.target_self') }}</option>
-                                                        <option value="_blank">{{ __('dixlase-menu::admin.settings.basic.target_blank') }}</option>
-                                                        <option value="_parent">{{ __('dixlase-menu::admin.settings.basic.target_parent') }}</option>
-                                                        <option value="_top">{{ __('dixlase-menu::admin.settings.basic.target_top') }}</option>
-                                                    </select>
+                                                <!-- 多言語ラベル（子メニュー） -->
+                                                <div class="grid grid-cols-2 gap-2 pt-1 border-t border-gray-200 dark:border-gray-500">
+                                                    <input type="text"
+                                                           :name="'menu_items[' + index + '][children][' + childIndex + '][title_en]'"
+                                                           x-model="child.title_en"
+                                                           placeholder="🇺🇸 English"
+                                                           class="block w-full px-2 py-1 text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                                    <input type="text"
+                                                           :name="'menu_items[' + index + '][children][' + childIndex + '][title_ja]'"
+                                                           x-model="child.title_ja"
+                                                           placeholder="🇯🇵 日本語"
+                                                           class="block w-full px-2 py-1 text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                                                 </div>
                                             </div>
                                             
@@ -358,9 +403,11 @@ function menuItems() {
             this.items.push({
                 id: this.generateId(),
                 label: '',
+                title_en: '',
+                title_ja: '',
                 url: '',
                 target: this.defaultTarget,
-                source_type: 'custom',
+                source_type: 'custom_url',
                 source_id: null,
                 source_provider: null,
                 children: []
@@ -378,9 +425,11 @@ function menuItems() {
             this.items[parentIndex].children.push({
                 id: this.generateId(),
                 label: '',
+                title_en: '',
+                title_ja: '',
                 url: '',
                 target: this.defaultTarget,
-                source_type: 'custom',
+                source_type: 'custom_url',
                 source_id: null,
                 source_provider: null
             });

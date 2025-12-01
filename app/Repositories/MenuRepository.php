@@ -265,4 +265,45 @@ class MenuRepository implements MenuRepositoryInterface
         
         return $relations;
     }
+
+    /**
+     * デフォルトメニューを取得（存在しない場合は作成）
+     *
+     * @return Menu
+     */
+    public function getOrCreateDefault(): Menu
+    {
+        $defaultSlug = 'main-menu';
+        
+        $menu = $this->findBySlug($defaultSlug);
+        
+        if (!$menu) {
+            $menu = $this->create([
+                'name' => 'Main Menu',
+                'slug' => $defaultSlug,
+                'location' => 'header',
+                'description' => 'Default main navigation menu',
+                'is_active' => true,
+                'display_order' => 0,
+            ]);
+        }
+        
+        return $menu;
+    }
+
+    /**
+     * 最初のメニューを取得（存在しない場合はデフォルトを作成）
+     *
+     * @return Menu
+     */
+    public function getFirstOrCreateDefault(): Menu
+    {
+        $menu = Menu::ordered()->first();
+        
+        if (!$menu) {
+            return $this->getOrCreateDefault();
+        }
+        
+        return $menu;
+    }
 }
