@@ -21,13 +21,6 @@
  */
 
 return [
-    // Navigation
-    'nav' => [
-        'settings' => [
-            'menus' => 'Menu Management',
-        ],
-    ],
-
     // Menu List
     'menus' => [
         'index' => [
