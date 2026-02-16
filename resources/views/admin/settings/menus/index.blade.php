@@ -105,32 +105,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         </div>
                                     </div>
                                     
-                                    <!-- 多言語ラベル -->
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-gray-200 dark:border-gray-600">
-                                        <!-- 英語ラベル -->
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                                                🇺🇸 English
-                                            </label>
-                                            <input type="text"
-                                                   :name="'menu_items[' + index + '][title_en]'"
-                                                   x-model="item.title_en"
-                                                   placeholder="English label"
-                                                   class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                        </div>
-                                        
-                                        <!-- 日本語ラベル -->
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                                                🇯🇵 日本語
-                                            </label>
-                                            <input type="text"
-                                                   :name="'menu_items[' + index + '][title_ja]'"
-                                                   x-model="item.title_ja"
-                                                   placeholder="日本語ラベル"
-                                                   class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                        </div>
-                                    </div>
                                 </div>
                                 
                                 <!-- アクションボタン -->
@@ -216,20 +190,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                             <option value="_top">{{ __('dixlase-menu::admin.settings.basic.target_top') }}</option>
                                                         </select>
                                                     </div>
-                                                </div>
-                                                
-                                                <!-- 多言語ラベル（子メニュー） -->
-                                                <div class="grid grid-cols-2 gap-2 pt-1 border-t border-gray-200 dark:border-gray-500">
-                                                    <input type="text"
-                                                           :name="'menu_items[' + index + '][children][' + childIndex + '][title_en]'"
-                                                           x-model="child.title_en"
-                                                           placeholder="🇺🇸 English"
-                                                           class="block w-full px-2 py-1 text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                                                    <input type="text"
-                                                           :name="'menu_items[' + index + '][children][' + childIndex + '][title_ja]'"
-                                                           x-model="child.title_ja"
-                                                           placeholder="🇯🇵 日本語"
-                                                           class="block w-full px-2 py-1 text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                                                 </div>
                                             </div>
                                             
