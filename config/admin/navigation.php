@@ -21,8 +21,25 @@
  */
 
 return [
-    // プラグイン設定画面のルート名
-    'settings_route' => 'dixlase-menu::admin.settings.menus',
-
-    // 注: ナビゲーション設定は config/admin/navigation.php に移動
+    // メニュー管理
+    'menus' => [
+        '_insert_after' => 'media',
+        'text' => 'dixlase-menu::admin/navigation.menus.text',
+        'icon' => 'fas fa-fw fa-bars',
+        'can' => 'admin',
+        'children' => [
+            'index' => [
+                'text' => 'dixlase-menu::admin/navigation.menus.index',
+                'route' => 'dixlase-menu::admin.menus.index',
+                'icon' => 'fas fa-fw fa-list',
+                'can' => 'admin',
+            ],
+            'settings' => [
+                'text' => 'dixlase-menu::admin/navigation.menus.settings',
+                'route' => 'dixlase-menu::admin.settings.menus',
+                'icon' => 'fas fa-fw fa-cog',
+                'can' => 'admin',
+            ],
+        ],
+    ],
 ];
