@@ -11,7 +11,7 @@
 
 use Plugins\DixlaseMenu\App\Helpers\MenuHelper;
 
-if (!function_exists('dixlase_menu')) {
+if (!function_exists('dls_menu')) {
     /**
      * メニューをHTMLとしてレンダリング
      *
@@ -26,13 +26,13 @@ if (!function_exists('dixlase_menu')) {
      * @return string
      * 
      * 使用例:
-     *   {!! dixlase_menu() !!}
-     *   {!! dixlase_menu('main-menu') !!}
-     *   {!! dixlase_menu(['slug' => 'main-menu', 'template' => 'horizontal']) !!}
-     *   {!! dixlase_menu(['location' => 'header']) !!}
-     *   {!! dixlase_menu(['class' => 'my-menu', 'id' => 'main-nav']) !!}
+     *   {!! dls_menu() !!}
+     *   {!! dls_menu('main-menu') !!}
+     *   {!! dls_menu(['slug' => 'main-menu', 'template' => 'horizontal']) !!}
+     *   {!! dls_menu(['location' => 'header']) !!}
+     *   {!! dls_menu(['class' => 'my-menu', 'id' => 'main-nav']) !!}
      */
-    function dixlase_menu(array|string $options = []): string
+    function dls_menu(array|string $options = []): string
     {
         // 文字列が渡された場合はスラッグとして扱う
         if (is_string($options)) {
@@ -42,7 +42,7 @@ if (!function_exists('dixlase_menu')) {
     }
 }
 
-if (!function_exists('dixlase_menu_items')) {
+if (!function_exists('dls_menu_items')) {
     /**
      * メニューアイテムを配列として取得
      *
@@ -51,20 +51,20 @@ if (!function_exists('dixlase_menu_items')) {
      * @return array
      * 
      * 使用例:
-     *   @foreach(dixlase_menu_items() as $item)
+     *   @foreach(dls_menu_items() as $item)
      *       <a href="{{ $item['url'] }}">{{ $item['label'] }}</a>
      *   @endforeach
-     *   @foreach(dixlase_menu_items(true, 'footer-menu') as $item)
+     *   @foreach(dls_menu_items(true, 'footer-menu') as $item)
      *       ...
      *   @endforeach
      */
-    function dixlase_menu_items(bool $includeChildren = true, ?string $slug = null): array
+    function dls_menu_items(bool $includeChildren = true, ?string $slug = null): array
     {
         return MenuHelper::getItems($includeChildren, $slug);
     }
 }
 
-if (!function_exists('has_dixlase_menu')) {
+if (!function_exists('dls_has_menu')) {
     /**
      * メニューが存在するか確認
      *
@@ -72,14 +72,14 @@ if (!function_exists('has_dixlase_menu')) {
      * @return bool
      * 
      * 使用例:
-     *   @if(has_dixlase_menu())
-     *       {!! dixlase_menu() !!}
+     *   @if(dls_has_menu())
+     *       {!! dls_menu() !!}
      *   @endif
-     *   @if(has_dixlase_menu('footer-menu'))
-     *       {!! dixlase_menu('footer-menu') !!}
+     *   @if(dls_has_menu('footer-menu'))
+     *       {!! dls_menu('footer-menu') !!}
      *   @endif
      */
-    function has_dixlase_menu(?string $slug = null): bool
+    function dls_has_menu(?string $slug = null): bool
     {
         return MenuHelper::hasMenu($slug);
     }

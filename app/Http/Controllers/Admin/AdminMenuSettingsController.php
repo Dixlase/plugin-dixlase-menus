@@ -133,7 +133,6 @@ class AdminMenuSettingsController extends Controller
             }
         } catch (\Exception $e) {
             // プロバイダーが登録されていない場合は空配列
-            \Log::debug('LinkableProviders not found: ' . $e->getMessage());
         }
 
         return $providers;
