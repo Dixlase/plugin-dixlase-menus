@@ -95,8 +95,6 @@ class AdminMenuSettingsController extends Controller
             return [
                 'id' => $item->id,
                 'label' => $item->title,
-                'title_en' => $item->title_en,
-                'title_ja' => $item->title_ja,
                 'url' => $item->url,
                 'target' => $item->target,
                 'source_type' => $item->source_type ?? 'custom',
@@ -167,9 +165,8 @@ class AdminMenuSettingsController extends Controller
             $this->menuItemRepository->syncItems($menu->id, $menuItems);
         }
 
-        // キャッシュをクリア
+        // 設定キャッシュをクリア（メニューキャッシュはオブザーバーが自動処理）
         $this->settingRepository->clearCache();
-        $this->menuRepository->clearCache($menu->slug);
 
         return redirect()
             ->back()
@@ -191,8 +188,6 @@ class AdminMenuSettingsController extends Controller
 
             $sanitized = [
                 'label' => $item['label'],
-                'title_en' => $item['title_en'] ?? null,
-                'title_ja' => $item['title_ja'] ?? null,
                 'url' => $item['url'] ?? '',
                 'target' => $item['target'] ?? '_self',
                 'source_type' => $item['source_type'] ?? 'custom_url',
@@ -209,8 +204,6 @@ class AdminMenuSettingsController extends Controller
 
                     return [
                         'label' => $child['label'],
-                        'title_en' => $child['title_en'] ?? null,
-                        'title_ja' => $child['title_ja'] ?? null,
                         'url' => $child['url'] ?? '',
                         'target' => $child['target'] ?? '_self',
                         'source_type' => $child['source_type'] ?? 'custom_url',
@@ -223,17 +216,4 @@ class AdminMenuSettingsController extends Controller
         }, $items)));
     }
 
-    /**
-     * キャッシュクリア
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function clearCache()
-    {
-        $this->settingRepository->clearCache();
-
-        return redirect()
-            ->back()
-            ->with('success', __('dixlase-menu::admin.messages.cache_cleared'));
-    }
 }

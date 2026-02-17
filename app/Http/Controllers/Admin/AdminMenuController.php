@@ -217,17 +217,4 @@ class AdminMenuController extends Controller
             ->with('success', __('dixlase-menu::admin.messages.menu_restored'));
     }
 
-    /**
-     * メニューキャッシュクリア
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function clearCache()
-    {
-        $this->menuRepository->clearAllCache();
-
-        return redirect()
-            ->back()
-            ->with('success', __('dixlase-menu::admin.messages.cache_cleared'));
-    }
 }

@@ -62,9 +62,6 @@ Route::prefix('menus')->name('dixlase-menu::admin.menus.')->group(function () {
     
     // メニュー復元
     Route::post('/{id}/restore', [AdminMenuController::class, 'restore'])->name('restore');
-    
-    // キャッシュクリア
-    Route::post('/cache/clear', [AdminMenuController::class, 'clearCache'])->name('cache.clear');
 });
 
 /*

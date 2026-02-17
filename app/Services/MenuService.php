@@ -79,10 +79,7 @@ class MenuService
             }
 
             DB::commit();
-            
-            // キャッシュをクリア
-            $this->clearMenuCache($menuId);
-            
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -144,8 +141,6 @@ class MenuService
             'menu_id' => $menuId,
             'parent_id' => $parentId,
             'title' => $data['label'] ?? $data['title'] ?? '',
-            'title_en' => $data['title_en'] ?? null,
-            'title_ja' => $data['title_ja'] ?? null,
             'url' => $data['url'] ?? '',
             'source_type' => $data['source_type'] ?? 'custom_url',
             'source_id' => $data['source_id'] ?? null,
@@ -242,10 +237,8 @@ class MenuService
     {
         return [
             'id' => $item->id,
-            'label' => $item->getLocalizedTitle(), // 現在のロケールに応じたタイトル
+            'label' => $item->title,
             'title' => $item->title,
-            'title_en' => $item->title_en,
-            'title_ja' => $item->title_ja,
             'url' => $item->url,
             'target' => $item->target,
             'source_type' => $item->source_type,
@@ -369,7 +362,7 @@ class MenuService
     public function clearMenuCache(?int $menuId = null): void
     {
         if ($menuId) {
-            $menu = Menu::find($menuId);
+            $menu = Menu::withTrashed()->find($menuId);
             if ($menu) {
                 Cache::forget(self::CACHE_PREFIX . "hierarchy:{$menuId}:0");
                 Cache::forget(self::CACHE_PREFIX . "hierarchy:{$menuId}:1");
@@ -379,10 +372,14 @@ class MenuService
                     Cache::forget(self::CACHE_PREFIX . "location:{$menu->location}:0");
                     Cache::forget(self::CACHE_PREFIX . "location:{$menu->location}:1");
                 }
+
+                // リポジトリ層のキャッシュもクリア
+                $this->menuRepository->clearCache($menu->slug);
             }
         }
 
         Cache::forget(self::CACHE_PREFIX . 'default');
+        $this->menuRepository->clearAllCache();
     }
 
     /**

@@ -101,10 +101,7 @@ class MenuRepository implements MenuRepositoryInterface
      */
     public function create(array $data): Menu
     {
-        $menu = Menu::create($data);
-        $this->clearAllCache();
-        
-        return $menu;
+        return Menu::create($data);
     }
 
     /**
@@ -114,10 +111,7 @@ class MenuRepository implements MenuRepositoryInterface
     {
         $menu = $this->findOrFail($id);
         $menu->update($data);
-        
-        $this->clearCache($menu->slug);
-        $this->clearAllCache();
-        
+
         return $menu->fresh();
     }
 
@@ -127,16 +121,8 @@ class MenuRepository implements MenuRepositoryInterface
     public function delete(int $id): bool
     {
         $menu = $this->findOrFail($id);
-        $slug = $menu->slug;
-        
-        $result = $menu->forceDelete();
-        
-        if ($result) {
-            $this->clearCache($slug);
-            $this->clearAllCache();
-        }
-        
-        return $result;
+
+        return $menu->forceDelete();
     }
 
     /**
@@ -145,14 +131,8 @@ class MenuRepository implements MenuRepositoryInterface
     public function softDelete(int $id): bool
     {
         $menu = $this->findOrFail($id);
-        $result = $menu->delete();
-        
-        if ($result) {
-            $this->clearCache($menu->slug);
-            $this->clearAllCache();
-        }
-        
-        return $result;
+
+        return $menu->delete();
     }
 
     /**
@@ -161,14 +141,8 @@ class MenuRepository implements MenuRepositoryInterface
     public function restore(int $id): bool
     {
         $menu = Menu::withTrashed()->findOrFail($id);
-        $result = $menu->restore();
-        
-        if ($result) {
-            $this->clearCache($menu->slug);
-            $this->clearAllCache();
-        }
-        
-        return $result;
+
+        return $menu->restore();
     }
 
     /**
