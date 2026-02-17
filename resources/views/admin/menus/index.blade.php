@@ -30,7 +30,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             {{ __('dixlase-menu::admin.menus.index.heading') }}
         </h1>
         <div class="flex gap-3">
-            <a href="{{ route('admin.dixlase-menu::admin.menus.create') }}"
+            <a href="{{ route('dixlase-menu::admin.menus.create') }}"
                class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md shadow-sm transition-colors duration-150">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -60,7 +60,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 {{ __('dixlase-menu::admin.menus.index.no_menus_description') }}
             </p>
             <div class="mt-6">
-                <a href="{{ route('admin.dixlase-menu::admin.menus.create') }}"
+                <a href="{{ route('dixlase-menu::admin.menus.create') }}"
                    class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md shadow-sm transition-colors duration-150">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -157,7 +157,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex items-center justify-end gap-2">
                                     <!-- 編集 -->
-                                    <a href="{{ route('admin.dixlase-menu::admin.menus.edit', $menu->id) }}"
+                                    <a href="{{ route('dixlase-menu::admin.menus.edit', $menu->id) }}"
                                        class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
                                        title="{{ __('common.edit') }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

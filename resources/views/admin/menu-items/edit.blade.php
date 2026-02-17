@@ -27,13 +27,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <!-- ヘッダー -->
     <div class="mb-6">
         <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
-            <a href="{{ route('admin.dixlase-menu::admin.menus.index') }}" class="hover:text-indigo-600 dark:hover:text-indigo-400">
+            <a href="{{ route('dixlase-menu::admin.menus.index') }}" class="hover:text-indigo-600 dark:hover:text-indigo-400">
                 {{ __('dixlase-menu::admin.menus.index.heading') }}
             </a>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
-            <a href="{{ route('admin.dixlase-menu::admin.menus.edit', $menuItem->menu_id) }}" class="hover:text-indigo-600 dark:hover:text-indigo-400">
+            <a href="{{ route('dixlase-menu::admin.menus.edit', $menuItem->menu_id) }}" class="hover:text-indigo-600 dark:hover:text-indigo-400">
                 {{ $menuItem->menu->name }}
             </a>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,7 +58,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     </div>
 
     <!-- フォーム -->
-    <form id="menu-item-form" action="{{ route('admin.dixlase-menu::admin.menu-items.update', $menuItem->id) }}" method="POST" x-data="menuItemSource()">
+    <form id="menu-item-form" action="{{ route('dixlase-menu::admin.menu-items.update', $menuItem->id) }}" method="POST" x-data="menuItemSource()">
         @csrf
         @method('PUT')
 
@@ -265,7 +265,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <!-- アクションボタン -->
             <div class="p-6 bg-gray-50 dark:bg-gray-700/50">
                 <div class="flex items-center justify-between">
-                    <a href="{{ route('admin.dixlase-menu::admin.menus.edit', $menuItem->menu_id) }}"
+                    <a href="{{ route('dixlase-menu::admin.menus.edit', $menuItem->menu_id) }}"
                        class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
