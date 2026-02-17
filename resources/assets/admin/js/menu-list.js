@@ -36,14 +36,6 @@ class MenuList {
             }
         });
         
-        // キャッシュクリアボタン
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.clear-cache-btn')) {
-                e.preventDefault();
-                this.clearCache();
-            }
-        });
-        
         // 復元ボタン
         document.addEventListener('click', (e) => {
             if (e.target.closest('.restore-menu-btn')) {
@@ -109,36 +101,6 @@ class MenuList {
         form.submit();
     }
     
-    /**
-     * キャッシュクリア
-     */
-    async clearCache() {
-        if (!confirm('すべてのメニューキャッシュをクリアしますか？')) {
-            return;
-        }
-        
-        try {
-            const response = await fetch('/admin/menus/cache/clear', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': this.csrfToken
-                }
-            });
-            
-            const data = await response.json();
-            
-            if (response.ok) {
-                alert('キャッシュをクリアしました');
-                location.reload();
-            } else {
-                alert(data.message || 'キャッシュのクリアに失敗しました');
-            }
-        } catch (error) {
-            console.error('Error clearing cache:', error);
-            alert('キャッシュのクリアに失敗しました');
-        }
-    }
 }
 
 // グローバルに公開

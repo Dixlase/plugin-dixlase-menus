@@ -363,8 +363,6 @@ function menuItems() {
             this.items.push({
                 id: this.generateId(),
                 label: '',
-                title_en: '',
-                title_ja: '',
                 url: '',
                 target: this.defaultTarget,
                 source_type: 'custom_url',
@@ -385,8 +383,6 @@ function menuItems() {
             this.items[parentIndex].children.push({
                 id: this.generateId(),
                 label: '',
-                title_en: '',
-                title_ja: '',
                 url: '',
                 target: this.defaultTarget,
                 source_type: 'custom_url',

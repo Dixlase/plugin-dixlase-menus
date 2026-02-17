@@ -35,6 +35,10 @@ use Plugins\DixlaseMenu\App\Repositories\MenuRepository;
 use Plugins\DixlaseMenu\App\Repositories\MenuItemRepository;
 use Plugins\DixlaseMenu\App\Repositories\MenuSettingRepository;
 use Plugins\DixlaseMenu\App\Services\MenuService;
+use Plugins\DixlaseMenu\App\Models\Menu;
+use Plugins\DixlaseMenu\App\Models\MenuItem;
+use Plugins\DixlaseMenu\App\Observers\MenuObserver;
+use Plugins\DixlaseMenu\App\Observers\MenuItemObserver;
 
 class DixlaseMenuServiceProvider extends ServiceProvider
 {
@@ -85,6 +89,10 @@ class DixlaseMenuServiceProvider extends ServiceProvider
 
         // マイグレーションの登録
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+
+        // モデルオブザーバーの登録（キャッシュ自動破棄）
+        Menu::observe(MenuObserver::class);
+        MenuItem::observe(MenuItemObserver::class);
 
         // リンクソースの登録
         $this->registerLinkSources();

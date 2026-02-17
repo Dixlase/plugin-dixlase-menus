@@ -380,8 +380,6 @@ class MenuItemRepository implements MenuItemRepositoryInterface
                 'menu_id' => $menuId,
                 'parent_id' => $parentId,
                 'title' => $label,
-                'title_en' => $itemData['title_en'] ?? null,
-                'title_ja' => $itemData['title_ja'] ?? null,
                 'url' => $itemData['url'] ?? '',
                 'source_type' => $itemData['source_type'] ?? 'custom_url',
                 'source_id' => $itemData['source_id'] ?? null,
