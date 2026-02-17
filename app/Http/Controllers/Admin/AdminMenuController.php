@@ -101,7 +101,7 @@ class AdminMenuController extends Controller
         $menu = $this->menuRepository->create($validated);
 
         return redirect()
-            ->route('admin.dixlase-menu::admin.menus.edit', $menu->id)
+            ->route('dixlase-menu::admin.menus.edit', $menu->id)
             ->with('success', __('dixlase-menu::admin.messages.menu_created'));
     }
 
@@ -190,7 +190,7 @@ class AdminMenuController extends Controller
 
         if (!$menu) {
             return redirect()
-                ->route('admin.dixlase-menu::admin.menus.index')
+                ->route('dixlase-menu::admin.menus.index')
                 ->withErrors(['error' => __('dixlase-menu::admin.messages.menu_not_found')]);
         }
 
@@ -198,7 +198,7 @@ class AdminMenuController extends Controller
         $this->menuRepository->softDelete($id);
 
         return redirect()
-            ->route('admin.dixlase-menu::admin.menus.index')
+            ->route('dixlase-menu::admin.menus.index')
             ->with('success', __('dixlase-menu::admin.messages.menu_deleted'));
     }
 
@@ -213,7 +213,7 @@ class AdminMenuController extends Controller
         $this->menuRepository->restore($id);
 
         return redirect()
-            ->route('admin.menus.index')
+            ->route('dixlase-menu::admin.menus.index')
             ->with('success', __('dixlase-menu::admin.messages.menu_restored'));
     }
 

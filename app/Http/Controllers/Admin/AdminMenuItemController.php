@@ -115,7 +115,7 @@ class AdminMenuItemController extends Controller
         $menuItem = $this->menuItemRepository->create($validated);
 
         return redirect()
-            ->route('admin.dixlase-menu::admin.menus.edit', $menuId)
+            ->route('dixlase-menu::admin.menus.edit', $menuId)
             ->with('success', __('dixlase-menu::admin.messages.menu_item_created'));
     }
 
@@ -163,7 +163,7 @@ class AdminMenuItemController extends Controller
 
         if (!$menuItem) {
             return redirect()
-                ->route('admin.menus.index')
+                ->route('dixlase-menu::admin.menus.index')
                 ->withErrors(['error' => __('dixlase-menu::admin.messages.menu_item_not_found')]);
         }
 
@@ -205,7 +205,7 @@ class AdminMenuItemController extends Controller
         $this->menuItemRepository->update($id, $validated);
 
         return redirect()
-            ->route('admin.menus.edit', $menuItem->menu_id)
+            ->route('dixlase-menu::admin.menus.edit', $menuItem->menu_id)
             ->with('success', __('dixlase-menu::admin.messages.menu_item_updated'));
     }
 
@@ -221,7 +221,7 @@ class AdminMenuItemController extends Controller
 
         if (!$menuItem) {
             return redirect()
-                ->route('admin.menus.index')
+                ->route('dixlase-menu::admin.menus.index')
                 ->withErrors(['error' => __('dixlase-menu::admin.messages.menu_item_not_found')]);
         }
 
@@ -236,7 +236,7 @@ class AdminMenuItemController extends Controller
         }
 
         return redirect()
-            ->route('admin.menus.edit', $menuId)
+            ->route('dixlase-menu::admin.menus.edit', $menuId)
             ->with('success', __('dixlase-menu::admin.messages.menu_item_deleted'));
     }
 

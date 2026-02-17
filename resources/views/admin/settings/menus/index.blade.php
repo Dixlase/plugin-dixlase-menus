@@ -23,7 +23,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 @section('title', __('dixlase-menu::admin.settings.heading'))
 
 @section('content')
-    <form id="menu-settings-form" action="{{ route('admin.dixlase-menu::admin.settings.menus.update') }}" method="POST">
+    <form id="menu-settings-form" action="{{ route('dixlase-menu::admin.settings.menus.update') }}" method="POST">
         @csrf
         
         <!-- メニューアイテム設定 -->
@@ -282,15 +282,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 @endsection
 
 @section('save')
-    @include('components.save', [
-        'id_confirmation' => 'confirmMenuSettingsModal',
-        'label' => __('common.save'),
-        'title' => __('dixlase-menu::admin.settings.confirm.title'),
-        'message' => __('dixlase-menu::admin.settings.confirm.message'),
-        'confirm_label' => __('common.save'),
-        'cancel_label' => __('common.cancel'),
-        'form' => 'menu-settings-form',
-    ])
+    <x-admin.save-button
+        id_confirmation="confirmMenuSettingsModal"
+        :label="__('common.save')"
+        :title="__('dixlase-menu::admin.settings.confirm.title')"
+        :message="__('dixlase-menu::admin.settings.confirm.message')"
+        :confirm_label="__('common.save')"
+        :cancel_label="__('common.cancel')"
+        form="menu-settings-form"
+    />
 @endsection
 
 @push('scripts')

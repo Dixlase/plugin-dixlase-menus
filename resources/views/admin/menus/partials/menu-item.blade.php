@@ -76,7 +76,7 @@ Menu Item Partial - ドラッグ&ドロップ可能なメニューアイテム
         <div class="menu-item-actions flex items-center gap-2">
             <!-- 子アイテム追加 -->
             @if($item->depth < $maxDepth - 1)
-                <a href="{{ route('admin.dixlase-menu::admin.menus.items.create.child', [$item->menu_id, $item->id]) }}"
+                <a href="{{ route('dixlase-menu::admin.menus.items.create.child', [$item->menu_id, $item->id]) }}"
                    class="p-2 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300"
                    title="{{ __('dixlase-menu::admin.menus.edit.add_child') }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,7 +97,7 @@ Menu Item Partial - ドラッグ&ドロップ可能なメニューアイテム
             @endif
 
             <!-- 編集 -->
-            <a href="{{ route('admin.dixlase-menu::admin.menu-items.edit', $item->id) }}"
+            <a href="{{ route('dixlase-menu::admin.menu-items.edit', $item->id) }}"
                class="p-2 text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
                title="{{ __('common.edit') }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

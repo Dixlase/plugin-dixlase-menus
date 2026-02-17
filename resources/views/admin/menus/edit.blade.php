@@ -27,7 +27,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <!-- ヘッダー -->
     <div class="mb-6">
         <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
-            <a href="{{ route('admin.dixlase-menu::admin.menus.index') }}" class="hover:text-indigo-600 dark:hover:text-indigo-400">
+            <a href="{{ route('dixlase-menu::admin.menus.index') }}" class="hover:text-indigo-600 dark:hover:text-indigo-400">
                 {{ __('dixlase-menu::admin.menus.index.heading') }}
             </a>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,7 +39,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
                 {{ __('dixlase-menu::admin.menus.edit.heading') }}: {{ $menu->name }}
             </h1>
-            <a href="{{ route('admin.dixlase-menu::admin.menus.delete', $menu->id) }}"
+            <a href="{{ route('dixlase-menu::admin.menus.delete', $menu->id) }}"
                class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md shadow-sm transition-colors duration-150">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -52,7 +52,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- 左カラム: メニュー基本情報 -->
         <div class="lg:col-span-1">
-            <form id="menu-form" action="{{ route('admin.dixlase-menu::admin.menus.update', $menu->id) }}" method="POST">
+            <form id="menu-form" action="{{ route('dixlase-menu::admin.menus.update', $menu->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -441,7 +441,7 @@ function menuItemsEditor() {
         })->toArray()),
         menuId: {{ $menu->id }},
         maxDepth: {{ $maxDepth }},
-        syncUrl: '{{ route("admin.dixlase-menu::admin.menus.items.sync", $menu->id) }}',
+        syncUrl: '{{ route("dixlase-menu::admin.menus.items.sync", $menu->id) }}',
         saving: false,
         message: '',
         messageType: 'success',
