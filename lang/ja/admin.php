@@ -21,6 +21,19 @@
  */
 
 return [
+    // 列挙型
+    'enums' => [
+        'menu_location' => [
+            'header' => 'ヘッダー',
+            'footer' => 'フッター',
+            'sidebar' => 'サイドバー',
+        ],
+        'placement_type' => [
+            'manual' => '手動配置（Blade/ショートコード）',
+            'auto' => '自動配置（表示位置指定）',
+        ],
+    ],
+
     // メニュー一覧
     'menus' => [
         'index' => [
@@ -50,6 +63,7 @@ return [
             'description' => '説明',
             'description_help' => 'メニューの説明（管理画面でのみ表示されます）',
             'display_settings' => '表示設定',
+            'placement_type' => '配置方法',
             'location' => '表示位置',
             'location_help' => 'このメニューを表示する位置を選択してください',
             'select_location' => '位置を選択',
@@ -67,10 +81,14 @@ return [
             'slug' => 'スラッグ',
             'description' => '説明',
             'display_settings' => '表示設定',
+            'placement_type' => '配置方法',
             'location' => '表示位置',
             'select_location' => '位置を選択',
             'display_order' => '表示順',
             'is_active' => 'メニューを有効化',
+            'placement_code' => '配置コード',
+            'blade_directive' => 'Bladeディレクティブ',
+            'shortcode' => 'ショートコード',
             'menu_items' => 'メニューアイテム',
             'add_item' => 'アイテムを追加',
             'no_items' => 'メニューアイテムがありません',

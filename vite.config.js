@@ -6,7 +6,7 @@ export default defineConfig({
         laravel({
             input: [
                 'plugins/DixlaseMenu/resources/src/js/app.js',
-                'plugins/DixlaseMenu/resources/src/css/style.css',
+                'plugins/DixlaseMenu/resources/src/admin/js/app.js',
             ],
             refresh: true,
         }),

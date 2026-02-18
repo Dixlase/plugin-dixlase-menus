@@ -30,6 +30,8 @@ use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuRepositoryInterface;
 use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuSettingRepositoryInterface;
 use Plugins\DixlaseMenu\App\Http\Requests\AdminMenuStoreRequest;
 use Plugins\DixlaseMenu\App\Http\Requests\AdminMenuUpdateRequest;
+use Plugins\DixlaseMenu\App\Enums\MenuLocation;
+use Plugins\DixlaseMenu\App\Enums\PlacementType;
 
 /**
  * メニュー管理コントローラー
@@ -58,10 +60,10 @@ class AdminMenuController extends Controller
     public function index()
     {
         $menus = $this->menuRepository->all();
-        $availableLocations = $this->settingRepository->getJson('available_locations', []);
+        $locationOptions = MenuLocation::options();
 
         $this->viewParams['menus'] = $menus;
-        $this->viewParams['availableLocations'] = $availableLocations;
+        $this->viewParams['locationOptions'] = $locationOptions;
 
         return view('dixlase-menu::admin.menus.index', $this->viewParams);
     }
@@ -73,9 +75,8 @@ class AdminMenuController extends Controller
      */
     public function create()
     {
-        $availableLocations = $this->settingRepository->getJson('available_locations', []);
-
-        $this->viewParams['availableLocations'] = $availableLocations;
+        $this->viewParams['locationOptions'] = MenuLocation::options();
+        $this->viewParams['placementTypeOptions'] = PlacementType::options();
 
         return view('dixlase-menu::admin.menus.create', $this->viewParams);
     }
@@ -119,9 +120,8 @@ class AdminMenuController extends Controller
             abort(404);
         }
 
-        $availableLocations = $this->settingRepository->getJson('available_locations', []);
         $maxDepth = $this->settingRepository->getInteger('max_menu_depth', 3);
-        
+
         // ルートレベルのメニューアイテムをフロントエンド用配列に変換
         $menuItems = $menu->items()
             ->whereNull('parent_id')
@@ -150,7 +150,8 @@ class AdminMenuController extends Controller
 
         $this->viewParams['menu'] = $menu;
         $this->viewParams['menuItems'] = $menuItems;
-        $this->viewParams['availableLocations'] = $availableLocations;
+        $this->viewParams['locationOptions'] = MenuLocation::options();
+        $this->viewParams['placementTypeOptions'] = PlacementType::options();
         $this->viewParams['maxDepth'] = $maxDepth;
 
         return view('dixlase-menu::admin.menus.edit', $this->viewParams);

@@ -23,6 +23,9 @@
 namespace Plugins\DixlaseMenu\App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
+use Plugins\DixlaseMenu\App\Enums\PlacementType;
+use Plugins\DixlaseMenu\App\Enums\MenuLocation;
 
 /**
  * メニュー更新リクエスト
@@ -49,7 +52,8 @@ class AdminMenuUpdateRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9-_]+$/'],
-            'location' => ['nullable', 'string', 'max:255'],
+            'placement_type' => ['required', new Enum(PlacementType::class)],
+            'location' => ['nullable', 'required_if:placement_type,auto', 'string', 'max:255', new Enum(MenuLocation::class)],
             'description' => ['nullable', 'string', 'max:1000'],
             'is_active' => ['nullable', 'boolean'],
             'display_order' => ['nullable', 'integer', 'min:0'],

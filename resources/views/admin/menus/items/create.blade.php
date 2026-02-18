@@ -52,7 +52,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     </div>
 
     <!-- フォーム -->
-    <form id="menu-item-form" action="{{ route('dixlase-menu::admin.menus.items.store', $menu->id) }}" method="POST" x-data="menuItemSource()">
+    <form id="menu-item-form"
+          action="{{ route('dixlase-menu::admin.menus.items.store', $menu->id) }}"
+          method="POST"
+          x-data="menuItemSource"
+          data-source-type="{{ old('source_type', 'custom_url') }}"
+          data-url="{{ old('url') }}">
         @csrf
         @if($parentItem)
             <input type="hidden" name="parent_id" value="{{ $parentItem->id }}">
@@ -290,6 +295,3 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </div>
 @endsection
 
-@push('scripts')
-<script src="{{ asset('plugins/dixlase-menu/js/app.js') }}"></script>
-@endpush

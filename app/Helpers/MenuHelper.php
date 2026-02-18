@@ -106,6 +106,20 @@ class MenuHelper
     }
 
     /**
+     * Bladeディレクティブからメニューをレンダリング
+     *
+     * @param string $slug メニューのスラッグ
+     * @param array $options 追加オプション
+     * @return string
+     */
+    public static function renderDirective(string $slug, array $options = []): string
+    {
+        $options['slug'] = $slug;
+
+        return static::render($options);
+    }
+
+    /**
      * メニューをHTMLとしてレンダリング
      *
      * @param array $options オプション

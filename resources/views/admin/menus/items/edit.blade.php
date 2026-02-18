@@ -58,7 +58,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     </div>
 
     <!-- フォーム -->
-    <form id="menu-item-form" action="{{ route('dixlase-menu::admin.menus.items.update', $menuItem->id) }}" method="POST" x-data="menuItemSource()">
+    <form id="menu-item-form"
+          action="{{ route('dixlase-menu::admin.menus.items.update', $menuItem->id) }}"
+          method="POST"
+          x-data="menuItemSource"
+          data-source-type="{{ old('source_type', $menuItem->source_type) }}"
+          data-source-id="{{ old('source_id', $menuItem->source_id) }}"
+          data-url="{{ old('url', $menuItem->url) }}">
         @csrf
         @method('PUT')
 
@@ -274,25 +280,3 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </div>
 @endsection
 
-@push('scripts')
-<script src="{{ asset('plugins/dixlase-menu/js/app.js') }}"></script>
-<script src="{{ asset('plugins/dixlase-menu/js/menu-editor.js') }}"></script>
-<script>
-// Alpine.jsデータの初期化
-document.addEventListener('alpine:init', () => {
-    Alpine.data('menuItemSource', () => ({
-        sourceType: '{{ old('source_type', $menuItem->source_type) }}',
-        sourceId: '{{ old('source_id', $menuItem->source_id) }}',
-        url: '{{ old('url', $menuItem->url) }}',
-        
-        updateSource() {
-            if (this.sourceType === 'custom_url') {
-                this.sourceId = '';
-            } else {
-                this.url = '';
-            }
-        }
-    }));
-});
-</script>
-@endpush

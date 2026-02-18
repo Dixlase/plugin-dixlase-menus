@@ -65,7 +65,17 @@ class MenuShortcode
     protected function normalizeAttributes(array $attributes): array
     {
         $options = [];
-        
+
+        // スラッグ
+        if (isset($attributes['slug'])) {
+            $options['slug'] = $attributes['slug'];
+        }
+
+        // ロケーション
+        if (isset($attributes['location'])) {
+            $options['location'] = $attributes['location'];
+        }
+
         // テンプレート
         if (isset($attributes['template'])) {
             $options['template'] = $attributes['template'];
