@@ -31,6 +31,8 @@ return [
         'placement_type' => [
             'manual' => 'Manual (Blade/Shortcode)',
             'auto' => 'Auto (by location)',
+            'manual_description' => 'Place in templates using @menu directive or [menu] shortcode',
+            'auto_description' => 'Automatically display at the selected location',
         ],
     ],
 

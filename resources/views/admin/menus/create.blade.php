@@ -118,11 +118,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             <x-form-label for="placement_type" :required="true">
                                 {{ __('dixlase-menu::admin.menus.create.placement_type') }}
                             </x-form-label>
-                            <x-form-radio-group
+                            <x-form-radio-card-group
                                 name="placement_type"
                                 :options="$placementTypeOptions"
                                 :value="old('placement_type', 'manual')"
-                                x-model="placementType"
+                                xModel="placementType"
+                                :columns="2"
                             />
                             @error('placement_type')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -170,41 +171,28 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         </div>
 
                         <!-- アクティブ状態 -->
-                        <div class="flex items-start">
-                            <div class="flex items-center h-5">
-                                <input type="checkbox"
-                                       id="is_active"
-                                       name="is_active"
-                                       value="1"
-                                       {{ old('is_active', true) ? 'checked' : '' }}
-                                       class="w-4 h-4 text-indigo-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500">
-                            </div>
-                            <div class="ml-3">
-                                <label for="is_active" class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    {{ __('dixlase-menu::admin.menus.create.is_active') }}
-                                </label>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">
-                                    {{ __('dixlase-menu::admin.menus.create.is_active_help') }}
-                                </p>
-                            </div>
-                        </div>
+                        <x-form-toggle
+                            name="is_active"
+                            :checked="old('is_active', true)"
+                            :label="__('dixlase-menu::admin.menus.create.is_active')"
+                        />
                     </div>
                 </fieldset>
             </section>
 
-            <!-- アクションボタン -->
-            <div class="p-6 bg-gray-50 dark:bg-gray-700/50">
-                <x-admin.save-button
-                    form="menu-form"
-                    :label="__('common.create')"
-                    :title="__('dixlase-menu::admin.menus.create.confirm_title')"
-                    :message="__('dixlase-menu::admin.menus.create.confirm_message')"
-                    :confirm_label="__('common.create')"
-                    :back_url="route('dixlase-menu::admin.menus.index')"
-                />
-            </div>
         </div>
     </form>
 </div>
+@endsection
+
+@section('save')
+    <x-admin.save-button
+        form="menu-form"
+        :label="__('common.create')"
+        :title="__('dixlase-menu::admin.menus.create.confirm_title')"
+        :message="__('dixlase-menu::admin.menus.create.confirm_message')"
+        :confirm_label="__('common.create')"
+        :back_url="route('dixlase-menu::admin.menus.index')"
+    />
 @endsection
 

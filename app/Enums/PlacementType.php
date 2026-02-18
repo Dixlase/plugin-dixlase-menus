@@ -52,4 +52,27 @@ enum PlacementType: string
 
         return $options;
     }
+
+    /**
+     * ラジオカードグループ用のオプション配列を取得
+     *
+     * @return array<int, array{value: string, label: string, description: string, icon: string}>
+     */
+    public static function getRadioCardOptions(): array
+    {
+        return [
+            [
+                'value' => self::Manual->value,
+                'label' => self::Manual->label(),
+                'description' => __('dixlase-menu::admin.enums.placement_type.manual_description'),
+                'icon' => 'fas fa-code',
+            ],
+            [
+                'value' => self::Auto->value,
+                'label' => self::Auto->label(),
+                'description' => __('dixlase-menu::admin.enums.placement_type.auto_description'),
+                'icon' => 'fas fa-magic',
+            ],
+        ];
+    }
 }

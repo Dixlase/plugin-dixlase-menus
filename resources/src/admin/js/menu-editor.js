@@ -4,14 +4,18 @@
  * Copyright (C) 2025 exc-D inc.
  * https://exc-d.com
  *
- * メニューアイテムエディター（Alpine.js コンポーネント）
- * edit.blade.php の右カラムで使用
+ * 統合メニューエディター（Alpine.js コンポーネント）
+ * edit.blade.php で使用: 配置タイプ切り替え + メニューアイテム管理 + 統合保存
  */
 
 import Alpine from 'alpinejs';
 import Sortable from 'sortablejs';
 
-Alpine.data('menuItemsEditor', () => ({
+Alpine.data('menuEditor', () => ({
+    // 配置タイプ（menuPlacement 由来）
+    placementType: 'manual',
+
+    // メニューアイテム管理
     items: [],
     menuId: null,
     maxDepth: 3,
@@ -23,10 +27,24 @@ Alpine.data('menuItemsEditor', () => ({
     sortableInstance: null,
 
     /**
-     * 初期化: $el.dataset からサーバーデータを取得
+     * 自動配置かどうか
+     */
+    get isAuto() {
+        return this.placementType === 'auto';
+    },
+
+    /**
+     * 初期化: $el.dataset からサーバーデータを取得し、submitModalForm をオーバーライド
      */
     init() {
         const el = this.$el;
+
+        // 配置タイプ初期化
+        if (el.dataset.placementType) {
+            this.placementType = el.dataset.placementType;
+        }
+
+        // メニューアイテム初期化
         this.menuId = parseInt(el.dataset.menuId);
         this.maxDepth = parseInt(el.dataset.maxDepth) || 3;
         this.syncUrl = el.dataset.syncUrl;
@@ -46,6 +64,64 @@ Alpine.data('menuItemsEditor', () => ({
         this.$watch('items', () => {
             this.hasChanges = true;
         }, { deep: true });
+
+        // モーダル確認時に統合保存を実行するためオーバーライド
+        const originalSubmitModalForm = window.submitModalForm;
+        const self = this;
+        window.submitModalForm = function (formId) {
+            if (formId === 'menu-form') {
+                self.saveAll();
+            } else {
+                originalSubmitModalForm(formId);
+            }
+        };
+    },
+
+    /**
+     * 統合保存: メニューアイテムをAJAX保存後、フォームをPOST送信
+     */
+    async saveAll() {
+        if (this.hasChanges && this.items.length > 0) {
+            this.saving = true;
+            this.message = '';
+
+            try {
+                const response = await fetch(this.syncUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({ items: this.items })
+                });
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    this.message = data.message || this.$el.dataset.errorMessage;
+                    this.messageType = 'error';
+                    this.saving = false;
+                    return;
+                }
+
+                if (data.items) {
+                    this.items = data.items;
+                }
+                this.hasChanges = false;
+            } catch (error) {
+                console.error('Save error:', error);
+                this.message = this.$el.dataset.errorMessage;
+                this.messageType = 'error';
+                this.saving = false;
+                return;
+            }
+
+            this.saving = false;
+        }
+
+        // フォームをネイティブ送信（@submit.prevent をバイパス）
+        this.$refs.menuForm.submit();
     },
 
     /**
@@ -148,52 +224,5 @@ Alpine.data('menuItemsEditor', () => ({
      */
     removeChildItem(parentIndex, childIndex) {
         this.items[parentIndex].children.splice(childIndex, 1);
-    },
-
-    /**
-     * メニューアイテムをサーバーに保存
-     */
-    async saveItems() {
-        this.saving = true;
-        this.message = '';
-
-        try {
-            const response = await fetch(this.syncUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({ items: this.items })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                this.message = data.message;
-                this.messageType = 'success';
-                this.hasChanges = false;
-
-                // 返されたアイテムで更新（IDが割り当てられる）
-                if (data.items) {
-                    this.items = data.items;
-                }
-            } else {
-                this.message = data.message || this.$el.dataset.errorMessage || 'Failed to save';
-                this.messageType = 'error';
-            }
-        } catch (error) {
-            console.error('Save error:', error);
-            this.message = this.$el.dataset.errorMessage || 'Failed to save';
-            this.messageType = 'error';
-        } finally {
-            this.saving = false;
-
-            // メッセージを5秒後に消す
-            setTimeout(() => {
-                this.message = '';
-            }, 5000);
-        }
     }
 }));
