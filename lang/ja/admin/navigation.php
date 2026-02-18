@@ -16,6 +16,6 @@ return [
     'menus' => [
         'text' => 'メニュー管理',
         'index' => 'メニュー一覧',
-        'settings' => 'メニュー設定',
+        'create' => '新規作成',
     ],
 ];

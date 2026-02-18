@@ -25,19 +25,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 @section('content')
 <div class="max-w-7xl mx-auto menu-list-container">
     <!-- ヘッダーアクション -->
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-            {{ __('dixlase-menu::admin.menus.index.heading') }}
-        </h1>
-        <div class="flex gap-3">
-            <a href="{{ route('dixlase-menu::admin.menus.create') }}"
-               class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md shadow-sm transition-colors duration-150">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
-                {{ __('dixlase-menu::admin.menus.index.create_menu') }}
-            </a>
-        </div>
+    <div class="flex justify-end items-center mb-6">
+        <x-form-button
+            type="link"
+            variant="primary"
+            icon="fas fa-plus"
+            :label="__('dixlase-menu::admin.menus.index.create_menu')"
+            :href="route('dixlase-menu::admin.menus.create')"
+        />
     </div>
 
     @if($menus->isEmpty())
@@ -134,14 +129,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                                         </svg>
-                                        {{ __('common.status.active') }}
+                                        {{ __('common.active') }}
                                     </span>
                                 @else
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
                                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
                                         </svg>
-                                        {{ __('common.status.inactive') }}
+                                        {{ __('common.inactive') }}
                                     </span>
                                 @endif
                             </td>

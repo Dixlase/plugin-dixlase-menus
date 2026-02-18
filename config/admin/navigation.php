@@ -34,10 +34,10 @@ return [
                 'icon' => 'fas fa-fw fa-list',
                 'can' => 'admin',
             ],
-            'settings' => [
-                'text' => 'dixlase-menu::admin/navigation.menus.settings',
-                'route' => 'dixlase-menu::admin.settings.menus',
-                'icon' => 'fas fa-fw fa-cog',
+            'create' => [
+                'text' => 'dixlase-menu::admin/navigation.menus.create',
+                'route' => 'dixlase-menu::admin.menus.create',
+                'icon' => 'fas fa-fw fa-plus',
                 'can' => 'admin',
             ],
         ],

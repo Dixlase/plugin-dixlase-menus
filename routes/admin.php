@@ -23,7 +23,6 @@
 use Illuminate\Support\Facades\Route;
 use Plugins\DixlaseMenu\App\Http\Controllers\Admin\AdminMenuController;
 use Plugins\DixlaseMenu\App\Http\Controllers\Admin\AdminMenuItemController;
-use Plugins\DixlaseMenu\App\Http\Controllers\Admin\AdminMenuSettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +30,7 @@ use Plugins\DixlaseMenu\App\Http\Controllers\Admin\AdminMenuSettingsController;
 |--------------------------------------------------------------------------
 |
 | 管理画面用のルート定義
-| 
+|
 | 注意: このファイルは自動的に以下のミドルウェアが適用されます
 | - web: セッション、CSRF保護
 | - auth:member: 管理者認証
@@ -39,75 +38,68 @@ use Plugins\DixlaseMenu\App\Http\Controllers\Admin\AdminMenuSettingsController;
 |
 */
 
-/*
-|--------------------------------------------------------------------------
-| メニュー管理
-|--------------------------------------------------------------------------
-*/
 Route::prefix('menus')->name('dixlase-menu::admin.menus.')->group(function () {
+    /*
+    |--------------------------------------------------------------------------
+    | メニュー管理
+    |--------------------------------------------------------------------------
+    */
+
     // メニュー一覧
     Route::get('/', [AdminMenuController::class, 'index'])->name('index');
-    
+
     // メニュー作成
     Route::get('/create', [AdminMenuController::class, 'create'])->name('create');
     Route::post('/', [AdminMenuController::class, 'store'])->name('store');
-    
+
     // メニュー編集
-    Route::get('/{id}/edit', [AdminMenuController::class, 'edit'])->name('edit');
+    Route::get('/edit/{id}', [AdminMenuController::class, 'edit'])->name('edit');
     Route::put('/{id}', [AdminMenuController::class, 'update'])->name('update');
-    
+
     // メニュー削除
-    Route::get('/{id}/delete', [AdminMenuController::class, 'delete'])->name('delete');
+    Route::get('/delete/{id}', [AdminMenuController::class, 'delete'])->name('delete');
     Route::delete('/{id}', [AdminMenuController::class, 'destroy'])->name('destroy');
-    
+
     // メニュー復元
     Route::post('/{id}/restore', [AdminMenuController::class, 'restore'])->name('restore');
-});
 
-/*
-|--------------------------------------------------------------------------
-| メニューアイテム管理
-|--------------------------------------------------------------------------
-*/
-Route::prefix('menus/{menuId}/items')->name('dixlase-menu::admin.menus.items.')->group(function () {
-    // メニューアイテム一覧取得（Ajax）
-    Route::get('/', [AdminMenuItemController::class, 'getItems'])->name('index');
-    
-    // メニューアイテム一括保存（Ajax）
-    Route::post('/sync', [AdminMenuItemController::class, 'syncItems'])->name('sync');
-    
-    // メニューアイテム作成
-    Route::get('/create', [AdminMenuItemController::class, 'create'])->name('create');
-    Route::post('/', [AdminMenuItemController::class, 'store'])->name('store');
-    
-    // 親アイテム配下に作成
-    Route::get('/create/{parentId}', [AdminMenuItemController::class, 'create'])->name('create.child');
-    
-    // 並び順更新（Ajax）
-    Route::post('/order', [AdminMenuItemController::class, 'updateOrder'])->name('order');
-});
+    /*
+    |--------------------------------------------------------------------------
+    | メニューアイテム管理（メニューコンテキスト付き）
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('{menuId}/items')->name('items.')->group(function () {
+        // メニューアイテム一覧取得（Ajax）
+        Route::get('/', [AdminMenuItemController::class, 'getItems'])->name('index');
 
-Route::prefix('menu-items')->name('dixlase-menu::admin.menu-items.')->group(function () {
-    // メニューアイテム編集
-    Route::get('/{id}/edit', [AdminMenuItemController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [AdminMenuItemController::class, 'update'])->name('update');
-    
-    // メニューアイテム削除
-    Route::delete('/{id}', [AdminMenuItemController::class, 'destroy'])->name('destroy');
-    
-    // メニューアイテム移動（Ajax）
-    Route::post('/{id}/move', [AdminMenuItemController::class, 'move'])->name('move');
-});
+        // メニューアイテム一括保存（Ajax）
+        Route::post('/sync', [AdminMenuItemController::class, 'syncItems'])->name('sync');
 
-/*
-|--------------------------------------------------------------------------
-| メニュープラグイン設定
-|--------------------------------------------------------------------------
-*/
-Route::prefix('settings')
-    ->name('dixlase-menu::admin.settings.')
-    ->group(function () {
-        Route::get('/menus', [AdminMenuSettingsController::class, 'index'])->name('menus');
-        Route::post('/menus', [AdminMenuSettingsController::class, 'update'])->name('menus.update');
-        
+        // メニューアイテム作成
+        Route::get('/create', [AdminMenuItemController::class, 'create'])->name('create');
+        Route::post('/', [AdminMenuItemController::class, 'store'])->name('store');
+
+        // 親アイテム配下に作成
+        Route::get('/create/{parentId}', [AdminMenuItemController::class, 'create'])->name('create.child');
+
+        // 並び順更新（Ajax）
+        Route::post('/order', [AdminMenuItemController::class, 'updateOrder'])->name('order');
     });
+
+    /*
+    |--------------------------------------------------------------------------
+    | メニューアイテム管理（単体操作）
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('items')->name('items.')->group(function () {
+        // メニューアイテム編集
+        Route::get('/edit/{id}', [AdminMenuItemController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [AdminMenuItemController::class, 'update'])->name('update');
+
+        // メニューアイテム削除
+        Route::delete('/{id}', [AdminMenuItemController::class, 'destroy'])->name('destroy');
+
+        // メニューアイテム移動（Ajax）
+        Route::post('/{id}/move', [AdminMenuItemController::class, 'move'])->name('move');
+    });
+});

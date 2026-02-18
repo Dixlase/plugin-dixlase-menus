@@ -58,7 +58,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     </div>
 
     <!-- フォーム -->
-    <form id="menu-item-form" action="{{ route('dixlase-menu::admin.menu-items.update', $menuItem->id) }}" method="POST" x-data="menuItemSource()">
+    <form id="menu-item-form" action="{{ route('dixlase-menu::admin.menus.items.update', $menuItem->id) }}" method="POST" x-data="menuItemSource()">
         @csrf
         @method('PUT')
 
@@ -264,23 +264,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
             <!-- アクションボタン -->
             <div class="p-6 bg-gray-50 dark:bg-gray-700/50">
-                <div class="flex items-center justify-between">
-                    <a href="{{ route('dixlase-menu::admin.menus.edit', $menuItem->menu_id) }}"
-                       class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                        </svg>
-                        {{ __('common.back') }}
-                    </a>
-
-                    <button type="submit"
-                            class="inline-flex items-center px-6 py-2 bg-indigo-600 hover:bg-indigo-700 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        {{ __('common.save') }}
-                    </button>
-                </div>
+                <x-admin.save-button
+                    form="menu-item-form"
+                    :back_url="route('dixlase-menu::admin.menus.edit', $menuItem->menu_id)"
+                />
             </div>
         </div>
     </form>

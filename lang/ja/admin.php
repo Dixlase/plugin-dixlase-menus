@@ -57,6 +57,8 @@ return [
             'display_order_help' => '同じ位置に複数のメニューがある場合の表示順序（小さい数字が先に表示されます）',
             'is_active' => 'メニューを有効化',
             'is_active_help' => 'チェックを外すとメニューが非表示になります',
+            'confirm_title' => 'メニューの作成',
+            'confirm_message' => 'このメニューを作成してもよろしいですか？',
         ],
         'edit' => [
             'heading' => 'メニューを編集',
@@ -78,6 +80,8 @@ return [
             'order' => '順序',
             'add_child' => '子アイテムを追加',
             'toggle_children' => '子アイテムを展開/折りたたみ',
+            'confirm_title' => 'メニューの保存',
+            'confirm_message' => 'このメニューの変更を保存してもよろしいですか？',
         ],
     ],
 

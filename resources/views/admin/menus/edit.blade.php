@@ -24,31 +24,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 @section('content')
 <div class="max-w-7xl mx-auto">
-    <!-- ヘッダー -->
-    <div class="mb-6">
-        <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
-            <a href="{{ route('dixlase-menu::admin.menus.index') }}" class="hover:text-indigo-600 dark:hover:text-indigo-400">
-                {{ __('dixlase-menu::admin.menus.index.heading') }}
-            </a>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <span>{{ $menu->name }}</span>
-        </div>
-        <div class="flex items-center justify-between">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                {{ __('dixlase-menu::admin.menus.edit.heading') }}: {{ $menu->name }}
-            </h1>
-            <a href="{{ route('dixlase-menu::admin.menus.delete', $menu->id) }}"
-               class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md shadow-sm transition-colors duration-150">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                </svg>
-                {{ __('common.delete') }}
-            </a>
-        </div>
-    </div>
-
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- 左カラム: メニュー基本情報 -->
         <div class="lg:col-span-1">
@@ -187,13 +162,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
                     <!-- 保存ボタン -->
                     <div class="p-6 bg-gray-50 dark:bg-gray-700/50">
-                        <button type="submit"
-                                class="w-full inline-flex items-center justify-center px-6 py-2 bg-indigo-600 hover:bg-indigo-700 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            {{ __('common.save') }}
-                        </button>
+                        <x-admin.save-button
+                            form="menu-form"
+                            :title="__('dixlase-menu::admin.menus.edit.confirm_title')"
+                            :message="__('dixlase-menu::admin.menus.edit.confirm_message')"
+                        />
                     </div>
                 </div>
             </form>
@@ -209,14 +182,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             {{ __('dixlase-menu::admin.menus.edit.menu_items') }}
                         </h2>
                         <div class="flex items-center gap-2">
-                            <button type="button"
-                                    @click="addItem()"
-                                    class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md shadow-sm transition-colors duration-150">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                </svg>
-                                {{ __('dixlase-menu::admin.menus.edit.add_item') }}
-                            </button>
+                            <x-form-button
+                                type="button"
+                                variant="primary"
+                                icon="fas fa-plus"
+                                :label="__('dixlase-menu::admin.menus.edit.add_item')"
+                                xClick="addItem()"
+                            />
                         </div>
                     </div>
                 </div>
@@ -381,19 +353,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         <p class="text-sm text-gray-600 dark:text-gray-400">
                             {{ __('dixlase-menu::admin.settings.menu_items.items_help') }}
                         </p>
-                        <button type="button"
-                                @click="saveItems()"
-                                :disabled="saving"
-                                class="inline-flex items-center px-6 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-medium rounded-md shadow-sm transition-colors duration-150">
-                            <svg x-show="!saving" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <svg x-show="saving" class="w-5 h-5 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            <span x-text="saving ? '{{ __('common.saving') }}...' : '{{ __('common.save') }}'"></span>
-                        </button>
+                        <x-form-button
+                            type="button"
+                            variant="success"
+                            icon="fas fa-check"
+                            :label="__('common.save')"
+                            xClick="saveItems()"
+                            xDisabled="saving"
+                        />
                     </div>
 
                     <!-- 保存結果メッセージ -->
@@ -408,6 +375,20 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         </div>
     </div>
 </div>
+
+<!-- 削除ボタン -->
+<div class="mb-6">
+    <div class="flex items-center justify-end">
+        <x-form-button
+            type="link"
+            variant="danger"
+            icon="fas fa-trash"
+            :label="__('common.delete')"
+            :href="route('dixlase-menu::admin.menus.delete', $menu->id)"
+        />
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -416,29 +397,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script>
 function menuItemsEditor() {
     return {
-        items: @json($menuItems->map(function($item) {
-            return [
-                'id' => $item->id,
-                'label' => $item->title,
-                'url' => $item->url,
-                'target' => $item->target,
-                'source_type' => $item->source_type,
-                'source_id' => $item->source_id,
-                'depth' => 0,
-                'children' => $item->children->map(function($child) {
-                    return [
-                        'id' => $child->id,
-                        'label' => $child->title,
-                        'url' => $child->url,
-                        'target' => $child->target,
-                        'source_type' => $child->source_type,
-                        'source_id' => $child->source_id,
-                        'depth' => 1,
-                        'children' => [],
-                    ];
-                })->toArray(),
-            ];
-        })->toArray()),
+        items: @json($menuItems),
         menuId: {{ $menu->id }},
         maxDepth: {{ $maxDepth }},
         syncUrl: '{{ route("dixlase-menu::admin.menus.items.sync", $menu->id) }}',

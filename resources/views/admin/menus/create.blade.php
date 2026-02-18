@@ -24,21 +24,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 @section('content')
 <div class="mx-auto">
-    <!-- ヘッダー -->
-    <div class="mb-6">
-        <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
-            <a href="{{ route('dixlase-menu::admin.menus.index') }}" class="hover:text-indigo-600 dark:hover:text-indigo-400">
-                {{ __('dixlase-menu::admin.menus.index.heading') }}
-            </a>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <span>{{ __('dixlase-menu::admin.menus.create.heading') }}</span>
-        </div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-            {{ __('dixlase-menu::admin.menus.create.heading') }}
-        </h1>
-    </div>
 
     <!-- フォーム -->
     <form id="menu-form" action="{{ route('dixlase-menu::admin.menus.store') }}" method="POST">
@@ -193,23 +178,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
             <!-- アクションボタン -->
             <div class="p-6 bg-gray-50 dark:bg-gray-700/50">
-                <div class="flex items-center justify-between">
-                    <a href="{{ route('dixlase-menu::admin.menus.index') }}"
-                       class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                        </svg>
-                        {{ __('common.back') }}
-                    </a>
-
-                    <button type="submit"
-                            class="inline-flex items-center px-6 py-2 bg-indigo-600 hover:bg-indigo-700 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        {{ __('common.create') }}
-                    </button>
-                </div>
+                <x-admin.save-button
+                    form="menu-form"
+                    :label="__('common.create')"
+                    :title="__('dixlase-menu::admin.menus.create.confirm_title')"
+                    :message="__('dixlase-menu::admin.menus.create.confirm_message')"
+                    :confirm_label="__('common.create')"
+                    :back_url="route('dixlase-menu::admin.menus.index')"
+                />
             </div>
         </div>
     </form>

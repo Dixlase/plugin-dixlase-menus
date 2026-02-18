@@ -122,8 +122,31 @@ class AdminMenuController extends Controller
         $availableLocations = $this->settingRepository->getJson('available_locations', []);
         $maxDepth = $this->settingRepository->getInteger('max_menu_depth', 3);
         
-        // ルートレベルのメニューアイテムを取得
-        $menuItems = $menu->items()->whereNull('parent_id')->orderBy('display_order')->get();
+        // ルートレベルのメニューアイテムをフロントエンド用配列に変換
+        $menuItems = $menu->items()
+            ->whereNull('parent_id')
+            ->orderBy('display_order')
+            ->get()
+            ->map(fn ($item) => [
+                'id' => $item->id,
+                'label' => $item->title,
+                'url' => $item->url,
+                'target' => $item->target,
+                'source_type' => $item->source_type,
+                'source_id' => $item->source_id,
+                'depth' => 0,
+                'children' => $item->children->map(fn ($child) => [
+                    'id' => $child->id,
+                    'label' => $child->title,
+                    'url' => $child->url,
+                    'target' => $child->target,
+                    'source_type' => $child->source_type,
+                    'source_id' => $child->source_id,
+                    'depth' => 1,
+                    'children' => [],
+                ])->toArray(),
+            ])
+            ->toArray();
 
         $this->viewParams['menu'] = $menu;
         $this->viewParams['menuItems'] = $menuItems;

@@ -57,6 +57,8 @@ return [
             'display_order_help' => 'Display order when multiple menus are in the same location (lower numbers appear first)',
             'is_active' => 'Activate Menu',
             'is_active_help' => 'Uncheck to hide this menu from the site',
+            'confirm_title' => 'Create Menu',
+            'confirm_message' => 'Are you sure you want to create this menu?',
         ],
         'edit' => [
             'heading' => 'Edit Menu',
@@ -78,6 +80,8 @@ return [
             'order' => 'Order',
             'add_child' => 'Add Child Item',
             'toggle_children' => 'Toggle Children',
+            'confirm_title' => 'Save Menu',
+            'confirm_message' => 'Are you sure you want to save the changes to this menu?',
         ],
     ],
 
