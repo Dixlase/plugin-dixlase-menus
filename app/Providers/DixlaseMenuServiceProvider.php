@@ -23,6 +23,7 @@
 namespace Plugins\DixlaseMenu\App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
 use App\Traits\PluginLoaderTrait;
 use App\Helpers\PluginHelper;
 use Plugins\DixlaseMenu\App\Services\MenuLinkSourceManager;
@@ -100,6 +101,9 @@ class DixlaseMenuServiceProvider extends ServiceProvider
         // ショートコードの登録
         $this->registerShortcodes();
 
+        // Bladeディレクティブの登録
+        $this->registerBladeDirectives();
+
         // 注: ルート（routes/web.php, routes/admin.php）はPluginServiceProviderが自動読み込み
 
         // 公開可能なアセット
@@ -134,5 +138,16 @@ class DixlaseMenuServiceProvider extends ServiceProvider
     {
         // コアのPluginHelperを使用してショートコードを登録
         PluginHelper::registerShortcode('menu', MenuShortcode::class);
+    }
+
+    /**
+     * Bladeディレクティブを登録
+     */
+    protected function registerBladeDirectives(): void
+    {
+        // @menu('slug') / @menu('slug', ['template' => 'horizontal'])
+        Blade::directive('menu', function ($expression) {
+            return "<?php echo \Plugins\DixlaseMenu\App\Helpers\MenuHelper::renderDirective({$expression}); ?>";
+        });
     }
 }

@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Plugins\DixlaseMenu\App\Enums\PlacementType;
 
 /**
  * メニューモデル
@@ -34,6 +35,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string $name
  * @property string $slug
  * @property string|null $location
+ * @property PlacementType $placement_type
  * @property string|null $description
  * @property bool $is_active
  * @property int $display_order
@@ -61,6 +63,7 @@ class Menu extends Model
         'name',
         'slug',
         'location',
+        'placement_type',
         'description',
         'is_active',
         'display_order',
@@ -69,12 +72,16 @@ class Menu extends Model
     /**
      * キャストする属性
      *
-     * @var array<string, string>
+     * @return array<string, string>
      */
-    protected $casts = [
-        'is_active' => 'boolean',
-        'display_order' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+            'display_order' => 'integer',
+            'placement_type' => PlacementType::class,
+        ];
+    }
 
     /**
      * デフォルト値
@@ -84,6 +91,7 @@ class Menu extends Model
     protected $attributes = [
         'is_active' => true,
         'display_order' => 0,
+        'placement_type' => 'manual',
     ];
 
     /**

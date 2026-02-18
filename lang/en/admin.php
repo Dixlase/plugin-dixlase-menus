@@ -21,6 +21,19 @@
  */
 
 return [
+    // Enums
+    'enums' => [
+        'menu_location' => [
+            'header' => 'Header',
+            'footer' => 'Footer',
+            'sidebar' => 'Sidebar',
+        ],
+        'placement_type' => [
+            'manual' => 'Manual (Blade/Shortcode)',
+            'auto' => 'Auto (by location)',
+        ],
+    ],
+
     // Menu List
     'menus' => [
         'index' => [
@@ -50,6 +63,7 @@ return [
             'description' => 'Description',
             'description_help' => 'Menu description (visible only in admin panel)',
             'display_settings' => 'Display Settings',
+            'placement_type' => 'Placement Type',
             'location' => 'Location',
             'location_help' => 'Select where this menu should be displayed',
             'select_location' => 'Select Location',
@@ -67,10 +81,14 @@ return [
             'slug' => 'Slug',
             'description' => 'Description',
             'display_settings' => 'Display Settings',
+            'placement_type' => 'Placement Type',
             'location' => 'Location',
             'select_location' => 'Select Location',
             'display_order' => 'Display Order',
             'is_active' => 'Activate Menu',
+            'placement_code' => 'Placement Code',
+            'blade_directive' => 'Blade Directive',
+            'shortcode' => 'Shortcode',
             'menu_items' => 'Menu Items',
             'add_item' => 'Add Item',
             'no_items' => 'No menu items',

@@ -70,7 +70,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                            name="slug"
                                            value="{{ old('slug', $menu->slug) }}"
                                            required
-                                           pattern="[a-z0-9-_]+"
+                                           pattern="[a-z0-9_\-]+"
                                            class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('slug') border-red-500 @enderror">
                                     @error('slug')
                                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -95,7 +95,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     </section>
 
                     <!-- 表示設定 -->
-                    <section class="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <section class="p-6 border-b border-gray-200 dark:border-gray-700"
+                             x-data="menuPlacement"
+                             data-placement-type="{{ old('placement_type', $menu->placement_type?->value ?? 'manual') }}">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                             {{ __('dixlase-menu::admin.menus.edit.display_settings') }}
                         </h2>
@@ -104,21 +106,34 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             <legend class="sr-only">{{ __('dixlase-menu::admin.menus.edit.display_settings') }}</legend>
 
                             <div class="space-y-4">
+                                <!-- 配置方法 -->
+                                <div>
+                                    <x-form-label for="placement_type" :required="true">
+                                        {{ __('dixlase-menu::admin.menus.edit.placement_type') }}
+                                    </x-form-label>
+                                    <x-form-radio-group
+                                        name="placement_type"
+                                        :options="$placementTypeOptions"
+                                        :value="old('placement_type', $menu->placement_type?->value ?? 'manual')"
+                                        x-model="placementType"
+                                    />
+                                    @error('placement_type')
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
                                 <!-- 表示位置 -->
                                 <div>
-                                    <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    <x-form-label for="location">
                                         {{ __('dixlase-menu::admin.menus.edit.location') }}
-                                    </label>
-                                    <select id="location"
-                                            name="location"
-                                            class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('location') border-red-500 @enderror">
-                                        <option value="">{{ __('dixlase-menu::admin.menus.edit.select_location') }}</option>
-                                        @foreach($availableLocations as $loc)
-                                            <option value="{{ $loc['key'] }}" {{ old('location', $menu->location) == $loc['key'] ? 'selected' : '' }}>
-                                                {{ $loc['label'] }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    </x-form-label>
+                                    <x-form-select
+                                        name="location"
+                                        :options="array_merge(['' => __('dixlase-menu::admin.menus.edit.select_location')], $locationOptions)"
+                                        :value="old('location', $menu->location)"
+                                        :disabled="false"
+                                        x-bind:disabled="!isAuto"
+                                    />
                                     @error('location')
                                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                     @enderror
@@ -134,7 +149,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                            name="display_order"
                                            value="{{ old('display_order', $menu->display_order) }}"
                                            min="0"
-                                           class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('display_order') border-red-500 @enderror">
+                                           x-bind:disabled="!isAuto"
+                                           class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('display_order') border-red-500 @enderror disabled:opacity-50 disabled:cursor-not-allowed">
                                     @error('display_order')
                                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                     @enderror
@@ -160,6 +176,28 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         </fieldset>
                     </section>
 
+                    <!-- 配置コード -->
+                    <section class="p-6 border-b border-gray-200 dark:border-gray-700">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                            {{ __('dixlase-menu::admin.menus.edit.placement_code') }}
+                        </h2>
+
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    {{ __('dixlase-menu::admin.menus.edit.blade_directive') }}
+                                </label>
+                                <code class="block w-full px-3 py-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-mono text-gray-800 dark:text-gray-200">@@menu('{{ $menu->slug }}')</code>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    {{ __('dixlase-menu::admin.menus.edit.shortcode') }}
+                                </label>
+                                <code class="block w-full px-3 py-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-mono text-gray-800 dark:text-gray-200">[menu slug="{{ $menu->slug }}"]</code>
+                            </div>
+                        </div>
+                    </section>
+
                     <!-- 保存ボタン -->
                     <div class="p-6 bg-gray-50 dark:bg-gray-700/50">
                         <x-admin.save-button
@@ -173,7 +211,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         </div>
 
         <!-- 右カラム: メニューアイテム管理 -->
-        <div class="lg:col-span-2" x-data="menuItemsEditor()">
+        <div class="lg:col-span-2"
+             x-data="menuItemsEditor"
+             data-menu-id="{{ $menu->id }}"
+             data-max-depth="{{ $maxDepth }}"
+             data-sync-url="{{ route('dixlase-menu::admin.menus.items.sync', $menu->id) }}"
+             data-items='@json($menuItems)'
+             data-error-message="{{ __('dixlase-menu::admin.messages.menu_items_save_failed') }}">
             <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <!-- ヘッダー -->
                 <div class="p-6 border-b border-gray-200 dark:border-gray-700">
@@ -232,7 +276,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
                                         </svg>
                                     </div>
-                                    
+
                                     <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
                                         <!-- タイトル -->
                                         <div>
@@ -244,7 +288,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                    placeholder="{{ __('dixlase-menu::admin.settings.menu_items.label_placeholder') }}"
                                                    class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         </div>
-                                        
+
                                         <!-- URL -->
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -255,7 +299,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                    placeholder="{{ __('dixlase-menu::admin.settings.menu_items.url_placeholder') }}"
                                                    class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         </div>
-                                        
+
                                         <!-- ターゲット -->
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -268,7 +312,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                             </select>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- アクションボタン -->
                                     <div class="flex items-center gap-1">
                                         <!-- 子メニュー追加ボタン -->
@@ -281,7 +325,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                             </svg>
                                         </button>
-                                        
+
                                         <!-- 削除ボタン -->
                                         <button type="button"
                                                 @click="removeItem(index)"
@@ -292,7 +336,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         </button>
                                     </div>
                                 </div>
-                                
+
                                 <!-- 子メニュー -->
                                 <template x-if="item.children && item.children.length > 0">
                                     <div class="children-list ml-8 border-l-2 border-gray-300 dark:border-gray-600 pl-4 pb-4 space-y-3" :data-parent-index="index">
@@ -304,7 +348,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
                                                     </svg>
                                                 </div>
-                                                
+
                                                 <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
                                                     <!-- タイトル -->
                                                     <div>
@@ -313,7 +357,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                                placeholder="{{ __('dixlase-menu::admin.settings.menu_items.label_placeholder') }}"
                                                                class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                                                     </div>
-                                                    
+
                                                     <!-- URL -->
                                                     <div>
                                                         <input type="text"
@@ -321,7 +365,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                                placeholder="{{ __('dixlase-menu::admin.settings.menu_items.url_placeholder') }}"
                                                                class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                                                     </div>
-                                                    
+
                                                     <!-- ターゲット -->
                                                     <div>
                                                         <select x-model="child.target"
@@ -331,7 +375,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                         </select>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <!-- 削除ボタン -->
                                                 <button type="button"
                                                         @click="removeChildItem(index, childIndex)"
@@ -364,7 +408,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     </div>
 
                     <!-- 保存結果メッセージ -->
-                    <div x-show="message" 
+                    <div x-show="message"
                          x-transition
                          :class="messageType === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'"
                          class="mt-4 p-4 rounded-md">
@@ -390,159 +434,3 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </div>
 
 @endsection
-
-@push('scripts')
-<!-- SortableJS for drag and drop -->
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-<script>
-function menuItemsEditor() {
-    return {
-        items: @json($menuItems),
-        menuId: {{ $menu->id }},
-        maxDepth: {{ $maxDepth }},
-        syncUrl: '{{ route("dixlase-menu::admin.menus.items.sync", $menu->id) }}',
-        saving: false,
-        message: '',
-        messageType: 'success',
-        hasChanges: false,
-        sortableInstance: null,
-        
-        init() {
-            this.$nextTick(() => {
-                this.initSortable();
-            });
-            
-            // 変更を監視
-            this.$watch('items', () => {
-                this.hasChanges = true;
-            }, { deep: true });
-        },
-        
-        initSortable() {
-            const menuList = document.getElementById('menu-items-list');
-            if (menuList && typeof Sortable !== 'undefined') {
-                this.sortableInstance = new Sortable(menuList, {
-                    handle: '.drag-handle',
-                    animation: 150,
-                    ghostClass: 'opacity-50',
-                    onEnd: (evt) => {
-                        const item = this.items.splice(evt.oldIndex, 1)[0];
-                        this.items.splice(evt.newIndex, 0, item);
-                    }
-                });
-                
-                this.initChildSortables();
-            }
-        },
-        
-        initChildSortables() {
-            this.$nextTick(() => {
-                document.querySelectorAll('.children-list').forEach((childList) => {
-                    if (!childList._sortable) {
-                        const parentIndex = parseInt(childList.dataset.parentIndex);
-                        childList._sortable = new Sortable(childList, {
-                            handle: '.child-drag-handle',
-                            animation: 150,
-                            ghostClass: 'opacity-50',
-                            onEnd: (evt) => {
-                                if (this.items[parentIndex] && this.items[parentIndex].children) {
-                                    const child = this.items[parentIndex].children.splice(evt.oldIndex, 1)[0];
-                                    this.items[parentIndex].children.splice(evt.newIndex, 0, child);
-                                }
-                            }
-                        });
-                    }
-                });
-            });
-        },
-        
-        generateId() {
-            return 'new_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        },
-        
-        addItem() {
-            this.items.push({
-                id: this.generateId(),
-                label: '',
-                url: '',
-                target: '_self',
-                source_type: 'custom_url',
-                source_id: null,
-                depth: 0,
-                children: []
-            });
-            this.$nextTick(() => this.initSortable());
-        },
-        
-        removeItem(index) {
-            this.items.splice(index, 1);
-        },
-        
-        addChildItem(parentIndex) {
-            if (!this.items[parentIndex].children) {
-                this.items[parentIndex].children = [];
-            }
-            this.items[parentIndex].children.push({
-                id: this.generateId(),
-                label: '',
-                url: '',
-                target: '_self',
-                source_type: 'custom_url',
-                source_id: null,
-                depth: 1,
-                children: []
-            });
-            this.$nextTick(() => this.initChildSortables());
-        },
-        
-        removeChildItem(parentIndex, childIndex) {
-            this.items[parentIndex].children.splice(childIndex, 1);
-        },
-        
-        async saveItems() {
-            this.saving = true;
-            this.message = '';
-            
-            try {
-                const response = await fetch(this.syncUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify({ items: this.items })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    this.message = data.message;
-                    this.messageType = 'success';
-                    this.hasChanges = false;
-                    
-                    // 返されたアイテムで更新（IDが割り当てられる）
-                    if (data.items) {
-                        this.items = data.items;
-                    }
-                } else {
-                    this.message = data.message || '{{ __("dixlase-menu::admin.messages.menu_items_save_failed") }}';
-                    this.messageType = 'error';
-                }
-            } catch (error) {
-                console.error('Save error:', error);
-                this.message = '{{ __("dixlase-menu::admin.messages.menu_items_save_failed") }}';
-                this.messageType = 'error';
-            } finally {
-                this.saving = false;
-                
-                // メッセージを5秒後に消す
-                setTimeout(() => {
-                    this.message = '';
-                }, 5000);
-            }
-        }
-    }
-}
-</script>
-@endpush

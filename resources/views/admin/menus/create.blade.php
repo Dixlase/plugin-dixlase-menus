@@ -71,7 +71,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                    name="slug"
                                    value="{{ old('slug') }}"
                                    required
-                                   pattern="[a-z0-9-_]+"
+                                   pattern="[a-z0-9_\-]+"
                                    class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('slug') border-red-500 @enderror">
                             @error('slug')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -102,7 +102,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             </section>
 
             <!-- 表示設定 -->
-            <section class="p-6 border-b border-gray-200 dark:border-gray-700">
+            <section class="p-6 border-b border-gray-200 dark:border-gray-700"
+                     x-data="menuPlacement"
+                     data-placement-type="{{ old('placement_type', 'manual') }}">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                     {{ __('dixlase-menu::admin.menus.create.display_settings') }}
                 </h2>
@@ -111,21 +113,34 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <legend class="sr-only">{{ __('dixlase-menu::admin.menus.create.display_settings') }}</legend>
 
                     <div class="space-y-4">
+                        <!-- 配置方法 -->
+                        <div>
+                            <x-form-label for="placement_type" :required="true">
+                                {{ __('dixlase-menu::admin.menus.create.placement_type') }}
+                            </x-form-label>
+                            <x-form-radio-group
+                                name="placement_type"
+                                :options="$placementTypeOptions"
+                                :value="old('placement_type', 'manual')"
+                                x-model="placementType"
+                            />
+                            @error('placement_type')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <!-- 表示位置 -->
                         <div>
-                            <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <x-form-label for="location">
                                 {{ __('dixlase-menu::admin.menus.create.location') }}
-                            </label>
-                            <select id="location"
-                                    name="location"
-                                    class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('location') border-red-500 @enderror">
-                                <option value="">{{ __('dixlase-menu::admin.menus.create.select_location') }}</option>
-                                @foreach($availableLocations as $loc)
-                                    <option value="{{ $loc['key'] }}" {{ old('location') == $loc['key'] ? 'selected' : '' }}>
-                                        {{ $loc['label'] }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            </x-form-label>
+                            <x-form-select
+                                name="location"
+                                :options="array_merge(['' => __('dixlase-menu::admin.menus.create.select_location')], $locationOptions)"
+                                :value="old('location')"
+                                :disabled="false"
+                                x-bind:disabled="!isAuto"
+                            />
                             @error('location')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
@@ -144,7 +159,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                    name="display_order"
                                    value="{{ old('display_order', 0) }}"
                                    min="0"
-                                   class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('display_order') border-red-500 @enderror">
+                                   x-bind:disabled="!isAuto"
+                                   class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('display_order') border-red-500 @enderror disabled:opacity-50 disabled:cursor-not-allowed">
                             @error('display_order')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
@@ -192,6 +208,3 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </div>
 @endsection
 
-@push('scripts')
-<script src="{{ asset('plugins/dixlase-menu/js/menu-form.js') }}"></script>
-@endpush
