@@ -30,7 +30,7 @@ Menu Item Partial - ドラッグ&ドロップ可能なメニューアイテム
                 <!-- バッジ -->
                 @if(!$item->is_active)
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
-                        {{ __('common.status.inactive') }}
+                        {{ __('common.inactive') }}
                     </span>
                 @endif
 
@@ -97,7 +97,7 @@ Menu Item Partial - ドラッグ&ドロップ可能なメニューアイテム
             @endif
 
             <!-- 編集 -->
-            <a href="{{ route('dixlase-menu::admin.menu-items.edit', $item->id) }}"
+            <a href="{{ route('dixlase-menu::admin.menus.items.edit', $item->id) }}"
                class="p-2 text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
                title="{{ __('common.edit') }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

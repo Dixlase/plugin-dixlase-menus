@@ -21,8 +21,5 @@
  */
 
 return [
-    // プラグイン設定画面のルート名
-    'settings_route' => 'dixlase-menu::admin.settings.menus',
-
-    // 注: ナビゲーション設定は config/admin/navigation.php に移動
+    // 注: ナビゲーション設定は config/admin/navigation.php に記載
 ];

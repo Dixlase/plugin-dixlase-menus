@@ -85,7 +85,7 @@ class AdminMenuItemController extends Controller
         $this->viewParams['maxDepth'] = $maxDepth;
         $this->viewParams['linkSources'] = $linkSources;
 
-        return view('dixlase-menu::admin.menu-items.create', $this->viewParams);
+        return view('dixlase-menu::admin.menus.items.create', $this->viewParams);
     }
 
     /**
@@ -147,7 +147,7 @@ class AdminMenuItemController extends Controller
         $this->viewParams['maxDepth'] = $maxDepth;
         $this->viewParams['linkSources'] = $linkSources;
 
-        return view('dixlase-menu::admin.menu-items.edit', $this->viewParams);
+        return view('dixlase-menu::admin.menus.items.edit', $this->viewParams);
     }
 
     /**
