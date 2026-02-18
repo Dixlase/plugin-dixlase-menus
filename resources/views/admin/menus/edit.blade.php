@@ -23,11 +23,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 @section('title', __('dixlase-menu::admin.menus.edit.heading'))
 
 @section('content')
-<div class="max-w-7xl mx-auto">
+<div class="max-w-7xl mx-auto"
+     x-data="menuEditor"
+     data-placement-type="{{ old('placement_type', $menu->placement_type?->value ?? 'manual') }}"
+     data-menu-id="{{ $menu->id }}"
+     data-max-depth="{{ $maxDepth }}"
+     data-sync-url="{{ route('dixlase-menu::admin.menus.items.sync', $menu->id) }}"
+     data-items='@json($menuItems)'
+     data-error-message="{{ __('dixlase-menu::admin.messages.menu_items_save_failed') }}">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- 左カラム: メニュー基本情報 -->
         <div class="lg:col-span-1">
-            <form id="menu-form" action="{{ route('dixlase-menu::admin.menus.update', $menu->id) }}" method="POST">
+            <form id="menu-form" x-ref="menuForm" action="{{ route('dixlase-menu::admin.menus.update', $menu->id) }}" method="POST" @submit.prevent>
                 @csrf
                 @method('PUT')
 
@@ -95,9 +102,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     </section>
 
                     <!-- 表示設定 -->
-                    <section class="p-6 border-b border-gray-200 dark:border-gray-700"
-                             x-data="menuPlacement"
-                             data-placement-type="{{ old('placement_type', $menu->placement_type?->value ?? 'manual') }}">
+                    <section class="p-6 border-b border-gray-200 dark:border-gray-700">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                             {{ __('dixlase-menu::admin.menus.edit.display_settings') }}
                         </h2>
@@ -111,11 +116,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     <x-form-label for="placement_type" :required="true">
                                         {{ __('dixlase-menu::admin.menus.edit.placement_type') }}
                                     </x-form-label>
-                                    <x-form-radio-group
+                                    <x-form-radio-card-group
                                         name="placement_type"
                                         :options="$placementTypeOptions"
                                         :value="old('placement_type', $menu->placement_type?->value ?? 'manual')"
-                                        x-model="placementType"
+                                        xModel="placementType"
+                                        :columns="2"
                                     />
                                     @error('placement_type')
                                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -157,27 +163,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 </div>
 
                                 <!-- アクティブ状態 -->
-                                <div class="flex items-start">
-                                    <div class="flex items-center h-5">
-                                        <input type="checkbox"
-                                               id="is_active"
-                                               name="is_active"
-                                               value="1"
-                                               {{ old('is_active', $menu->is_active) ? 'checked' : '' }}
-                                               class="w-4 h-4 text-indigo-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500">
-                                    </div>
-                                    <div class="ml-3">
-                                        <label for="is_active" class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                            {{ __('dixlase-menu::admin.menus.edit.is_active') }}
-                                        </label>
-                                    </div>
-                                </div>
+                                <x-form-toggle
+                                    name="is_active"
+                                    :checked="old('is_active', $menu->is_active)"
+                                    :label="__('dixlase-menu::admin.menus.edit.is_active')"
+                                />
                             </div>
                         </fieldset>
                     </section>
 
                     <!-- 配置コード -->
-                    <section class="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <section class="p-6">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                             {{ __('dixlase-menu::admin.menus.edit.placement_code') }}
                         </h2>
@@ -197,27 +193,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             </div>
                         </div>
                     </section>
-
-                    <!-- 保存ボタン -->
-                    <div class="p-6 bg-gray-50 dark:bg-gray-700/50">
-                        <x-admin.save-button
-                            form="menu-form"
-                            :title="__('dixlase-menu::admin.menus.edit.confirm_title')"
-                            :message="__('dixlase-menu::admin.menus.edit.confirm_message')"
-                        />
-                    </div>
                 </div>
             </form>
         </div>
 
         <!-- 右カラム: メニューアイテム管理 -->
-        <div class="lg:col-span-2"
-             x-data="menuItemsEditor"
-             data-menu-id="{{ $menu->id }}"
-             data-max-depth="{{ $maxDepth }}"
-             data-sync-url="{{ route('dixlase-menu::admin.menus.items.sync', $menu->id) }}"
-             data-items='@json($menuItems)'
-             data-error-message="{{ __('dixlase-menu::admin.messages.menu_items_save_failed') }}">
+        <div class="lg:col-span-2">
             <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <!-- ヘッダー -->
                 <div class="p-6 border-b border-gray-200 dark:border-gray-700">
@@ -242,9 +223,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <!-- 空の状態 -->
                     <template x-if="items.length === 0">
                         <div class="text-center py-12">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                            </svg>
+                            <i class="fas fa-bars text-4xl text-gray-400"></i>
                             <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                 {{ __('dixlase-menu::admin.menus.edit.no_items') }}
                             </h3>
@@ -252,14 +231,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 {{ __('dixlase-menu::admin.menus.edit.no_items_description') }}
                             </p>
                             <div class="mt-6">
-                                <button type="button"
-                                        @click="addItem()"
-                                        class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md shadow-sm transition-colors duration-150">
-                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                    </svg>
-                                    {{ __('dixlase-menu::admin.menus.edit.add_first_item') }}
-                                </button>
+                                <x-form-button
+                                    type="button"
+                                    variant="primary"
+                                    icon="fas fa-plus"
+                                    :label="__('dixlase-menu::admin.menus.edit.add_first_item')"
+                                    xClick="addItem()"
+                                />
                             </div>
                         </div>
                     </template>
@@ -272,9 +250,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <div class="flex items-center gap-2 p-4">
                                     <!-- ドラッグハンドル -->
                                     <div class="drag-handle cursor-move p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
-                                        </svg>
+                                        <i class="fas fa-grip-vertical"></i>
                                     </div>
 
                                     <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -321,18 +297,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                 x-show="item.depth < maxDepth - 1"
                                                 class="p-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                                                 title="{{ __('dixlase-menu::admin.menus.edit.add_child') }}">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                            </svg>
+                                            <i class="fas fa-plus"></i>
                                         </button>
 
                                         <!-- 削除ボタン -->
                                         <button type="button"
                                                 @click="removeItem(index)"
                                                 class="p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                            </svg>
+                                            <i class="fas fa-times"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -344,9 +316,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                             <div class="child-menu-item flex items-center gap-2 p-3 bg-gray-100 dark:bg-gray-600 rounded-md">
                                                 <!-- ドラッグハンドル -->
                                                 <div class="child-drag-handle cursor-move p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
-                                                    </svg>
+                                                    <i class="fas fa-grip-vertical text-sm"></i>
                                                 </div>
 
                                                 <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -380,9 +350,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                 <button type="button"
                                                         @click="removeChildItem(index, childIndex)"
                                                         class="p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                                    </svg>
+                                                    <i class="fas fa-times text-sm"></i>
                                                 </button>
                                             </div>
                                         </template>
@@ -392,20 +360,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         </template>
                     </div>
 
-                    <!-- 保存ボタン -->
-                    <div class="mt-6 flex items-center justify-between" x-show="items.length > 0 || hasChanges">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                            {{ __('dixlase-menu::admin.settings.menu_items.items_help') }}
-                        </p>
-                        <x-form-button
-                            type="button"
-                            variant="success"
-                            icon="fas fa-check"
-                            :label="__('common.save')"
-                            xClick="saveItems()"
-                            xDisabled="saving"
-                        />
-                    </div>
+                    <!-- ヘルプテキスト -->
+                    <p class="mt-4 text-sm text-gray-600 dark:text-gray-400" x-show="items.length > 0">
+                        {{ __('dixlase-menu::admin.settings.menu_items.items_help') }}
+                    </p>
 
                     <!-- 保存結果メッセージ -->
                     <div x-show="message"
@@ -433,4 +391,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     </div>
 </div>
 
+@endsection
+
+@section('save')
+    <x-admin.save-button
+        form="menu-form"
+        :title="__('dixlase-menu::admin.menus.edit.confirm_title')"
+        :message="__('dixlase-menu::admin.menus.edit.confirm_message')"
+        :back_url="route('dixlase-menu::admin.menus.index')"
+    />
 @endsection

@@ -76,7 +76,7 @@ class AdminMenuController extends Controller
     public function create()
     {
         $this->viewParams['locationOptions'] = MenuLocation::options();
-        $this->viewParams['placementTypeOptions'] = PlacementType::options();
+        $this->viewParams['placementTypeOptions'] = PlacementType::getRadioCardOptions();
 
         return view('dixlase-menu::admin.menus.create', $this->viewParams);
     }
@@ -151,7 +151,7 @@ class AdminMenuController extends Controller
         $this->viewParams['menu'] = $menu;
         $this->viewParams['menuItems'] = $menuItems;
         $this->viewParams['locationOptions'] = MenuLocation::options();
-        $this->viewParams['placementTypeOptions'] = PlacementType::options();
+        $this->viewParams['placementTypeOptions'] = PlacementType::getRadioCardOptions();
         $this->viewParams['maxDepth'] = $maxDepth;
 
         return view('dixlase-menu::admin.menus.edit', $this->viewParams);

@@ -31,6 +31,8 @@ return [
         'placement_type' => [
             'manual' => '手動配置（Blade/ショートコード）',
             'auto' => '自動配置（表示位置指定）',
+            'manual_description' => '@menuディレクティブまたは[menu]ショートコードでテンプレートに配置',
+            'auto_description' => '選択した表示位置に自動的に表示',
         ],
     ],
 
