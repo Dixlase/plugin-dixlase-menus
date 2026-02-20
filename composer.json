@@ -1,6 +1,6 @@
 {
-    "name": "/plugins-dixlase-menu",
-    "description": "This is the Dixlase Menu plugin.",
+    "name": "/plugins-dixlase-menus",
+    "description": "This is the Dixlase Menus plugin.",
     "type": "dixlase-plugin",
     "version": "1.0.0",
     "license": "GPL",
@@ -17,24 +17,24 @@
     },
     "autoload": {
         "psr-4": {
-            "Plugins\\DixlaseMenu\\App\\": "app/"
+            "Plugins\\DixlaseMenus\\App\\": "app/"
         },
         "files": [
             "helpers.php"
         ]
     },
     "extra": {
-        "display-name": "Dixlase Menu",
+        "display-name": "Dixlase Menus",
         "keywords": [
             "laravel",
             "plugin",
             "custom"
         ],
-        "slug": "dixlase-menu",
+        "slug": "dixlase-menus",
         "category": "plugin",
         "laravel": {
             "providers": [
-                "Plugins\\DixlaseMenu\\App\\Providers\\DixlaseMenuServiceProvider"
+                "Plugins\\DixlaseMenus\\App\\Providers\\DixlaseMenusServiceProvider"
             ]
         }
     }

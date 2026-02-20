@@ -20,10 +20,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Repositories;
+namespace Plugins\DixlaseMenus\App\Repositories;
 
-use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuSettingRepositoryInterface;
-use Plugins\DixlaseMenu\App\Models\MenuSetting;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuSettingRepositoryInterface;
+use Plugins\DixlaseMenus\App\Models\MenuSetting;
 use Illuminate\Support\Facades\Cache;
 
 /**

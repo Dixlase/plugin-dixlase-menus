@@ -20,9 +20,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Services\MenuLinkSources;
+namespace Plugins\DixlaseMenus\App\Services\MenuLinkSources;
 
-use Plugins\DixlaseMenu\App\Contracts\MenuLinkSource;
+use Plugins\DixlaseMenus\App\Contracts\MenuLinkSource;
 
 /**
  * カスタムURLリンクソース
@@ -44,7 +44,7 @@ class CustomUrlSource implements MenuLinkSource
      */
     public function getSourceLabel(): string
     {
-        return __('dixlase-menu::menu.link_sources.custom_url');
+        return __('dixlase-menus::menu.link_sources.custom_url');
     }
 
     /**

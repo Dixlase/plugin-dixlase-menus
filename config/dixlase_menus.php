@@ -23,7 +23,7 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Dixlase Menu Configuration
+    | Dixlase Menus Configuration
     |--------------------------------------------------------------------------
     |
     | メニュー管理プラグインの設定
@@ -92,6 +92,6 @@ return [
     'cache' => [
         'enabled' => true,
         'ttl' => 3600, // 1時間
-        'key_prefix' => 'dixlase_menu_',
+        'key_prefix' => 'dixlase_menus_',
     ],
 ];

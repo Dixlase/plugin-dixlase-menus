@@ -20,9 +20,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Contracts\Repositories;
+namespace Plugins\DixlaseMenus\App\Contracts\Repositories;
 
-use Plugins\DixlaseMenu\App\Models\Menu;
+use Plugins\DixlaseMenus\App\Models\Menu;
 use Illuminate\Database\Eloquent\Collection;
 
 /**

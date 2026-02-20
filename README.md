@@ -1,10 +1,10 @@
-# Dixlase Menu
+# Dixlase Menus
 
-Dixlase Menu is a plugin for Dixlase (and also composer-ready for future distribution).
+Dixlase Menus is a plugin for Dixlase (and also composer-ready for future distribution).
 
 ## Installation
 
-1. Copy to the `plugins/DixlaseMenu` directory of your CMS.
+1. Copy to the `plugins/DixlaseMenus` directory of your CMS.
 2. (Optional) Run `composer install` if needed.
 3. (Optional) Enable the plugin in the CMS admin panel.
 
@@ -14,7 +14,7 @@ Dixlase Menu is a plugin for Dixlase (and also composer-ready for future distrib
 
 ## License
 
-This file is part of Dixlase Menu.
+This file is part of Dixlase Menus.
 
 Copyright (C) 2025 exc-D inc.
 https://exc-d.com

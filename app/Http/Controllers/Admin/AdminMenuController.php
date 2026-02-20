@@ -20,18 +20,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Http\Controllers\Admin;
+namespace Plugins\DixlaseMenus\App\Http\Controllers\Admin;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use App\Traits\AdminInterfaceTrait;
 use App\Traits\AdminLoggedInTrait;
-use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuRepositoryInterface;
-use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuSettingRepositoryInterface;
-use Plugins\DixlaseMenu\App\Http\Requests\AdminMenuStoreRequest;
-use Plugins\DixlaseMenu\App\Http\Requests\AdminMenuUpdateRequest;
-use Plugins\DixlaseMenu\App\Enums\MenuLocation;
-use Plugins\DixlaseMenu\App\Enums\PlacementType;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuRepositoryInterface;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuSettingRepositoryInterface;
+use Plugins\DixlaseMenus\App\Http\Requests\AdminMenuStoreRequest;
+use Plugins\DixlaseMenus\App\Http\Requests\AdminMenuUpdateRequest;
+use Plugins\DixlaseMenus\App\Enums\MenuLocation;
+use Plugins\DixlaseMenus\App\Enums\PlacementType;
 
 /**
  * メニュー管理コントローラー
@@ -65,7 +65,7 @@ class AdminMenuController extends Controller
         $this->viewParams['menus'] = $menus;
         $this->viewParams['locationOptions'] = $locationOptions;
 
-        return view('dixlase-menu::admin.menus.index', $this->viewParams);
+        return view('dixlase-menus::admin.menus.index', $this->viewParams);
     }
 
     /**
@@ -78,7 +78,7 @@ class AdminMenuController extends Controller
         $this->viewParams['locationOptions'] = MenuLocation::options();
         $this->viewParams['placementTypeOptions'] = PlacementType::getRadioCardOptions();
 
-        return view('dixlase-menu::admin.menus.create', $this->viewParams);
+        return view('dixlase-menus::admin.menus.create', $this->viewParams);
     }
 
     /**
@@ -96,14 +96,14 @@ class AdminMenuController extends Controller
             return redirect()
                 ->back()
                 ->withInput()
-                ->withErrors(['slug' => __('dixlase-menu::admin.messages.slug_already_exists')]);
+                ->withErrors(['slug' => __('dixlase-menus::admin.messages.slug_already_exists')]);
         }
 
         $menu = $this->menuRepository->create($validated);
 
         return redirect()
-            ->route('dixlase-menu::admin.menus.edit', $menu->id)
-            ->with('success', __('dixlase-menu::admin.messages.menu_created'));
+            ->route('dixlase-menus::admin.menus.edit', $menu->id)
+            ->with('success', __('dixlase-menus::admin.messages.menu_created'));
     }
 
     /**
@@ -154,7 +154,7 @@ class AdminMenuController extends Controller
         $this->viewParams['placementTypeOptions'] = PlacementType::getRadioCardOptions();
         $this->viewParams['maxDepth'] = $maxDepth;
 
-        return view('dixlase-menu::admin.menus.edit', $this->viewParams);
+        return view('dixlase-menus::admin.menus.edit', $this->viewParams);
     }
 
     /**
@@ -173,14 +173,14 @@ class AdminMenuController extends Controller
             return redirect()
                 ->back()
                 ->withInput()
-                ->withErrors(['slug' => __('dixlase-menu::admin.messages.slug_already_exists')]);
+                ->withErrors(['slug' => __('dixlase-menus::admin.messages.slug_already_exists')]);
         }
 
         $menu = $this->menuRepository->update($id, $validated);
 
         return redirect()
             ->back()
-            ->with('success', __('dixlase-menu::admin.messages.menu_updated'));
+            ->with('success', __('dixlase-menus::admin.messages.menu_updated'));
     }
 
     /**
@@ -199,7 +199,7 @@ class AdminMenuController extends Controller
 
         $this->viewParams['menu'] = $menu;
 
-        return view('dixlase-menu::admin.menus.delete', $this->viewParams);
+        return view('dixlase-menus::admin.menus.delete', $this->viewParams);
     }
 
     /**
@@ -214,16 +214,16 @@ class AdminMenuController extends Controller
 
         if (!$menu) {
             return redirect()
-                ->route('dixlase-menu::admin.menus.index')
-                ->withErrors(['error' => __('dixlase-menu::admin.messages.menu_not_found')]);
+                ->route('dixlase-menus::admin.menus.index')
+                ->withErrors(['error' => __('dixlase-menus::admin.messages.menu_not_found')]);
         }
 
         // ソフトデリート
         $this->menuRepository->softDelete($id);
 
         return redirect()
-            ->route('dixlase-menu::admin.menus.index')
-            ->with('success', __('dixlase-menu::admin.messages.menu_deleted'));
+            ->route('dixlase-menus::admin.menus.index')
+            ->with('success', __('dixlase-menus::admin.messages.menu_deleted'));
     }
 
     /**
@@ -237,8 +237,8 @@ class AdminMenuController extends Controller
         $this->menuRepository->restore($id);
 
         return redirect()
-            ->route('dixlase-menu::admin.menus.index')
-            ->with('success', __('dixlase-menu::admin.messages.menu_restored'));
+            ->route('dixlase-menus::admin.menus.index')
+            ->with('success', __('dixlase-menus::admin.messages.menu_restored'));
     }
 
 }

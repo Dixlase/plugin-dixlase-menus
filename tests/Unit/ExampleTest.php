@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugins\DixlaseMenu\tests\Unit;
+namespace Plugins\DixlaseMenus\tests\Unit;
 use PHPUnit\Framework\TestCase;
 
 class ExampleTest extends TestCase

@@ -20,7 +20,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Contracts;
+namespace Plugins\DixlaseMenus\App\Contracts;
 
 /**
  * メニューリンクソース契約

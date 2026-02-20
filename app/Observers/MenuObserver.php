@@ -20,11 +20,11 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Observers;
+namespace Plugins\DixlaseMenus\App\Observers;
 
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
-use Plugins\DixlaseMenu\App\Models\Menu;
-use Plugins\DixlaseMenu\App\Services\MenuService;
+use Plugins\DixlaseMenus\App\Models\Menu;
+use Plugins\DixlaseMenus\App\Services\MenuService;
 
 /**
  * メニューモデルのオブザーバー

@@ -20,9 +20,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Services;
+namespace Plugins\DixlaseMenus\App\Services;
 
-use Plugins\DixlaseMenu\App\Contracts\MenuLinkSource;
+use Plugins\DixlaseMenus\App\Contracts\MenuLinkSource;
 use Illuminate\Support\Collection;
 
 /**

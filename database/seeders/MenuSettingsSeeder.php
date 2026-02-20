@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugins\DixlaseMenu\Database\Seeders;
+namespace Plugins\DixlaseMenus\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;

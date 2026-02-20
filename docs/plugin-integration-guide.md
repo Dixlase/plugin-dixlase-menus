@@ -1,6 +1,6 @@
 # メニュープラグイン連携ガイド
 
-このドキュメントでは、DixlaseMenuプラグインと他のプラグイン（例：DixlasePagesプラグイン）を連携させ、メニューアイテムを自動的に取得する方法を説明します。
+このドキュメントでは、DixlaseMenusプラグインと他のプラグイン（例：DixlasePagesプラグイン）を連携させ、メニューアイテムを自動的に取得する方法を説明します。
 
 ## 目次
 
@@ -231,12 +231,12 @@ class DixlasePagesServiceProvider extends ServiceProvider
 
 ### コントローラーでの取得
 
-**場所**: `plugins/DixlaseMenu/app/Http/Controllers/Admin/MenuSettingsController.php`
+**場所**: `plugins/DixlaseMenus/app/Http/Controllers/Admin/MenuSettingsController.php`
 
 ```php
 <?php
 
-namespace Plugins\DixlaseMenu\App\Http\Controllers\Admin;
+namespace Plugins\DixlaseMenus\App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Contracts\PluginIntegration\LinkableProviderInterface;
@@ -267,7 +267,7 @@ class MenuSettingsController extends Controller
             // プロバイダーが登録されていない場合は空配列
         }
         
-        return view('dixlase-menu::admin.settings.menus.index', [
+        return view('dixlase-menus::admin.settings.menus.index', [
             'settings' => $this->getSettings(),
             'linkableProviders' => $linkableProviders,
         ]);

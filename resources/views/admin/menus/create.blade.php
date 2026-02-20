@@ -20,30 +20,30 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 @extends('layouts.admin')
 
-@section('title', __('dixlase-menu::admin.menus.create.heading'))
+@section('title', __('dixlase-menus::admin.menus.create.heading'))
 
 @section('content')
 <div class="mx-auto">
 
     <!-- フォーム -->
-    <form id="menu-form" action="{{ route('dixlase-menu::admin.menus.store') }}" method="POST">
+    <form id="menu-form" action="{{ route('dixlase-menus::admin.menus.store') }}" method="POST">
         @csrf
 
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
             <!-- 基本情報 -->
             <section class="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                    {{ __('dixlase-menu::admin.menus.create.basic_info') }}
+                    {{ __('dixlase-menus::admin.menus.create.basic_info') }}
                 </h2>
 
                 <fieldset>
-                    <legend class="sr-only">{{ __('dixlase-menu::admin.menus.create.basic_info') }}</legend>
+                    <legend class="sr-only">{{ __('dixlase-menus::admin.menus.create.basic_info') }}</legend>
 
                     <div class="space-y-4">
                         <!-- メニュー名 -->
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {{ __('dixlase-menu::admin.menus.create.name') }}
+                                {{ __('dixlase-menus::admin.menus.create.name') }}
                                 <span class="text-red-500">*</span>
                             </label>
                             <input type="text"
@@ -56,14 +56,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                {{ __('dixlase-menu::admin.menus.create.name_help') }}
+                                {{ __('dixlase-menus::admin.menus.create.name_help') }}
                             </p>
                         </div>
 
                         <!-- スラッグ -->
                         <div>
                             <label for="slug" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {{ __('dixlase-menu::admin.menus.create.slug') }}
+                                {{ __('dixlase-menus::admin.menus.create.slug') }}
                                 <span class="text-red-500">*</span>
                             </label>
                             <input type="text"
@@ -77,14 +77,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                {{ __('dixlase-menu::admin.menus.create.slug_help') }}
+                                {{ __('dixlase-menus::admin.menus.create.slug_help') }}
                             </p>
                         </div>
 
                         <!-- 説明 -->
                         <div>
                             <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {{ __('dixlase-menu::admin.menus.create.description') }}
+                                {{ __('dixlase-menus::admin.menus.create.description') }}
                             </label>
                             <textarea id="description"
                                       name="description"
@@ -94,7 +94,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                {{ __('dixlase-menu::admin.menus.create.description_help') }}
+                                {{ __('dixlase-menus::admin.menus.create.description_help') }}
                             </p>
                         </div>
                     </div>
@@ -106,17 +106,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                      x-data="menuPlacement"
                      data-placement-type="{{ old('placement_type', 'manual') }}">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                    {{ __('dixlase-menu::admin.menus.create.display_settings') }}
+                    {{ __('dixlase-menus::admin.menus.create.display_settings') }}
                 </h2>
 
                 <fieldset>
-                    <legend class="sr-only">{{ __('dixlase-menu::admin.menus.create.display_settings') }}</legend>
+                    <legend class="sr-only">{{ __('dixlase-menus::admin.menus.create.display_settings') }}</legend>
 
                     <div class="space-y-4">
                         <!-- 配置方法 -->
                         <div>
                             <x-form-label for="placement_type" :required="true">
-                                {{ __('dixlase-menu::admin.menus.create.placement_type') }}
+                                {{ __('dixlase-menus::admin.menus.create.placement_type') }}
                             </x-form-label>
                             <x-form-radio-card-group
                                 name="placement_type"
@@ -133,11 +133,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         <!-- 表示位置 -->
                         <div>
                             <x-form-label for="location">
-                                {{ __('dixlase-menu::admin.menus.create.location') }}
+                                {{ __('dixlase-menus::admin.menus.create.location') }}
                             </x-form-label>
                             <x-form-select
                                 name="location"
-                                :options="array_merge(['' => __('dixlase-menu::admin.menus.create.select_location')], $locationOptions)"
+                                :options="array_merge(['' => __('dixlase-menus::admin.menus.create.select_location')], $locationOptions)"
                                 :value="old('location')"
                                 :disabled="false"
                                 x-bind:disabled="!isAuto"
@@ -146,14 +146,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                {{ __('dixlase-menu::admin.menus.create.location_help') }}
+                                {{ __('dixlase-menus::admin.menus.create.location_help') }}
                             </p>
                         </div>
 
                         <!-- 表示順 -->
                         <div>
                             <label for="display_order" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {{ __('dixlase-menu::admin.menus.create.display_order') }}
+                                {{ __('dixlase-menus::admin.menus.create.display_order') }}
                             </label>
                             <input type="number"
                                    id="display_order"
@@ -166,7 +166,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                {{ __('dixlase-menu::admin.menus.create.display_order_help') }}
+                                {{ __('dixlase-menus::admin.menus.create.display_order_help') }}
                             </p>
                         </div>
 
@@ -174,7 +174,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         <x-form-toggle
                             name="is_active"
                             :checked="old('is_active', true)"
-                            :label="__('dixlase-menu::admin.menus.create.is_active')"
+                            :label="__('dixlase-menus::admin.menus.create.is_active')"
                         />
                     </div>
                 </fieldset>
@@ -189,10 +189,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <x-admin.save-button
         form="menu-form"
         :label="__('common.create')"
-        :title="__('dixlase-menu::admin.menus.create.confirm_title')"
-        :message="__('dixlase-menu::admin.menus.create.confirm_message')"
+        :title="__('dixlase-menus::admin.menus.create.confirm_title')"
+        :message="__('dixlase-menus::admin.menus.create.confirm_message')"
         :confirm_label="__('common.create')"
-        :back_url="route('dixlase-menu::admin.menus.index')"
+        :back_url="route('dixlase-menus::admin.menus.index')"
     />
 @endsection
 

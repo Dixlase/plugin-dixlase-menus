@@ -5,13 +5,13 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                'plugins/DixlaseMenu/resources/src/js/app.js',
-                'plugins/DixlaseMenu/resources/src/admin/js/app.js',
+                'plugins/DixlaseMenus/resources/src/js/app.js',
+                'plugins/DixlaseMenus/resources/src/admin/js/app.js',
             ],
             refresh: true,
         }),
     ],
     build: {
-        outDir: 'plugins/DixlaseMenu/resources/assets',
+        outDir: 'plugins/DixlaseMenus/resources/assets',
     },
 });

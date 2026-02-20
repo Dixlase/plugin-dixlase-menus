@@ -20,12 +20,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Http\Requests;
+namespace Plugins\DixlaseMenus\App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
-use Plugins\DixlaseMenu\App\Enums\PlacementType;
-use Plugins\DixlaseMenu\App\Enums\MenuLocation;
+use Plugins\DixlaseMenus\App\Enums\PlacementType;
+use Plugins\DixlaseMenus\App\Enums\MenuLocation;
 
 /**
  * メニュー作成リクエスト
@@ -68,15 +68,15 @@ class AdminMenuStoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => __('dixlase-menu::validation.name_required'),
-            'name.max' => __('dixlase-menu::validation.name_max'),
-            'slug.required' => __('dixlase-menu::validation.slug_required'),
-            'slug.max' => __('dixlase-menu::validation.slug_max'),
-            'slug.regex' => __('dixlase-menu::validation.slug_format'),
-            'location.max' => __('dixlase-menu::validation.location_max'),
-            'description.max' => __('dixlase-menu::validation.description_max'),
-            'display_order.integer' => __('dixlase-menu::validation.display_order_integer'),
-            'display_order.min' => __('dixlase-menu::validation.display_order_min'),
+            'name.required' => __('dixlase-menus::validation.name_required'),
+            'name.max' => __('dixlase-menus::validation.name_max'),
+            'slug.required' => __('dixlase-menus::validation.slug_required'),
+            'slug.max' => __('dixlase-menus::validation.slug_max'),
+            'slug.regex' => __('dixlase-menus::validation.slug_format'),
+            'location.max' => __('dixlase-menus::validation.location_max'),
+            'description.max' => __('dixlase-menus::validation.description_max'),
+            'display_order.integer' => __('dixlase-menus::validation.display_order_integer'),
+            'display_order.min' => __('dixlase-menus::validation.display_order_min'),
         ];
     }
 

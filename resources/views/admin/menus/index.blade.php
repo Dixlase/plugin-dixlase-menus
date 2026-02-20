@@ -20,7 +20,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 @extends('layouts.admin')
 
-@section('title', __('dixlase-menu::admin.menus.index.heading'))
+@section('title', __('dixlase-menus::admin.menus.index.heading'))
 
 @section('content')
 <div class="max-w-7xl mx-auto menu-list-container">
@@ -30,8 +30,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             type="link"
             variant="primary"
             icon="fas fa-plus"
-            :label="__('dixlase-menu::admin.menus.index.create_menu')"
-            :href="route('dixlase-menu::admin.menus.create')"
+            :label="__('dixlase-menus::admin.menus.index.create_menu')"
+            :href="route('dixlase-menus::admin.menus.create')"
         />
     </div>
 
@@ -42,18 +42,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
             <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">
-                {{ __('dixlase-menu::admin.menus.index.no_menus') }}
+                {{ __('dixlase-menus::admin.menus.index.no_menus') }}
             </h3>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                {{ __('dixlase-menu::admin.menus.index.no_menus_description') }}
+                {{ __('dixlase-menus::admin.menus.index.no_menus_description') }}
             </p>
             <div class="mt-6">
-                <a href="{{ route('dixlase-menu::admin.menus.create') }}"
+                <a href="{{ route('dixlase-menus::admin.menus.create') }}"
                    class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md shadow-sm transition-colors duration-150">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
-                    {{ __('dixlase-menu::admin.menus.index.create_first_menu') }}
+                    {{ __('dixlase-menus::admin.menus.index.create_first_menu') }}
                 </a>
             </div>
         </div>
@@ -64,19 +64,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <thead class="bg-gray-50 dark:bg-gray-700">
                     <tr>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            {{ __('dixlase-menu::admin.menus.index.table.name') }}
+                            {{ __('dixlase-menus::admin.menus.index.table.name') }}
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            {{ __('dixlase-menu::admin.menus.index.table.location') }}
+                            {{ __('dixlase-menus::admin.menus.index.table.location') }}
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            {{ __('dixlase-menu::admin.menus.index.table.items') }}
+                            {{ __('dixlase-menus::admin.menus.index.table.items') }}
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            {{ __('dixlase-menu::admin.menus.index.table.status') }}
+                            {{ __('dixlase-menus::admin.menus.index.table.status') }}
                         </th>
                         <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            {{ __('dixlase-menu::admin.menus.index.table.actions') }}
+                            {{ __('dixlase-menus::admin.menus.index.table.actions') }}
                         </th>
                     </tr>
                 </thead>
@@ -110,7 +110,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     </span>
                                 @else
                                     <span class="text-sm text-gray-400 dark:text-gray-500">
-                                        {{ __('dixlase-menu::admin.menus.index.table.no_location') }}
+                                        {{ __('dixlase-menus::admin.menus.index.table.no_location') }}
                                     </span>
                                 @endif
                             </td>
@@ -118,7 +118,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             <!-- アイテム数 -->
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900 dark:text-white">
-                                    {{ $menu->items_count ?? 0 }} {{ __('dixlase-menu::admin.menus.index.table.items_count') }}
+                                    {{ $menu->items_count ?? 0 }} {{ __('dixlase-menus::admin.menus.index.table.items_count') }}
                                 </div>
                             </td>
 
@@ -145,7 +145,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex items-center justify-end gap-2">
                                     <!-- 編集 -->
-                                    <a href="{{ route('dixlase-menu::admin.menus.edit', $menu->id) }}"
+                                    <a href="{{ route('dixlase-menus::admin.menus.edit', $menu->id) }}"
                                        class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
                                        title="{{ __('common.edit') }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,7 +158,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                             class="delete-menu-btn text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                                             data-menu-id="{{ $menu->id }}"
                                             data-menu-name="{{ $menu->name }}"
-                                            data-delete-url="{{ route('dixlase-menu::admin.menus.destroy', $menu->id) }}"
+                                            data-delete-url="{{ route('dixlase-menus::admin.menus.destroy', $menu->id) }}"
                                             title="{{ __('common.delete') }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>

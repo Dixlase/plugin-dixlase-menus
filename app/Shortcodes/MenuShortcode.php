@@ -20,9 +20,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Shortcodes;
+namespace Plugins\DixlaseMenus\App\Shortcodes;
 
-use Plugins\DixlaseMenu\App\Helpers\MenuHelper;
+use Plugins\DixlaseMenus\App\Helpers\MenuHelper;
 
 /**
  * メニューショートコード

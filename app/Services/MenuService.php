@@ -20,12 +20,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Services;
+namespace Plugins\DixlaseMenus\App\Services;
 
-use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuRepositoryInterface;
-use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuItemRepositoryInterface;
-use Plugins\DixlaseMenu\App\Models\Menu;
-use Plugins\DixlaseMenu\App\Models\MenuItem;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuRepositoryInterface;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuItemRepositoryInterface;
+use Plugins\DixlaseMenus\App\Models\Menu;
+use Plugins\DixlaseMenus\App\Models\MenuItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
