@@ -20,7 +20,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Enums;
+namespace Plugins\DixlaseMenus\App\Enums;
 
 /**
  * メニュー表示位置
@@ -36,7 +36,7 @@ enum MenuLocation: string
      */
     public function label(): string
     {
-        return __('dixlase-menu::admin.enums.menu_location.' . $this->value);
+        return __('dixlase-menus::admin.enums.menu_location.' . $this->value);
     }
 
     /**

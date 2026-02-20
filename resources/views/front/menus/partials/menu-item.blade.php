@@ -30,7 +30,7 @@
     @if($showChildren)
         <ul class="dixlase-menu__submenu">
             @foreach($item['children'] as $child)
-                @include('dixlase-menu::front.menus.partials.menu-item', [
+                @include('dixlase-menus::front.menus.partials.menu-item', [
                     'item' => $child,
                     'depth' => $depth + 1,
                     'options' => $options,

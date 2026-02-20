@@ -20,28 +20,28 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Providers;
+namespace Plugins\DixlaseMenus\App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use App\Traits\PluginLoaderTrait;
 use App\Helpers\PluginHelper;
-use Plugins\DixlaseMenu\App\Services\MenuLinkSourceManager;
-use Plugins\DixlaseMenu\App\Services\MenuLinkSources\CustomUrlSource;
-use Plugins\DixlaseMenu\App\Shortcodes\MenuShortcode;
-use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuRepositoryInterface;
-use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuItemRepositoryInterface;
-use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuSettingRepositoryInterface;
-use Plugins\DixlaseMenu\App\Repositories\MenuRepository;
-use Plugins\DixlaseMenu\App\Repositories\MenuItemRepository;
-use Plugins\DixlaseMenu\App\Repositories\MenuSettingRepository;
-use Plugins\DixlaseMenu\App\Services\MenuService;
-use Plugins\DixlaseMenu\App\Models\Menu;
-use Plugins\DixlaseMenu\App\Models\MenuItem;
-use Plugins\DixlaseMenu\App\Observers\MenuObserver;
-use Plugins\DixlaseMenu\App\Observers\MenuItemObserver;
+use Plugins\DixlaseMenus\App\Services\MenuLinkSourceManager;
+use Plugins\DixlaseMenus\App\Services\MenuLinkSources\CustomUrlSource;
+use Plugins\DixlaseMenus\App\Shortcodes\MenuShortcode;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuRepositoryInterface;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuItemRepositoryInterface;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuSettingRepositoryInterface;
+use Plugins\DixlaseMenus\App\Repositories\MenuRepository;
+use Plugins\DixlaseMenus\App\Repositories\MenuItemRepository;
+use Plugins\DixlaseMenus\App\Repositories\MenuSettingRepository;
+use Plugins\DixlaseMenus\App\Services\MenuService;
+use Plugins\DixlaseMenus\App\Models\Menu;
+use Plugins\DixlaseMenus\App\Models\MenuItem;
+use Plugins\DixlaseMenus\App\Observers\MenuObserver;
+use Plugins\DixlaseMenus\App\Observers\MenuItemObserver;
 
-class DixlaseMenuServiceProvider extends ServiceProvider
+class DixlaseMenusServiceProvider extends ServiceProvider
 {
     use PluginLoaderTrait;
     /**
@@ -50,12 +50,12 @@ class DixlaseMenuServiceProvider extends ServiceProvider
     public function register(): void
     {
         // 管理画面ナビゲーションをマージ
-        $this->mergeAdminNavigation('DixlaseMenu', __DIR__ . '/../../config/admin.php');
+        $this->mergeAdminNavigation('DixlaseMenus', __DIR__ . '/../../config/admin.php');
         
         // 設定ファイルをマージ
         $this->mergeConfigFrom(
-            __DIR__ . '/../../config/dixlase_menu.php',
-            'dixlase_menu'
+            __DIR__ . '/../../config/dixlase_menus.php',
+            'dixlase_menus'
         );
 
         // MenuLinkSourceManagerをシングルトンとして登録
@@ -83,10 +83,10 @@ class DixlaseMenuServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // ビューの登録
-        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'dixlase-menu');
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'dixlase-menus');
 
         // 翻訳ファイルの登録
-        $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'dixlase-menu');
+        $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'dixlase-menus');
 
         // マイグレーションの登録
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
@@ -109,12 +109,12 @@ class DixlaseMenuServiceProvider extends ServiceProvider
         // 公開可能なアセット
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../../config/dixlase_menu.php' => config_path('dixlase_menu.php'),
-            ], 'dixlase-menu-config');
+                __DIR__ . '/../../config/dixlase_menus.php' => config_path('dixlase_menus.php'),
+            ], 'dixlase-menus-config');
 
             $this->publishes([
-                __DIR__ . '/../../resources/views' => resource_path('views/vendor/dixlase-menu'),
-            ], 'dixlase-menu-views');
+                __DIR__ . '/../../resources/views' => resource_path('views/vendor/dixlase-menus'),
+            ], 'dixlase-menus-views');
         }
     }
 
@@ -147,7 +147,7 @@ class DixlaseMenuServiceProvider extends ServiceProvider
     {
         // @menu('slug') / @menu('slug', ['template' => 'horizontal'])
         Blade::directive('menu', function ($expression) {
-            return "<?php echo \Plugins\DixlaseMenu\App\Helpers\MenuHelper::renderDirective({$expression}); ?>";
+            return "<?php echo \Plugins\DixlaseMenus\App\Helpers\MenuHelper::renderDirective({$expression}); ?>";
         });
     }
 }

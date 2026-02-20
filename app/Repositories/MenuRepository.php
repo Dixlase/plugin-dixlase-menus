@@ -20,10 +20,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Repositories;
+namespace Plugins\DixlaseMenus\App\Repositories;
 
-use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuRepositoryInterface;
-use Plugins\DixlaseMenu\App\Models\Menu;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuRepositoryInterface;
+use Plugins\DixlaseMenus\App\Models\Menu;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 

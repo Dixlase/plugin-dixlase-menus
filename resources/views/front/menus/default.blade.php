@@ -17,10 +17,10 @@
 @if(!empty($items))
 <nav {!! isset($options['id']) ? 'id="' . e($options['id']) . '"' : '' !!}
      class="dixlase-menu {{ $options['class'] ?? '' }}"
-     aria-label="{{ __('dixlase-menu::front.menu.navigation') }}">
+     aria-label="{{ __('dixlase-menus::front.menu.navigation') }}">
     <ul class="dixlase-menu__list">
         @foreach($items as $item)
-            @include('dixlase-menu::front.menus.partials.menu-item', [
+            @include('dixlase-menus::front.menus.partials.menu-item', [
                 'item' => $item,
                 'depth' => 0,
                 'options' => $options,

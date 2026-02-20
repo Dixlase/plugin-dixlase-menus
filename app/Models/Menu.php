@@ -20,13 +20,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Models;
+namespace Plugins\DixlaseMenus\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Plugins\DixlaseMenu\App\Enums\PlacementType;
+use Plugins\DixlaseMenus\App\Enums\PlacementType;
 
 /**
  * メニューモデル

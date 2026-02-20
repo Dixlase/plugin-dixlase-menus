@@ -20,7 +20,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Enums;
+namespace Plugins\DixlaseMenus\App\Enums;
 
 /**
  * メニュー配置タイプ
@@ -35,7 +35,7 @@ enum PlacementType: string
      */
     public function label(): string
     {
-        return __('dixlase-menu::admin.enums.placement_type.' . $this->value);
+        return __('dixlase-menus::admin.enums.placement_type.' . $this->value);
     }
 
     /**
@@ -64,13 +64,13 @@ enum PlacementType: string
             [
                 'value' => self::Manual->value,
                 'label' => self::Manual->label(),
-                'description' => __('dixlase-menu::admin.enums.placement_type.manual_description'),
+                'description' => __('dixlase-menus::admin.enums.placement_type.manual_description'),
                 'icon' => 'fas fa-code',
             ],
             [
                 'value' => self::Auto->value,
                 'label' => self::Auto->label(),
-                'description' => __('dixlase-menu::admin.enums.placement_type.auto_description'),
+                'description' => __('dixlase-menus::admin.enums.placement_type.auto_description'),
                 'icon' => 'fas fa-magic',
             ],
         ];

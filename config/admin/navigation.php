@@ -24,19 +24,19 @@ return [
     // メニュー管理
     'menus' => [
         '_insert_after' => 'media',
-        'text' => 'dixlase-menu::admin/navigation.menus.text',
+        'text' => 'dixlase-menus::admin/navigation.menus.text',
         'icon' => 'fas fa-fw fa-bars',
         'can' => 'admin',
         'children' => [
             'index' => [
-                'text' => 'dixlase-menu::admin/navigation.menus.index',
-                'route' => 'dixlase-menu::admin.menus.index',
+                'text' => 'dixlase-menus::admin/navigation.menus.index',
+                'route' => 'dixlase-menus::admin.menus.index',
                 'icon' => 'fas fa-fw fa-list',
                 'can' => 'admin',
             ],
             'create' => [
-                'text' => 'dixlase-menu::admin/navigation.menus.create',
-                'route' => 'dixlase-menu::admin.menus.create',
+                'text' => 'dixlase-menus::admin/navigation.menus.create',
+                'route' => 'dixlase-menus::admin.menus.create',
                 'icon' => 'fas fa-fw fa-plus',
                 'can' => 'admin',
             ],

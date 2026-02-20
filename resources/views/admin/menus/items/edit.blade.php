@@ -20,20 +20,20 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 @extends('layouts.admin')
 
-@section('title', __('dixlase-menu::admin.menu_items.edit.heading'))
+@section('title', __('dixlase-menus::admin.menu_items.edit.heading'))
 
 @section('content')
 <div class="mx-auto">
     <!-- ヘッダー -->
     <div class="mb-6">
         <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
-            <a href="{{ route('dixlase-menu::admin.menus.index') }}" class="hover:text-indigo-600 dark:hover:text-indigo-400">
-                {{ __('dixlase-menu::admin.menus.index.heading') }}
+            <a href="{{ route('dixlase-menus::admin.menus.index') }}" class="hover:text-indigo-600 dark:hover:text-indigo-400">
+                {{ __('dixlase-menus::admin.menus.index.heading') }}
             </a>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
-            <a href="{{ route('dixlase-menu::admin.menus.edit', $menuItem->menu_id) }}" class="hover:text-indigo-600 dark:hover:text-indigo-400">
+            <a href="{{ route('dixlase-menus::admin.menus.edit', $menuItem->menu_id) }}" class="hover:text-indigo-600 dark:hover:text-indigo-400">
                 {{ $menuItem->menu->name }}
             </a>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,7 +43,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         </div>
         <div class="flex items-center justify-between">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                {{ __('dixlase-menu::admin.menu_items.edit.heading') }}: {{ $menuItem->title }}
+                {{ __('dixlase-menus::admin.menu_items.edit.heading') }}: {{ $menuItem->title }}
             </h1>
             <button type="button"
                     class="delete-item-btn inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md shadow-sm transition-colors duration-150"
@@ -59,7 +59,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     <!-- フォーム -->
     <form id="menu-item-form"
-          action="{{ route('dixlase-menu::admin.menus.items.update', $menuItem->id) }}"
+          action="{{ route('dixlase-menus::admin.menus.items.update', $menuItem->id) }}"
           method="POST"
           x-data="menuItemSource"
           data-source-type="{{ old('source_type', $menuItem->source_type) }}"
@@ -72,17 +72,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <!-- 基本情報 -->
             <section class="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                    {{ __('dixlase-menu::admin.menu_items.edit.basic_info') }}
+                    {{ __('dixlase-menus::admin.menu_items.edit.basic_info') }}
                 </h2>
 
                 <fieldset>
-                    <legend class="sr-only">{{ __('dixlase-menu::admin.menu_items.edit.basic_info') }}</legend>
+                    <legend class="sr-only">{{ __('dixlase-menus::admin.menu_items.edit.basic_info') }}</legend>
 
                     <div class="space-y-4">
                         <!-- タイトル -->
                         <div>
                             <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {{ __('dixlase-menu::admin.menu_items.edit.title') }}
+                                {{ __('dixlase-menus::admin.menu_items.edit.title') }}
                                 <span class="text-red-500">*</span>
                             </label>
                             <input type="text"
@@ -102,17 +102,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <!-- リンク設定 -->
             <section class="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                    {{ __('dixlase-menu::admin.menu_items.edit.link_settings') }}
+                    {{ __('dixlase-menus::admin.menu_items.edit.link_settings') }}
                 </h2>
 
                 <fieldset>
-                    <legend class="sr-only">{{ __('dixlase-menu::admin.menu_items.edit.link_settings') }}</legend>
+                    <legend class="sr-only">{{ __('dixlase-menus::admin.menu_items.edit.link_settings') }}</legend>
 
                     <div class="space-y-4">
                         <!-- リンクソースタイプ -->
                         <div>
                             <label for="source_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {{ __('dixlase-menu::admin.menu_items.edit.source_type') }}
+                                {{ __('dixlase-menus::admin.menu_items.edit.source_type') }}
                                 <span class="text-red-500">*</span>
                             </label>
                             <select id="source_type"
@@ -135,7 +135,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         <!-- カスタムURL -->
                         <div x-show="sourceType === 'custom_url'" x-cloak>
                             <label for="url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {{ __('dixlase-menu::admin.menu_items.edit.url') }}
+                                {{ __('dixlase-menus::admin.menu_items.edit.url') }}
                                 <span class="text-red-500">*</span>
                             </label>
                             <input type="url"
@@ -153,7 +153,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         <!-- その他のソース -->
                         <div x-show="sourceType !== 'custom_url'" x-cloak>
                             <label for="source_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {{ __('dixlase-menu::admin.menu_items.edit.source_id') }}
+                                {{ __('dixlase-menus::admin.menu_items.edit.source_id') }}
                                 <span class="text-red-500">*</span>
                             </label>
                             <input type="number"
@@ -172,16 +172,16 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         <!-- リンクターゲット -->
                         <div>
                             <label for="target" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {{ __('dixlase-menu::admin.menu_items.edit.target') }}
+                                {{ __('dixlase-menus::admin.menu_items.edit.target') }}
                             </label>
                             <select id="target"
                                     name="target"
                                     class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('target') border-red-500 @enderror">
-                                <option value="">{{ __('dixlase-menu::admin.menu_items.edit.target_default') }}</option>
-                                <option value="_self" {{ old('target', $menuItem->target) == '_self' ? 'selected' : '' }}>{{ __('dixlase-menu::admin.settings.basic.target_self') }}</option>
-                                <option value="_blank" {{ old('target', $menuItem->target) == '_blank' ? 'selected' : '' }}>{{ __('dixlase-menu::admin.settings.basic.target_blank') }}</option>
-                                <option value="_parent" {{ old('target', $menuItem->target) == '_parent' ? 'selected' : '' }}>{{ __('dixlase-menu::admin.settings.basic.target_parent') }}</option>
-                                <option value="_top" {{ old('target', $menuItem->target) == '_top' ? 'selected' : '' }}>{{ __('dixlase-menu::admin.settings.basic.target_top') }}</option>
+                                <option value="">{{ __('dixlase-menus::admin.menu_items.edit.target_default') }}</option>
+                                <option value="_self" {{ old('target', $menuItem->target) == '_self' ? 'selected' : '' }}>{{ __('dixlase-menus::admin.settings.basic.target_self') }}</option>
+                                <option value="_blank" {{ old('target', $menuItem->target) == '_blank' ? 'selected' : '' }}>{{ __('dixlase-menus::admin.settings.basic.target_blank') }}</option>
+                                <option value="_parent" {{ old('target', $menuItem->target) == '_parent' ? 'selected' : '' }}>{{ __('dixlase-menus::admin.settings.basic.target_parent') }}</option>
+                                <option value="_top" {{ old('target', $menuItem->target) == '_top' ? 'selected' : '' }}>{{ __('dixlase-menus::admin.settings.basic.target_top') }}</option>
                             </select>
                             @error('target')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -194,17 +194,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <!-- 表示設定 -->
             <section class="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                    {{ __('dixlase-menu::admin.menu_items.edit.display_settings') }}
+                    {{ __('dixlase-menus::admin.menu_items.edit.display_settings') }}
                 </h2>
 
                 <fieldset>
-                    <legend class="sr-only">{{ __('dixlase-menu::admin.menu_items.edit.display_settings') }}</legend>
+                    <legend class="sr-only">{{ __('dixlase-menus::admin.menu_items.edit.display_settings') }}</legend>
 
                     <div class="space-y-4">
                         <!-- CSSクラス -->
                         <div>
                             <label for="css_class" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {{ __('dixlase-menu::admin.menu_items.edit.css_class') }}
+                                {{ __('dixlase-menus::admin.menu_items.edit.css_class') }}
                             </label>
                             <input type="text"
                                    id="css_class"
@@ -219,7 +219,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         <!-- アイコンクラス -->
                         <div>
                             <label for="icon_class" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {{ __('dixlase-menu::admin.menu_items.edit.icon_class') }}
+                                {{ __('dixlase-menus::admin.menu_items.edit.icon_class') }}
                             </label>
                             <input type="text"
                                    id="icon_class"
@@ -235,7 +235,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         <!-- 表示順 -->
                         <div>
                             <label for="display_order" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {{ __('dixlase-menu::admin.menu_items.edit.display_order') }}
+                                {{ __('dixlase-menus::admin.menu_items.edit.display_order') }}
                             </label>
                             <input type="number"
                                    id="display_order"
@@ -260,7 +260,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             </div>
                             <div class="ml-3">
                                 <label for="is_active" class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    {{ __('dixlase-menu::admin.menu_items.edit.is_active') }}
+                                    {{ __('dixlase-menus::admin.menu_items.edit.is_active') }}
                                 </label>
                             </div>
                         </div>
@@ -272,7 +272,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <div class="p-6 bg-gray-50 dark:bg-gray-700/50">
                 <x-admin.save-button
                     form="menu-item-form"
-                    :back_url="route('dixlase-menu::admin.menus.edit', $menuItem->menu_id)"
+                    :back_url="route('dixlase-menus::admin.menus.edit', $menuItem->menu_id)"
                 />
             </div>
         </div>

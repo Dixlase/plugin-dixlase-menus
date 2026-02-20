@@ -36,7 +36,7 @@ Menu Item Partial - ドラッグ&ドロップ可能なメニューアイテム
 
                 @if($item->children_count > 0)
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                        {{ $item->children_count }} {{ __('dixlase-menu::admin.menus.edit.children') }}
+                        {{ $item->children_count }} {{ __('dixlase-menus::admin.menus.edit.children') }}
                     </span>
                 @endif
             </div>
@@ -67,7 +67,7 @@ Menu Item Partial - ドラッグ&ドロップ可能なメニューアイテム
                 @endif
 
                 <span class="text-xs">
-                    {{ __('dixlase-menu::admin.menus.edit.order') }}: {{ $item->display_order }}
+                    {{ __('dixlase-menus::admin.menus.edit.order') }}: {{ $item->display_order }}
                 </span>
             </div>
         </div>
@@ -76,9 +76,9 @@ Menu Item Partial - ドラッグ&ドロップ可能なメニューアイテム
         <div class="menu-item-actions flex items-center gap-2">
             <!-- 子アイテム追加 -->
             @if($item->depth < $maxDepth - 1)
-                <a href="{{ route('dixlase-menu::admin.menus.items.create.child', [$item->menu_id, $item->id]) }}"
+                <a href="{{ route('dixlase-menus::admin.menus.items.create.child', [$item->menu_id, $item->id]) }}"
                    class="p-2 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300"
-                   title="{{ __('dixlase-menu::admin.menus.edit.add_child') }}">
+                   title="{{ __('dixlase-menus::admin.menus.edit.add_child') }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
@@ -89,7 +89,7 @@ Menu Item Partial - ドラッグ&ドロップ可能なメニューアイテム
             @if($item->children_count > 0)
                 <button type="button"
                         class="toggle-children-btn p-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300"
-                        title="{{ __('dixlase-menu::admin.menus.edit.toggle_children') }}">
+                        title="{{ __('dixlase-menus::admin.menus.edit.toggle_children') }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
@@ -97,7 +97,7 @@ Menu Item Partial - ドラッグ&ドロップ可能なメニューアイテム
             @endif
 
             <!-- 編集 -->
-            <a href="{{ route('dixlase-menu::admin.menus.items.edit', $item->id) }}"
+            <a href="{{ route('dixlase-menus::admin.menus.items.edit', $item->id) }}"
                class="p-2 text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
                title="{{ __('common.edit') }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,7 +122,7 @@ Menu Item Partial - ドラッグ&ドロップ可能なメニューアイテム
     @if($item->children && $item->children->isNotEmpty())
         <div class="menu-item-children mt-3 ml-6 space-y-2">
             @foreach($item->children as $child)
-                @include('dixlase-menu::admin.menus.partials.menu-item', ['item' => $child])
+                @include('dixlase-menus::admin.menus.partials.menu-item', ['item' => $child])
             @endforeach
         </div>
     @endif

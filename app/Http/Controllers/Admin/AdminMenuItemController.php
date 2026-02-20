@@ -20,19 +20,19 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Http\Controllers\Admin;
+namespace Plugins\DixlaseMenus\App\Http\Controllers\Admin;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use App\Traits\AdminInterfaceTrait;
 use App\Traits\AdminLoggedInTrait;
-use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuItemRepositoryInterface;
-use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuRepositoryInterface;
-use Plugins\DixlaseMenu\App\Contracts\Repositories\MenuSettingRepositoryInterface;
-use Plugins\DixlaseMenu\App\Services\MenuLinkSourceManager;
-use Plugins\DixlaseMenu\App\Services\MenuService;
-use Plugins\DixlaseMenu\App\Http\Requests\AdminMenuItemStoreRequest;
-use Plugins\DixlaseMenu\App\Http\Requests\AdminMenuItemUpdateRequest;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuItemRepositoryInterface;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuRepositoryInterface;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuSettingRepositoryInterface;
+use Plugins\DixlaseMenus\App\Services\MenuLinkSourceManager;
+use Plugins\DixlaseMenus\App\Services\MenuService;
+use Plugins\DixlaseMenus\App\Http\Requests\AdminMenuItemStoreRequest;
+use Plugins\DixlaseMenus\App\Http\Requests\AdminMenuItemUpdateRequest;
 
 /**
  * メニューアイテム管理コントローラー
@@ -85,7 +85,7 @@ class AdminMenuItemController extends Controller
         $this->viewParams['maxDepth'] = $maxDepth;
         $this->viewParams['linkSources'] = $linkSources;
 
-        return view('dixlase-menu::admin.menus.items.create', $this->viewParams);
+        return view('dixlase-menus::admin.menus.items.create', $this->viewParams);
     }
 
     /**
@@ -108,15 +108,15 @@ class AdminMenuItemController extends Controller
                 return redirect()
                     ->back()
                     ->withInput()
-                    ->withErrors(['parent_id' => __('dixlase-menu::admin.messages.max_depth_exceeded')]);
+                    ->withErrors(['parent_id' => __('dixlase-menus::admin.messages.max_depth_exceeded')]);
             }
         }
 
         $menuItem = $this->menuItemRepository->create($validated);
 
         return redirect()
-            ->route('dixlase-menu::admin.menus.edit', $menuId)
-            ->with('success', __('dixlase-menu::admin.messages.menu_item_created'));
+            ->route('dixlase-menus::admin.menus.edit', $menuId)
+            ->with('success', __('dixlase-menus::admin.messages.menu_item_created'));
     }
 
     /**
@@ -147,7 +147,7 @@ class AdminMenuItemController extends Controller
         $this->viewParams['maxDepth'] = $maxDepth;
         $this->viewParams['linkSources'] = $linkSources;
 
-        return view('dixlase-menu::admin.menus.items.edit', $this->viewParams);
+        return view('dixlase-menus::admin.menus.items.edit', $this->viewParams);
     }
 
     /**
@@ -163,8 +163,8 @@ class AdminMenuItemController extends Controller
 
         if (!$menuItem) {
             return redirect()
-                ->route('dixlase-menu::admin.menus.index')
-                ->withErrors(['error' => __('dixlase-menu::admin.messages.menu_item_not_found')]);
+                ->route('dixlase-menus::admin.menus.index')
+                ->withErrors(['error' => __('dixlase-menus::admin.messages.menu_item_not_found')]);
         }
 
         $validated = $request->validated();
@@ -181,7 +181,7 @@ class AdminMenuItemController extends Controller
                     return redirect()
                         ->back()
                         ->withInput()
-                        ->withErrors(['parent_id' => __('dixlase-menu::admin.messages.cannot_set_self_as_parent')]);
+                        ->withErrors(['parent_id' => __('dixlase-menus::admin.messages.cannot_set_self_as_parent')]);
                 }
                 
                 // 子孫を親にできない
@@ -189,7 +189,7 @@ class AdminMenuItemController extends Controller
                     return redirect()
                         ->back()
                         ->withInput()
-                        ->withErrors(['parent_id' => __('dixlase-menu::admin.messages.cannot_set_descendant_as_parent')]);
+                        ->withErrors(['parent_id' => __('dixlase-menus::admin.messages.cannot_set_descendant_as_parent')]);
                 }
                 
                 // 深さチェック
@@ -197,7 +197,7 @@ class AdminMenuItemController extends Controller
                     return redirect()
                         ->back()
                         ->withInput()
-                        ->withErrors(['parent_id' => __('dixlase-menu::admin.messages.max_depth_exceeded')]);
+                        ->withErrors(['parent_id' => __('dixlase-menus::admin.messages.max_depth_exceeded')]);
                 }
             }
         }
@@ -205,8 +205,8 @@ class AdminMenuItemController extends Controller
         $this->menuItemRepository->update($id, $validated);
 
         return redirect()
-            ->route('dixlase-menu::admin.menus.edit', $menuItem->menu_id)
-            ->with('success', __('dixlase-menu::admin.messages.menu_item_updated'));
+            ->route('dixlase-menus::admin.menus.edit', $menuItem->menu_id)
+            ->with('success', __('dixlase-menus::admin.messages.menu_item_updated'));
     }
 
     /**
@@ -221,8 +221,8 @@ class AdminMenuItemController extends Controller
 
         if (!$menuItem) {
             return redirect()
-                ->route('dixlase-menu::admin.menus.index')
-                ->withErrors(['error' => __('dixlase-menu::admin.messages.menu_item_not_found')]);
+                ->route('dixlase-menus::admin.menus.index')
+                ->withErrors(['error' => __('dixlase-menus::admin.messages.menu_item_not_found')]);
         }
 
         $menuId = $menuItem->menu_id;
@@ -236,8 +236,8 @@ class AdminMenuItemController extends Controller
         }
 
         return redirect()
-            ->route('dixlase-menu::admin.menus.edit', $menuId)
-            ->with('success', __('dixlase-menu::admin.messages.menu_item_deleted'));
+            ->route('dixlase-menus::admin.menus.edit', $menuId)
+            ->with('success', __('dixlase-menus::admin.messages.menu_item_deleted'));
     }
 
     /**
@@ -254,7 +254,7 @@ class AdminMenuItemController extends Controller
         if (empty($items)) {
             return response()->json([
                 'success' => false,
-                'message' => __('dixlase-menu::admin.messages.no_items_to_update'),
+                'message' => __('dixlase-menus::admin.messages.no_items_to_update'),
             ], 400);
         }
 
@@ -263,13 +263,13 @@ class AdminMenuItemController extends Controller
         if ($result) {
             return response()->json([
                 'success' => true,
-                'message' => __('dixlase-menu::admin.messages.order_updated'),
+                'message' => __('dixlase-menus::admin.messages.order_updated'),
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => __('dixlase-menu::admin.messages.order_update_failed'),
+            'message' => __('dixlase-menus::admin.messages.order_update_failed'),
         ], 500);
     }
 
@@ -289,13 +289,13 @@ class AdminMenuItemController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => __('dixlase-menu::admin.messages.menu_item_moved'),
+                'message' => __('dixlase-menus::admin.messages.menu_item_moved'),
                 'item' => $menuItem,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => __('dixlase-menu::admin.messages.move_failed'),
+                'message' => __('dixlase-menus::admin.messages.move_failed'),
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -315,7 +315,7 @@ class AdminMenuItemController extends Controller
         if (!$menu) {
             return response()->json([
                 'success' => false,
-                'message' => __('dixlase-menu::admin.messages.menu_not_found'),
+                'message' => __('dixlase-menus::admin.messages.menu_not_found'),
             ], 404);
         }
 
@@ -326,14 +326,14 @@ class AdminMenuItemController extends Controller
         if ($result) {
             return response()->json([
                 'success' => true,
-                'message' => __('dixlase-menu::admin.messages.menu_items_saved'),
+                'message' => __('dixlase-menus::admin.messages.menu_items_saved'),
                 'items' => $this->menuService->getMenuHierarchy($menuId),
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => __('dixlase-menu::admin.messages.menu_items_save_failed'),
+            'message' => __('dixlase-menus::admin.messages.menu_items_save_failed'),
         ], 500);
     }
 
@@ -350,7 +350,7 @@ class AdminMenuItemController extends Controller
         if (!$menu) {
             return response()->json([
                 'success' => false,
-                'message' => __('dixlase-menu::admin.messages.menu_not_found'),
+                'message' => __('dixlase-menus::admin.messages.menu_not_found'),
             ], 404);
         }
 

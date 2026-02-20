@@ -20,10 +20,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Helpers;
+namespace Plugins\DixlaseMenus\App\Helpers;
 
-use Plugins\DixlaseMenu\App\Services\MenuService;
-use Plugins\DixlaseMenu\App\Repositories\MenuSettingRepository;
+use Plugins\DixlaseMenus\App\Services\MenuService;
+use Plugins\DixlaseMenus\App\Repositories\MenuSettingRepository;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
 
@@ -148,11 +148,11 @@ class MenuHelper
         }
 
         $template = $options['template'] ?? 'default';
-        $viewName = "dixlase-menu::front.menus.{$template}";
+        $viewName = "dixlase-menus::front.menus.{$template}";
         
         // テンプレートが存在しない場合はデフォルトを使用
         if (!View::exists($viewName)) {
-            $viewName = 'dixlase-menu::front.menus.default';
+            $viewName = 'dixlase-menus::front.menus.default';
         }
 
         try {

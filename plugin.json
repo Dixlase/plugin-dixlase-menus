@@ -1,7 +1,7 @@
 {
-    "name": "Dixlase Menu",
-    "package_name": "dixlase/dixlase-menu",
-    "slug": "dixlase-menu",
+    "name": "Dixlase Menus",
+    "package_name": "dixlase/dixlase-menus",
+    "slug": "dixlase-menus",
     "version": "1.0.0",
     "description": {
         "ja": "メニュー管理機能を提供するプラグインです。",
@@ -13,9 +13,9 @@
     "license": "GPL-3.0",
     "license_template": "license-gpl.txt",
     "providers": [
-        "Plugins\\DixlaseMenu\\App\\Providers\\DixlaseMenuServiceProvider"
+        "Plugins\\DixlaseMenus\\App\\Providers\\DixlaseMenusServiceProvider"
     ],
-    "namespace": "Plugins\\DixlaseMenu",
+    "namespace": "Plugins\\DixlaseMenus",
     "type": "dixlase-plugin",
     "category": "navigation",
     "tags": [
@@ -32,5 +32,57 @@
         "front_routes": false,
         "api_routes": false,
         "settings_page": true
+    },
+    "declares": {
+        "configs": {
+            "roles": false,
+            "database_cleanup": false,
+            "navigation": true
+        },
+        "contracts": [],
+        "migrations": true,
+        "commands": false,
+        "middleware": false
+    },
+    "permissions": {
+        "database": {
+            "own_tables": true,
+            "core_tables": []
+        },
+        "storage": {
+            "own_directory": false,
+            "public_uploads": false,
+            "temp_files": false
+        },
+        "settings": {
+            "read_core": false,
+            "write_own": false
+        },
+        "members": {
+            "read": false,
+            "write": false,
+            "create": false,
+            "delete": false
+        },
+        "mail": {
+            "send": false,
+            "bulk_send": false
+        },
+        "content": {
+            "read_other_plugins": [],
+            "write_other_plugins": []
+        },
+        "system": {
+            "register_shortcodes": true,
+            "register_middleware": false,
+            "register_commands": false,
+            "register_blade_directives": true,
+            "modify_routes": false
+        },
+        "_optional": [],
+        "_notes": {
+            "ja": "",
+            "en": ""
+        }
     }
 }

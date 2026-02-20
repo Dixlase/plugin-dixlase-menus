@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugins\DixlaseMenu\tests\Feature;
+namespace Plugins\DixlaseMenus\tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;

@@ -13,7 +13,7 @@
 @if(!empty($items))
 <nav {!! isset($options['id']) ? 'id="' . e($options['id']) . '"' : '' !!}
      class="dixlase-menu dixlase-menu--horizontal {{ $options['class'] ?? '' }}"
-     aria-label="{{ __('dixlase-menu::front.menu.navigation') }}">
+     aria-label="{{ __('dixlase-menus::front.menu.navigation') }}">
     <ul class="dixlase-menu__list flex items-center space-x-6">
         @foreach($items as $item)
             @php

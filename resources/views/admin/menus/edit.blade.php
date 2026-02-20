@@ -20,7 +20,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 @extends('layouts.admin')
 
-@section('title', __('dixlase-menu::admin.menus.edit.heading'))
+@section('title', __('dixlase-menus::admin.menus.edit.heading'))
 
 @section('content')
 <div class="max-w-7xl mx-auto"
@@ -28,13 +28,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
      data-placement-type="{{ old('placement_type', $menu->placement_type?->value ?? 'manual') }}"
      data-menu-id="{{ $menu->id }}"
      data-max-depth="{{ $maxDepth }}"
-     data-sync-url="{{ route('dixlase-menu::admin.menus.items.sync', $menu->id) }}"
+     data-sync-url="{{ route('dixlase-menus::admin.menus.items.sync', $menu->id) }}"
      data-items='@json($menuItems)'
-     data-error-message="{{ __('dixlase-menu::admin.messages.menu_items_save_failed') }}">
+     data-error-message="{{ __('dixlase-menus::admin.messages.menu_items_save_failed') }}">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- 左カラム: メニュー基本情報 -->
         <div class="lg:col-span-1">
-            <form id="menu-form" x-ref="menuForm" action="{{ route('dixlase-menu::admin.menus.update', $menu->id) }}" method="POST" @submit.prevent>
+            <form id="menu-form" x-ref="menuForm" action="{{ route('dixlase-menus::admin.menus.update', $menu->id) }}" method="POST" @submit.prevent>
                 @csrf
                 @method('PUT')
 
@@ -42,17 +42,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <!-- 基本情報 -->
                     <section class="p-6 border-b border-gray-200 dark:border-gray-700">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                            {{ __('dixlase-menu::admin.menus.edit.basic_info') }}
+                            {{ __('dixlase-menus::admin.menus.edit.basic_info') }}
                         </h2>
 
                         <fieldset>
-                            <legend class="sr-only">{{ __('dixlase-menu::admin.menus.edit.basic_info') }}</legend>
+                            <legend class="sr-only">{{ __('dixlase-menus::admin.menus.edit.basic_info') }}</legend>
 
                             <div class="space-y-4">
                                 <!-- メニュー名 -->
                                 <div>
                                     <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        {{ __('dixlase-menu::admin.menus.edit.name') }}
+                                        {{ __('dixlase-menus::admin.menus.edit.name') }}
                                         <span class="text-red-500">*</span>
                                     </label>
                                     <input type="text"
@@ -69,7 +69,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <!-- スラッグ -->
                                 <div>
                                     <label for="slug" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        {{ __('dixlase-menu::admin.menus.edit.slug') }}
+                                        {{ __('dixlase-menus::admin.menus.edit.slug') }}
                                         <span class="text-red-500">*</span>
                                     </label>
                                     <input type="text"
@@ -87,7 +87,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <!-- 説明 -->
                                 <div>
                                     <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        {{ __('dixlase-menu::admin.menus.edit.description') }}
+                                        {{ __('dixlase-menus::admin.menus.edit.description') }}
                                     </label>
                                     <textarea id="description"
                                               name="description"
@@ -97,6 +97,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                     @enderror
                                 </div>
+
+                                <!-- アクティブ状態 -->
+                                <div>
+                                    <x-form-toggle
+                                        name="is_active"
+                                        :checked="old('is_active', $menu->is_active)"
+                                        :label="__('dixlase-menus::admin.menus.edit.is_active')"
+                                    />
+                                </div>
                             </div>
                         </fieldset>
                     </section>
@@ -104,17 +113,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <!-- 表示設定 -->
                     <section class="p-6 border-b border-gray-200 dark:border-gray-700">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                            {{ __('dixlase-menu::admin.menus.edit.display_settings') }}
+                            {{ __('dixlase-menus::admin.menus.edit.display_settings') }}
                         </h2>
 
                         <fieldset>
-                            <legend class="sr-only">{{ __('dixlase-menu::admin.menus.edit.display_settings') }}</legend>
+                            <legend class="sr-only">{{ __('dixlase-menus::admin.menus.edit.display_settings') }}</legend>
 
                             <div class="space-y-4">
                                 <!-- 配置方法 -->
                                 <div>
                                     <x-form-label for="placement_type" :required="true">
-                                        {{ __('dixlase-menu::admin.menus.edit.placement_type') }}
+                                        {{ __('dixlase-menus::admin.menus.edit.placement_type') }}
                                     </x-form-label>
                                     <x-form-radio-card-group
                                         name="placement_type"
@@ -131,11 +140,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <!-- 表示位置 -->
                                 <div>
                                     <x-form-label for="location">
-                                        {{ __('dixlase-menu::admin.menus.edit.location') }}
+                                        {{ __('dixlase-menus::admin.menus.edit.location') }}
                                     </x-form-label>
                                     <x-form-select
                                         name="location"
-                                        :options="array_merge(['' => __('dixlase-menu::admin.menus.edit.select_location')], $locationOptions)"
+                                        :options="array_merge(['' => __('dixlase-menus::admin.menus.edit.select_location')], $locationOptions)"
                                         :value="old('location', $menu->location)"
                                         :disabled="false"
                                         x-bind:disabled="!isAuto"
@@ -148,7 +157,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <!-- 表示順 -->
                                 <div>
                                     <label for="display_order" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        {{ __('dixlase-menu::admin.menus.edit.display_order') }}
+                                        {{ __('dixlase-menus::admin.menus.edit.display_order') }}
                                     </label>
                                     <input type="number"
                                            id="display_order"
@@ -162,12 +171,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     @enderror
                                 </div>
 
-                                <!-- アクティブ状態 -->
-                                <x-form-toggle
-                                    name="is_active"
-                                    :checked="old('is_active', $menu->is_active)"
-                                    :label="__('dixlase-menu::admin.menus.edit.is_active')"
-                                />
+
                             </div>
                         </fieldset>
                     </section>
@@ -175,19 +179,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <!-- 配置コード -->
                     <section class="p-6">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                            {{ __('dixlase-menu::admin.menus.edit.placement_code') }}
+                            {{ __('dixlase-menus::admin.menus.edit.placement_code') }}
                         </h2>
 
                         <div class="space-y-3">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    {{ __('dixlase-menu::admin.menus.edit.blade_directive') }}
+                                    {{ __('dixlase-menus::admin.menus.edit.blade_directive') }}
                                 </label>
                                 <code class="block w-full px-3 py-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-mono text-gray-800 dark:text-gray-200">@@menu('{{ $menu->slug }}')</code>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    {{ __('dixlase-menu::admin.menus.edit.shortcode') }}
+                                    {{ __('dixlase-menus::admin.menus.edit.shortcode') }}
                                 </label>
                                 <code class="block w-full px-3 py-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-mono text-gray-800 dark:text-gray-200">[menu slug="{{ $menu->slug }}"]</code>
                             </div>
@@ -204,14 +208,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-                            {{ __('dixlase-menu::admin.menus.edit.menu_items') }}
+                            {{ __('dixlase-menus::admin.menus.edit.menu_items') }}
                         </h2>
                         <div class="flex items-center gap-2">
                             <x-form-button
                                 type="button"
                                 variant="primary"
                                 icon="fas fa-plus"
-                                :label="__('dixlase-menu::admin.menus.edit.add_item')"
+                                :label="__('dixlase-menus::admin.menus.edit.add_item')"
                                 xClick="addItem()"
                             />
                         </div>
@@ -225,17 +229,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         <div class="text-center py-12">
                             <i class="fas fa-bars text-4xl text-gray-400"></i>
                             <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">
-                                {{ __('dixlase-menu::admin.menus.edit.no_items') }}
+                                {{ __('dixlase-menus::admin.menus.edit.no_items') }}
                             </h3>
                             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                {{ __('dixlase-menu::admin.menus.edit.no_items_description') }}
+                                {{ __('dixlase-menus::admin.menus.edit.no_items_description') }}
                             </p>
                             <div class="mt-6">
                                 <x-form-button
                                     type="button"
                                     variant="primary"
                                     icon="fas fa-plus"
-                                    :label="__('dixlase-menu::admin.menus.edit.add_first_item')"
+                                    :label="__('dixlase-menus::admin.menus.edit.add_first_item')"
                                     xClick="addItem()"
                                 />
                             </div>
@@ -257,34 +261,34 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         <!-- タイトル -->
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                                {{ __('dixlase-menu::admin.menu_items.create.title') }}
+                                                {{ __('dixlase-menus::admin.menu_items.create.title') }}
                                             </label>
                                             <input type="text"
                                                    x-model="item.label"
-                                                   placeholder="{{ __('dixlase-menu::admin.settings.menu_items.label_placeholder') }}"
+                                                   placeholder="{{ __('dixlase-menus::admin.settings.menu_items.label_placeholder') }}"
                                                    class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         </div>
 
                                         <!-- URL -->
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                                {{ __('dixlase-menu::admin.menu_items.create.url') }}
+                                                {{ __('dixlase-menus::admin.menu_items.create.url') }}
                                             </label>
                                             <input type="text"
                                                    x-model="item.url"
-                                                   placeholder="{{ __('dixlase-menu::admin.settings.menu_items.url_placeholder') }}"
+                                                   placeholder="{{ __('dixlase-menus::admin.settings.menu_items.url_placeholder') }}"
                                                    class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         </div>
 
                                         <!-- ターゲット -->
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                                {{ __('dixlase-menu::admin.menu_items.create.target') }}
+                                                {{ __('dixlase-menus::admin.menu_items.create.target') }}
                                             </label>
                                             <select x-model="item.target"
                                                     class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                                <option value="_self">{{ __('dixlase-menu::admin.settings.basic.target_self') }}</option>
-                                                <option value="_blank">{{ __('dixlase-menu::admin.settings.basic.target_blank') }}</option>
+                                                <option value="_self">{{ __('dixlase-menus::admin.settings.basic.target_self') }}</option>
+                                                <option value="_blank">{{ __('dixlase-menus::admin.settings.basic.target_blank') }}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -296,7 +300,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                 @click="addChildItem(index)"
                                                 x-show="item.depth < maxDepth - 1"
                                                 class="p-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                                                title="{{ __('dixlase-menu::admin.menus.edit.add_child') }}">
+                                                title="{{ __('dixlase-menus::admin.menus.edit.add_child') }}">
                                             <i class="fas fa-plus"></i>
                                         </button>
 
@@ -324,7 +328,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                     <div>
                                                         <input type="text"
                                                                x-model="child.label"
-                                                               placeholder="{{ __('dixlase-menu::admin.settings.menu_items.label_placeholder') }}"
+                                                               placeholder="{{ __('dixlase-menus::admin.settings.menu_items.label_placeholder') }}"
                                                                class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                                                     </div>
 
@@ -332,7 +336,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                     <div>
                                                         <input type="text"
                                                                x-model="child.url"
-                                                               placeholder="{{ __('dixlase-menu::admin.settings.menu_items.url_placeholder') }}"
+                                                               placeholder="{{ __('dixlase-menus::admin.settings.menu_items.url_placeholder') }}"
                                                                class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                                                     </div>
 
@@ -340,8 +344,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                     <div>
                                                         <select x-model="child.target"
                                                                 class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                                                            <option value="_self">{{ __('dixlase-menu::admin.settings.basic.target_self') }}</option>
-                                                            <option value="_blank">{{ __('dixlase-menu::admin.settings.basic.target_blank') }}</option>
+                                                            <option value="_self">{{ __('dixlase-menus::admin.settings.basic.target_self') }}</option>
+                                                            <option value="_blank">{{ __('dixlase-menus::admin.settings.basic.target_blank') }}</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -362,7 +366,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
                     <!-- ヘルプテキスト -->
                     <p class="mt-4 text-sm text-gray-600 dark:text-gray-400" x-show="items.length > 0">
-                        {{ __('dixlase-menu::admin.settings.menu_items.items_help') }}
+                        {{ __('dixlase-menus::admin.settings.menu_items.items_help') }}
                     </p>
 
                     <!-- 保存結果メッセージ -->
@@ -386,7 +390,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             variant="danger"
             icon="fas fa-trash"
             :label="__('common.delete')"
-            :href="route('dixlase-menu::admin.menus.delete', $menu->id)"
+            :href="route('dixlase-menus::admin.menus.delete', $menu->id)"
         />
     </div>
 </div>
@@ -396,8 +400,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 @section('save')
     <x-admin.save-button
         form="menu-form"
-        :title="__('dixlase-menu::admin.menus.edit.confirm_title')"
-        :message="__('dixlase-menu::admin.menus.edit.confirm_message')"
-        :back_url="route('dixlase-menu::admin.menus.index')"
+        :title="__('dixlase-menus::admin.menus.edit.confirm_title')"
+        :message="__('dixlase-menus::admin.menus.edit.confirm_message')"
+        :back_url="route('dixlase-menus::admin.menus.index')"
     />
 @endsection

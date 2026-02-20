@@ -9,7 +9,7 @@
  * グローバルヘルパー関数
  */
 
-use Plugins\DixlaseMenu\App\Helpers\MenuHelper;
+use Plugins\DixlaseMenus\App\Helpers\MenuHelper;
 
 if (!function_exists('dls_menu')) {
     /**

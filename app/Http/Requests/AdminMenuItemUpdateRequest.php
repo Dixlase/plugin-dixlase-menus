@@ -20,7 +20,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Plugins\DixlaseMenu\App\Http\Requests;
+namespace Plugins\DixlaseMenus\App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -69,17 +69,17 @@ class AdminMenuItemUpdateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'parent_id.exists' => __('dixlase-menu::validation.parent_not_found'),
-            'title.required' => __('dixlase-menu::validation.title_required'),
-            'title.max' => __('dixlase-menu::validation.title_max'),
-            'source_type.required' => __('dixlase-menu::validation.source_type_required'),
-            'url.max' => __('dixlase-menu::validation.url_max'),
-            'target.in' => __('dixlase-menu::validation.target_invalid'),
-            'css_class.max' => __('dixlase-menu::validation.css_class_max'),
-            'icon_class.max' => __('dixlase-menu::validation.icon_class_max'),
-            'display_order.integer' => __('dixlase-menu::validation.display_order_integer'),
-            'display_order.min' => __('dixlase-menu::validation.display_order_min'),
-            'visibility_condition.json' => __('dixlase-menu::validation.visibility_condition_json'),
+            'parent_id.exists' => __('dixlase-menus::validation.parent_not_found'),
+            'title.required' => __('dixlase-menus::validation.title_required'),
+            'title.max' => __('dixlase-menus::validation.title_max'),
+            'source_type.required' => __('dixlase-menus::validation.source_type_required'),
+            'url.max' => __('dixlase-menus::validation.url_max'),
+            'target.in' => __('dixlase-menus::validation.target_invalid'),
+            'css_class.max' => __('dixlase-menus::validation.css_class_max'),
+            'icon_class.max' => __('dixlase-menus::validation.icon_class_max'),
+            'display_order.integer' => __('dixlase-menus::validation.display_order_integer'),
+            'display_order.min' => __('dixlase-menus::validation.display_order_min'),
+            'visibility_condition.json' => __('dixlase-menus::validation.visibility_condition_json'),
         ];
     }
 

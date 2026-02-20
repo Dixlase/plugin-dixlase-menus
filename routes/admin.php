@@ -21,8 +21,8 @@
  */
 
 use Illuminate\Support\Facades\Route;
-use Plugins\DixlaseMenu\App\Http\Controllers\Admin\AdminMenuController;
-use Plugins\DixlaseMenu\App\Http\Controllers\Admin\AdminMenuItemController;
+use Plugins\DixlaseMenus\App\Http\Controllers\Admin\AdminMenuController;
+use Plugins\DixlaseMenus\App\Http\Controllers\Admin\AdminMenuItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +38,7 @@ use Plugins\DixlaseMenu\App\Http\Controllers\Admin\AdminMenuItemController;
 |
 */
 
-Route::prefix('menus')->name('dixlase-menu::admin.menus.')->group(function () {
+Route::prefix('menus')->name('dixlase-menus::admin.menus.')->group(function () {
     /*
     |--------------------------------------------------------------------------
     | メニュー管理
