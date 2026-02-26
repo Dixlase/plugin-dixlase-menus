@@ -130,8 +130,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             @enderror
                         </div>
 
+                        <!-- 手動配置のヒント -->
+                        <div x-show="!isAuto" x-transition>
+                            <p class="text-sm text-amber-600 dark:text-amber-400">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                {{ __('dixlase-menus::admin.menus.create.manual_create_hint') }}
+                            </p>
+                        </div>
+
                         <!-- 表示位置 -->
-                        <div>
+                        <div x-effect="$el.querySelector('select').disabled = !isAuto"
+                             :class="{ 'opacity-50': !isAuto }">
                             <x-form-label for="location">
                                 {{ __('dixlase-menus::admin.menus.create.location') }}
                             </x-form-label>
@@ -139,8 +148,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 name="location"
                                 :options="array_merge(['' => __('dixlase-menus::admin.menus.create.select_location')], $locationOptions)"
                                 :value="old('location')"
-                                :disabled="false"
-                                x-bind:disabled="!isAuto"
                             />
                             @error('location')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -151,7 +158,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         </div>
 
                         <!-- 表示順 -->
-                        <div>
+                        <div :class="{ 'opacity-50': !isAuto }">
                             <label for="display_order" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 {{ __('dixlase-menus::admin.menus.create.display_order') }}
                             </label>
@@ -161,7 +168,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                    value="{{ old('display_order', 0) }}"
                                    min="0"
                                    x-bind:disabled="!isAuto"
-                                   class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('display_order') border-red-500 @enderror disabled:opacity-50 disabled:cursor-not-allowed">
+                                   class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('display_order') border-red-500 @enderror disabled:cursor-not-allowed">
                             @error('display_order')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror

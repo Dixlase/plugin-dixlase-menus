@@ -12,8 +12,9 @@ import Alpine from 'alpinejs';
 import Sortable from 'sortablejs';
 
 Alpine.data('menuEditor', () => ({
-    // 配置タイプ（menuPlacement 由来）
+    // 配置タイプ
     placementType: 'manual',
+    placementDescriptions: {},
 
     // メニューアイテム管理
     items: [],
@@ -34,6 +35,13 @@ Alpine.data('menuEditor', () => ({
     },
 
     /**
+     * 現在の配置タイプの説明文を取得
+     */
+    get placementDescription() {
+        return this.placementDescriptions[this.placementType] || '';
+    },
+
+    /**
      * 初期化: $el.dataset からサーバーデータを取得し、submitModalForm をオーバーライド
      */
     init() {
@@ -42,6 +50,13 @@ Alpine.data('menuEditor', () => ({
         // 配置タイプ初期化
         if (el.dataset.placementType) {
             this.placementType = el.dataset.placementType;
+        }
+
+        // 配置タイプ説明文の初期化
+        try {
+            this.placementDescriptions = JSON.parse(el.dataset.placementDescriptions || '{}');
+        } catch (e) {
+            this.placementDescriptions = {};
         }
 
         // メニューアイテム初期化

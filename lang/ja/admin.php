@@ -75,6 +75,7 @@ return [
             'is_active_help' => 'チェックを外すとメニューが非表示になります',
             'confirm_title' => 'メニューの作成',
             'confirm_message' => 'このメニューを作成してもよろしいですか？',
+            'manual_create_hint' => '保存後、編集画面にBladeディレクティブとショートコードが表示されます。',
         ],
         'edit' => [
             'heading' => 'メニューを編集',
