@@ -75,6 +75,7 @@ return [
             'is_active_help' => 'Uncheck to hide this menu from the site',
             'confirm_title' => 'Create Menu',
             'confirm_message' => 'Are you sure you want to create this menu?',
+            'manual_create_hint' => 'After saving, the Blade directive and shortcode will be displayed on the edit page.',
         ],
         'edit' => [
             'heading' => 'Edit Menu',

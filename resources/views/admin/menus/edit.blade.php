@@ -30,7 +30,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
      data-max-depth="{{ $maxDepth }}"
      data-sync-url="{{ route('dixlase-menus::admin.menus.items.sync', $menu->id) }}"
      data-items='@json($menuItems)'
-     data-error-message="{{ __('dixlase-menus::admin.messages.menu_items_save_failed') }}">
+     data-error-message="{{ __('dixlase-menus::admin.messages.menu_items_save_failed') }}"
+     data-placement-descriptions='@json($placementTypeDescriptions)'>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- 左カラム: メニュー基本情報 -->
         <div class="lg:col-span-1">
@@ -125,16 +126,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     <x-form-label for="placement_type" :required="true">
                                         {{ __('dixlase-menus::admin.menus.edit.placement_type') }}
                                     </x-form-label>
-                                    <x-form-radio-card-group
+                                    <x-form-select
                                         name="placement_type"
+                                        id="placement_type"
                                         :options="$placementTypeOptions"
                                         :value="old('placement_type', $menu->placement_type?->value ?? 'manual')"
                                         xModel="placementType"
-                                        :columns="2"
                                     />
                                     @error('placement_type')
                                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                     @enderror
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" x-text="placementDescription"></p>
                                 </div>
 
                                 <!-- 表示位置 -->

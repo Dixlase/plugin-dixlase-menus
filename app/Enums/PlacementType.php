@@ -54,6 +54,19 @@ enum PlacementType: string
     }
 
     /**
+     * 各配置タイプの説明を取得（value => description）
+     *
+     * @return array<string, string>
+     */
+    public static function descriptions(): array
+    {
+        return [
+            self::Manual->value => __('dixlase-menus::admin.enums.placement_type.manual_description'),
+            self::Auto->value => __('dixlase-menus::admin.enums.placement_type.auto_description'),
+        ];
+    }
+
+    /**
      * ラジオカードグループ用のオプション配列を取得
      *
      * @return array<int, array{value: string, label: string, description: string, icon: string}>
