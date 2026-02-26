@@ -39,6 +39,11 @@
             "database_cleanup": false,
             "navigation": true
         },
+        "assets": {
+            "common": ["js/app.js"],
+            "admin": ["admin/js/app.js"],
+            "front": []
+        },
         "contracts": [],
         "migrations": true,
         "commands": false,
