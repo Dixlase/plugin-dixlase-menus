@@ -111,6 +111,8 @@ return [
             'toggle_children' => 'Toggle Children',
             'confirm_title' => 'Save Menu',
             'confirm_message' => 'Are you sure you want to save the changes to this menu?',
+            'sidebar_open' => 'Open sidebar',
+            'sidebar_close' => 'Close sidebar',
         ],
     ],
 

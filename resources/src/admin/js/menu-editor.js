@@ -54,6 +54,7 @@ Alpine.data('menuEditor', () => ({
      * 初期化: $el.dataset からサーバーデータを取得し、submitModalForm をオーバーライド
      */
     init() {
+        this.$dispatch('right-sidebar-active');
         const el = this.$el;
 
         // 配置タイプ初期化

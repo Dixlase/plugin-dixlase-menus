@@ -111,6 +111,8 @@ return [
             'toggle_children' => '子アイテムを展開/折りたたみ',
             'confirm_title' => 'メニューの保存',
             'confirm_message' => 'このメニューの変更を保存してもよろしいですか？',
+            'sidebar_open' => 'サイドバーを開く',
+            'sidebar_close' => 'サイドバーを閉じる',
         ],
     ],
 
