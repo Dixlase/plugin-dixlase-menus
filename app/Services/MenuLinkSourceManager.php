@@ -23,6 +23,7 @@
 namespace Plugins\DixlaseMenus\App\Services;
 
 use Plugins\DixlaseMenus\App\Contracts\MenuLinkSource;
+use Plugins\DixlaseMenus\App\Services\MenuLinkSources\LinkableProviderAdapter;
 use Illuminate\Support\Collection;
 
 /**
@@ -179,8 +180,32 @@ class MenuLinkSourceManager
     }
 
     /**
+     * 利用可能なリンクソースのメタデータ一覧を取得
+     *
+     * @return array<int, array{type: string, label: string, icon: string, hasItems: bool}>
+     */
+    public function getSourcesMetadata(): array
+    {
+        return $this->getAvailableSources()
+            ->map(function (MenuLinkSource $source) {
+                $icon = ($source instanceof LinkableProviderAdapter)
+                    ? ($source->getIcon() ?? 'fas fa-link')
+                    : 'fas fa-link';
+
+                return [
+                    'type' => $source->getSourceType(),
+                    'label' => $source->getSourceLabel(),
+                    'icon' => $icon,
+                    'hasItems' => $source->getSourceType() !== 'custom_url',
+                ];
+            })
+            ->values()
+            ->toArray();
+    }
+
+    /**
      * 登録されているソース数を取得
-     * 
+     *
      * @return int
      */
     public function count(): int

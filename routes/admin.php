@@ -23,6 +23,7 @@
 use Illuminate\Support\Facades\Route;
 use Plugins\DixlaseMenus\App\Http\Controllers\Admin\AdminMenuController;
 use Plugins\DixlaseMenus\App\Http\Controllers\Admin\AdminMenuItemController;
+use Plugins\DixlaseMenus\App\Http\Controllers\Admin\AdminMenuLinkSourceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,6 +85,16 @@ Route::prefix('menus')->name('dixlase-menus::admin.menus.')->group(function () {
 
         // 並び順更新（Ajax）
         Route::post('/order', [AdminMenuItemController::class, 'updateOrder'])->name('order');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | リンクソースAPI
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('link-sources')->name('link-sources.')->group(function () {
+        Route::get('/', [AdminMenuLinkSourceController::class, 'index'])->name('index');
+        Route::get('/{sourceType}/items', [AdminMenuLinkSourceController::class, 'items'])->name('items');
     });
 
     /*

@@ -5,7 +5,7 @@
  * https://exc-d.com
  *
  * 統合メニューエディター（Alpine.js コンポーネント）
- * edit.blade.php で使用: 配置タイプ切り替え + メニューアイテム管理 + 統合保存
+ * edit.blade.php で使用: 配置タイプ切り替え + メニューアイテム管理 + リンクソース + 統合保存
  */
 
 import Alpine from 'alpinejs';
@@ -26,6 +26,15 @@ Alpine.data('menuEditor', () => ({
     messageType: 'success',
     hasChanges: false,
     sortableInstance: null,
+
+    // リンクソース管理
+    linkSources: [],
+    sourceItems: {},
+    sourceSearch: {},
+    selectedItems: {},
+    customUrl: { label: '', url: '' },
+    loadingSources: {},
+    linkSourcesUrl: '',
 
     /**
      * 自動配置かどうか
@@ -71,6 +80,9 @@ Alpine.data('menuEditor', () => ({
             this.items = [];
         }
 
+        // リンクソースURL初期化
+        this.linkSourcesUrl = el.dataset.linkSourcesUrl || '';
+
         this.$nextTick(() => {
             this.initSortable();
         });
@@ -90,6 +102,149 @@ Alpine.data('menuEditor', () => ({
                 originalSubmitModalForm(formId);
             }
         };
+
+        // リンクソースを読み込み
+        this.loadLinkSources();
+    },
+
+    /**
+     * リンクソースのメタデータを取得
+     */
+    async loadLinkSources() {
+        if (!this.linkSourcesUrl) {
+            return;
+        }
+
+        try {
+            const response = await fetch(this.linkSourcesUrl, {
+                headers: { 'Accept': 'application/json' },
+            });
+            const data = await response.json();
+            this.linkSources = data.sources || [];
+        } catch (error) {
+            console.error('Failed to load link sources:', error);
+        }
+    },
+
+    /**
+     * 特定ソースのアイテムを読み込み（遅延ロード）
+     */
+    async loadSourceItems(sourceType) {
+        if (this.sourceItems[sourceType]) {
+            return;
+        }
+
+        this.loadingSources[sourceType] = true;
+
+        try {
+            const url = `${this.linkSourcesUrl}/${sourceType}/items`;
+            const response = await fetch(url, {
+                headers: { 'Accept': 'application/json' },
+            });
+            const data = await response.json();
+            this.sourceItems[sourceType] = data.items || [];
+        } catch (error) {
+            console.error(`Failed to load items for ${sourceType}:`, error);
+            this.sourceItems[sourceType] = [];
+        } finally {
+            this.loadingSources[sourceType] = false;
+        }
+    },
+
+    /**
+     * ソース内アイテムを検索（デバウンスはBladeの @input.debounce で処理）
+     */
+    async searchSourceItems(sourceType) {
+        this.loadingSources[sourceType] = true;
+
+        try {
+            const query = this.sourceSearch[sourceType] || '';
+            const url = `${this.linkSourcesUrl}/${sourceType}/items?search=${encodeURIComponent(query)}`;
+            const response = await fetch(url, {
+                headers: { 'Accept': 'application/json' },
+            });
+            const data = await response.json();
+            this.sourceItems[sourceType] = data.items || [];
+        } catch (error) {
+            console.error(`Failed to search items for ${sourceType}:`, error);
+        } finally {
+            this.loadingSources[sourceType] = false;
+        }
+    },
+
+    /**
+     * チェックボックスのトグル
+     */
+    toggleSourceItem(sourceType, itemId) {
+        if (!this.selectedItems[sourceType]) {
+            this.selectedItems[sourceType] = new Set();
+        }
+
+        if (this.selectedItems[sourceType].has(itemId)) {
+            this.selectedItems[sourceType].delete(itemId);
+        } else {
+            this.selectedItems[sourceType].add(itemId);
+        }
+
+        // リアクティビティのためにオブジェクトを再割当て
+        this.selectedItems = { ...this.selectedItems };
+    },
+
+    /**
+     * 選択されたアイテムをメニューに追加
+     */
+    addSelectedItems(sourceType) {
+        const selected = this.selectedItems[sourceType];
+        if (!selected || selected.size === 0) {
+            return;
+        }
+
+        const items = this.sourceItems[sourceType] || [];
+
+        selected.forEach((itemId) => {
+            const sourceItem = items.find(i => i.id === itemId);
+            if (sourceItem) {
+                this.items.push({
+                    id: this.generateId(),
+                    label: sourceItem.title,
+                    url: sourceItem.url,
+                    target: '_self',
+                    source_type: sourceType,
+                    source_id: sourceItem.id,
+                    depth: 0,
+                    children: []
+                });
+            }
+        });
+
+        // 選択をクリア
+        this.selectedItems[sourceType] = new Set();
+        this.selectedItems = { ...this.selectedItems };
+
+        this.$nextTick(() => this.initSortable());
+    },
+
+    /**
+     * カスタムURLアイテムをメニューに追加
+     */
+    addCustomUrl() {
+        if (!this.customUrl.label || !this.customUrl.url) {
+            return;
+        }
+
+        this.items.push({
+            id: this.generateId(),
+            label: this.customUrl.label,
+            url: this.customUrl.url,
+            target: '_self',
+            source_type: 'custom_url',
+            source_id: null,
+            depth: 0,
+            children: []
+        });
+
+        this.customUrl = { label: '', url: '' };
+        this.$nextTick(() => this.initSortable());
     },
 
     /**
@@ -191,7 +346,7 @@ Alpine.data('menuEditor', () => ({
     },
 
     /**
-     * 親メニューアイテムを追加
+     * 親メニューアイテムを追加（空のカスタムURL行）
      */
     addItem() {
         this.items.push({
