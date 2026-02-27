@@ -28,6 +28,8 @@ use App\Traits\PluginLoaderTrait;
 use App\Helpers\PluginHelper;
 use Plugins\DixlaseMenus\App\Services\MenuLinkSourceManager;
 use Plugins\DixlaseMenus\App\Services\MenuLinkSources\CustomUrlSource;
+use Plugins\DixlaseMenus\App\Services\MenuLinkSources\LinkableProviderAdapter;
+use App\Contracts\PluginIntegration\LinkableProviderInterface;
 use Plugins\DixlaseMenus\App\Shortcodes\MenuShortcode;
 use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuRepositoryInterface;
 use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuItemRepositoryInterface;
@@ -49,9 +51,6 @@ class DixlaseMenusServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // 管理画面ナビゲーションをマージ
-        $this->mergeAdminNavigation('DixlaseMenus', __DIR__ . '/../../config/admin.php');
-        
         // 設定ファイルをマージ
         $this->mergeConfigFrom(
             __DIR__ . '/../../config/dixlase_menus.php',
@@ -120,15 +119,26 @@ class DixlaseMenusServiceProvider extends ServiceProvider
 
     /**
      * リンクソースを登録
+     *
+     * カスタムURLソースを登録後、コアの linkable.providers タグで
+     * 登録されたプロバイダーを自動検出し、アダプター経由で登録する
      */
     protected function registerLinkSources(): void
     {
-        // MenuLinkSourceManagerに直接登録（自プラグイン内）
         $manager = $this->app->make(MenuLinkSourceManager::class);
         $manager->register(new CustomUrlSource());
 
-        // 他のプラグインがリンクソースを追加できるようにイベントを発火
-        // event(new MenuLinkSourcesRegistering($manager));
+        // コアの linkable.providers タグ付きプロバイダーを自動検出
+        try {
+            $providers = $this->app->tagged('linkable.providers');
+            foreach ($providers as $provider) {
+                if ($provider instanceof LinkableProviderInterface) {
+                    $manager->register(new LinkableProviderAdapter($provider));
+                }
+            }
+        } catch (\Exception $e) {
+            // タグ未登録の場合は無視
+        }
     }
 
     /**

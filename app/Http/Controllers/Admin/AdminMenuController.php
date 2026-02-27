@@ -154,6 +154,7 @@ class AdminMenuController extends Controller
         $this->viewParams['placementTypeOptions'] = PlacementType::options();
         $this->viewParams['placementTypeDescriptions'] = PlacementType::descriptions();
         $this->viewParams['maxDepth'] = $maxDepth;
+        $this->viewParams['linkSourcesUrl'] = route('dixlase-menus::admin.menus.link-sources.index');
 
         return view('dixlase-menus::admin.menus.edit', $this->viewParams);
     }
