@@ -22,10 +22,11 @@
 
 namespace Plugins\DixlaseMenus\App\Http\Requests;
 
+use App\Rules\UniqueContentSlug;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
-use Plugins\DixlaseMenus\App\Enums\PlacementType;
 use Plugins\DixlaseMenus\App\Enums\MenuLocation;
+use Plugins\DixlaseMenus\App\Enums\PlacementType;
 
 /**
  * メニュー作成リクエスト
@@ -51,7 +52,7 @@ class AdminMenuStoreRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9-_]+$/'],
+            'slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9-_]+$/', UniqueContentSlug::for('plg_dixlase_menus')],
             'placement_type' => ['required', new Enum(PlacementType::class)],
             'location' => ['nullable', 'required_if:placement_type,auto', 'string', 'max:255', new Enum(MenuLocation::class)],
             'description' => ['nullable', 'string', 'max:1000'],
