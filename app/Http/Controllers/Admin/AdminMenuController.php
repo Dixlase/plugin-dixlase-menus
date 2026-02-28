@@ -91,14 +91,6 @@ class AdminMenuController extends Controller
     {
         $validated = $request->validated();
 
-        // スラッグの重複チェック
-        if ($this->menuRepository->slugExists($validated['slug'])) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->withErrors(['slug' => __('dixlase-menus::admin.messages.slug_already_exists')]);
-        }
-
         $menu = $this->menuRepository->create($validated);
 
         return redirect()
@@ -169,14 +161,6 @@ class AdminMenuController extends Controller
     public function update(AdminMenuUpdateRequest $request, int $id)
     {
         $validated = $request->validated();
-
-        // スラッグの重複チェック（自分自身を除く）
-        if ($this->menuRepository->slugExists($validated['slug'], $id)) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->withErrors(['slug' => __('dixlase-menus::admin.messages.slug_already_exists')]);
-        }
 
         $menu = $this->menuRepository->update($id, $validated);
 
