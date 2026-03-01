@@ -349,110 +349,102 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             @method('PUT')
 
             <!-- 基本情報 -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-                <section class="p-6">
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                        {{ __('dixlase-menus::admin.menus.edit.basic_info') }}
-                    </h2>
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                    {{ __('dixlase-menus::admin.menus.edit.basic_info') }}
+                </h2>
 
-                    <fieldset>
-                        <legend class="sr-only">{{ __('dixlase-menus::admin.menus.edit.basic_info') }}</legend>
+                <div class="space-y-4">
+                    <!-- メニュー名 -->
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            {{ __('dixlase-menus::admin.menus.edit.name') }}
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text"
+                                id="name"
+                                name="name"
+                                value="{{ old('name', $menu->name) }}"
+                                required
+                                class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('name') border-red-500 @enderror">
+                        @error('name')
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                        <div class="space-y-4">
-                            <!-- メニュー名 -->
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    {{ __('dixlase-menus::admin.menus.edit.name') }}
-                                    <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text"
-                                       id="name"
-                                       name="name"
-                                       value="{{ old('name', $menu->name) }}"
-                                       required
-                                       class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('name') border-red-500 @enderror">
-                                @error('name')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
+                    <!-- スラッグ -->
+                    <div>
+                        <label for="slug" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            {{ __('dixlase-menus::admin.menus.edit.slug') }}
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text"
+                                id="slug"
+                                name="slug"
+                                value="{{ old('slug', $menu->slug) }}"
+                                required
+                                pattern="[a-z0-9_\-]+"
+                                class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('slug') border-red-500 @enderror">
+                        @error('slug')
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                            <!-- スラッグ -->
-                            <div>
-                                <label for="slug" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    {{ __('dixlase-menus::admin.menus.edit.slug') }}
-                                    <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text"
-                                       id="slug"
-                                       name="slug"
-                                       value="{{ old('slug', $menu->slug) }}"
-                                       required
-                                       pattern="[a-z0-9_\-]+"
-                                       class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('slug') border-red-500 @enderror">
-                                @error('slug')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
+                    <!-- 説明 -->
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            {{ __('dixlase-menus::admin.menus.edit.description') }}
+                        </label>
+                        <textarea id="description"
+                                    name="description"
+                                    rows="3"
+                                    class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('description') border-red-500 @enderror">{{ old('description', $menu->description) }}</textarea>
+                        @error('description')
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                            <!-- 説明 -->
-                            <div>
-                                <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    {{ __('dixlase-menus::admin.menus.edit.description') }}
-                                </label>
-                                <textarea id="description"
-                                          name="description"
-                                          rows="3"
-                                          class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('description') border-red-500 @enderror">{{ old('description', $menu->description) }}</textarea>
-                                @error('description')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- アクティブ状態 -->
-                            <div>
-                                <x-form-toggle
-                                    name="is_active"
-                                    :checked="old('is_active', $menu->is_active)"
-                                    :label="__('dixlase-menus::admin.menus.edit.is_active')"
-                                />
-                            </div>
-                        </div>
-                    </fieldset>
-                </section>
+                    <!-- アクティブ状態 -->
+                    <div>
+                        <x-form-toggle
+                            name="is_active"
+                            :checked="old('is_active', $menu->is_active)"
+                            :label="__('dixlase-menus::admin.menus.edit.is_active')"
+                        />
+                    </div>
+                </div>
             </div>
 
             <!-- 表示設定 -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden mt-6">
-                <section class="p-6">
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                        {{ __('dixlase-menus::admin.menus.edit.display_settings') }}
-                    </h2>
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                    {{ __('dixlase-menus::admin.menus.edit.display_settings') }}
+                </h2>
 
-                    <fieldset>
-                        <legend class="sr-only">{{ __('dixlase-menus::admin.menus.edit.display_settings') }}</legend>
+                <div class="space-y-4">
+                    <!-- 配置方法 -->
+                    <div>
+                        <x-form-label for="placement_type" :required="true">
+                            {{ __('dixlase-menus::admin.menus.edit.placement_type') }}
+                        </x-form-label>
+                        <x-form-select
+                            name="placement_type"
+                            id="placement_type"
+                            :options="$placementTypeOptions"
+                            :value="old('placement_type', $menu->placement_type?->value ?? 'manual')"
+                            xModel="placementType"
+                        />
+                        @error('placement_type')
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                        @enderror
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" x-text="placementDescription"></p>
+                    </div>
 
+                    <!-- 自動配置: 表示位置・表示順 -->
+                    <template x-if="isAuto">
                         <div class="space-y-4">
-                            <!-- 配置方法 -->
-                            <div>
-                                <x-form-label for="placement_type" :required="true">
-                                    {{ __('dixlase-menus::admin.menus.edit.placement_type') }}
-                                </x-form-label>
-                                <x-form-select
-                                    name="placement_type"
-                                    id="placement_type"
-                                    :options="$placementTypeOptions"
-                                    :value="old('placement_type', $menu->placement_type?->value ?? 'manual')"
-                                    xModel="placementType"
-                                />
-                                @error('placement_type')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                @enderror
-                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" x-text="placementDescription"></p>
-                            </div>
-
                             <!-- 表示位置 -->
-                            <div x-effect="$el.querySelector('select').disabled = !isAuto"
-                                 :class="{ 'opacity-50': !isAuto }">
+                            <div>
                                 <x-form-label for="location">
                                     {{ __('dixlase-menus::admin.menus.edit.location') }}
                                 </x-form-label>
@@ -467,60 +459,55 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             </div>
 
                             <!-- 表示順 -->
-                            <div :class="{ 'opacity-50': !isAuto }">
+                            <div>
                                 <label for="display_order" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                     {{ __('dixlase-menus::admin.menus.edit.display_order') }}
                                 </label>
                                 <input type="number"
-                                       id="display_order"
-                                       name="display_order"
-                                       value="{{ old('display_order', $menu->display_order) }}"
-                                       min="0"
-                                       x-bind:disabled="!isAuto"
-                                       class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('display_order') border-red-500 @enderror disabled:cursor-not-allowed">
+                                        id="display_order"
+                                        name="display_order"
+                                        value="{{ old('display_order', $menu->display_order) }}"
+                                        min="0"
+                                        class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('display_order') border-red-500 @enderror">
                                 @error('display_order')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
-                    </fieldset>
-                </section>
-            </div>
+                    </template>
 
-            <!-- 配置コード -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden mt-6"
-                 :class="{ 'opacity-50 pointer-events-none': isAuto }">
-                <section class="p-6">
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                        {{ __('dixlase-menus::admin.menus.edit.placement_code') }}
-                    </h2>
-
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {{ __('dixlase-menus::admin.menus.edit.blade_directive') }}
-                            </label>
-                            <code class="block w-full px-3 py-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-mono text-gray-800 dark:text-gray-200">@@menu('{{ $menu->slug }}')</code>
+                    <!-- 手動配置: 配置コード -->
+                    <template x-if="!isAuto">
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    {{ __('dixlase-menus::admin.menus.edit.blade_directive') }}
+                                </label>
+                                <code class="block w-full px-3 py-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-mono text-gray-800 dark:text-gray-200">@@menu('{{ $menu->slug }}')</code>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    {{ __('dixlase-menus::admin.menus.edit.shortcode') }}
+                                </label>
+                                <code class="block w-full px-3 py-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-mono text-gray-800 dark:text-gray-200">[menu slug="{{ $menu->slug }}"]</code>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {{ __('dixlase-menus::admin.menus.edit.shortcode') }}
-                            </label>
-                            <code class="block w-full px-3 py-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-mono text-gray-800 dark:text-gray-200">[menu slug="{{ $menu->slug }}"]</code>
-                        </div>
-                    </div>
-                </section>
+                    </template>
+                </div>
             </div>
         </form>
 
-        <!-- 削除ボタン -->
-        <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
-            <x-form-button
-                type="link"
-                variant="danger"
-                icon="fas fa-trash"
-                :label="__('common.delete')"
-                :href="route('dixlase-menus::admin.menus.delete', $menu->id)"
+        <!-- 削除 -->
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+            <form id="delete-menu-form" action="{{ route('dixlase-menus::admin.menus.destroy', $menu->id) }}" method="POST">
+                @csrf
+                @method('DELETE')
+            </form>
+            <x-admin.delete-button
+                id_confirmation="delete-menu-modal"
+                form="delete-menu-form"
+                :title="__('dixlase-menus::admin.menus.delete_confirm_title')"
+                :message="__('dixlase-menus::admin.menus.delete_confirm_message')"
             />
         </div>
     </div>

@@ -31,15 +31,6 @@ class MenuList {
      * イベントリスナーのセットアップ
      */
     setupEventListeners() {
-        // 削除ボタン
-        this.container.addEventListener('click', (e) => {
-            const btn = e.target.closest('.delete-menu-btn');
-            if (btn) {
-                e.preventDefault();
-                this.confirmDelete(btn);
-            }
-        });
-
         // 復元ボタン
         this.container.addEventListener('click', (e) => {
             const btn = e.target.closest('.restore-menu-btn');
@@ -48,29 +39,6 @@ class MenuList {
                 this.confirmRestore(btn);
             }
         });
-    }
-
-    /**
-     * 削除確認 — data属性からURLを取得
-     */
-    confirmDelete(btn) {
-        const menuName = btn.dataset.menuName;
-        const deleteUrl = btn.dataset.deleteUrl;
-
-        if (!confirm(`「${menuName}」を削除しますか？\n\nメニューアイテムも含めて削除されます。`)) {
-            return;
-        }
-
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = deleteUrl;
-
-        form.innerHTML = `
-            <input type="hidden" name="_token" value="${this.csrfToken}">
-            <input type="hidden" name="_method" value="DELETE">
-        `;
-        document.body.appendChild(form);
-        form.submit();
     }
 
     /**

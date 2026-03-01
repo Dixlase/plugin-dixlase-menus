@@ -170,25 +170,6 @@ class AdminMenuController extends Controller
     }
 
     /**
-     * メニュー削除確認
-     *
-     * @param int $id
-     * @return \Illuminate\View\View
-     */
-    public function delete(int $id)
-    {
-        $menu = $this->menuRepository->findWithItems($id);
-
-        if (!$menu) {
-            abort(404);
-        }
-
-        $this->viewParams['menu'] = $menu;
-
-        return view('dixlase-menus::admin.menus.delete', $this->viewParams);
-    }
-
-    /**
      * メニュー削除実行
      *
      * @param int $id

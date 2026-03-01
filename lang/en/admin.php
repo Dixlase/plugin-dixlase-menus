@@ -114,6 +114,8 @@ return [
             'sidebar_open' => 'Open sidebar',
             'sidebar_close' => 'Close sidebar',
         ],
+        'delete_confirm_title' => 'Delete Menu',
+        'delete_confirm_message' => 'Are you sure you want to delete this menu? All menu items will also be deleted.',
     ],
 
     // Menu Items
