@@ -1,24 +1,24 @@
 {
-  "_module.esm-Cm4okMZt.js": {
-    "file": "assets/module.esm-Cm4okMZt.js",
+  "_module.esm.js": {
+    "file": "js/module.esm.js",
     "name": "module.esm"
   },
   "plugins/DixlaseMenus/resources/src/admin/js/app.js": {
-    "file": "assets/app-ZlIrTSa5.js",
+    "file": "admin/js/app.js",
     "name": "app",
     "src": "plugins/DixlaseMenus/resources/src/admin/js/app.js",
     "isEntry": true,
     "imports": [
-      "_module.esm-Cm4okMZt.js"
+      "_module.esm.js"
     ]
   },
   "plugins/DixlaseMenus/resources/src/js/app.js": {
-    "file": "assets/app-Bk9EW-0i.js",
+    "file": "js/app.js",
     "name": "app",
     "src": "plugins/DixlaseMenus/resources/src/js/app.js",
     "isEntry": true,
     "imports": [
-      "_module.esm-Cm4okMZt.js"
+      "_module.esm.js"
     ]
   }
 }

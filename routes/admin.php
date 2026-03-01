@@ -58,7 +58,6 @@ Route::prefix('menus')->name('dixlase-menus::admin.menus.')->group(function () {
     Route::put('/{id}', [AdminMenuController::class, 'update'])->name('update');
 
     // メニュー削除
-    Route::get('/delete/{id}', [AdminMenuController::class, 'delete'])->name('delete');
     Route::delete('/{id}', [AdminMenuController::class, 'destroy'])->name('destroy');
 
     // メニュー復元

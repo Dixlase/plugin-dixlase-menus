@@ -23,7 +23,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 @section('title', __('dixlase-menus::admin.menus.index.heading'))
 
 @section('content')
-<div class="max-w-7xl mx-auto menu-list-container">
+<div class="max-w-7xl mx-auto menu-list-container" x-data="{ deleteMenuName: '', deleteFormAction: '' }">
     <!-- ヘッダーアクション -->
     <div class="flex justify-end items-center mb-6">
         <x-form-button
@@ -155,14 +155,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
                                     <!-- 削除 -->
                                     <button type="button"
-                                            class="delete-menu-btn text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                                            data-menu-id="{{ $menu->id }}"
-                                            data-menu-name="{{ $menu->name }}"
-                                            data-delete-url="{{ route('dixlase-menus::admin.menus.destroy', $menu->id) }}"
+                                            class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                                            @click="deleteMenuName = '{{ addslashes($menu->name) }}'; deleteFormAction = '{{ route('dixlase-menus::admin.menus.destroy', $menu->id) }}'; openModal('delete-menu-modal')"
                                             title="{{ __('common.delete') }}">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                        </svg>
+                                        <i class="fas fa-trash-alt w-5 h-5"></i>
                                     </button>
                                 </div>
                             </td>
@@ -179,6 +175,24 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             </div>
         @endif
     @endif
+
+    <!-- 削除フォーム（共有） -->
+    <form id="delete-menu-form" method="POST" :action="deleteFormAction">
+        @csrf
+        @method('DELETE')
+    </form>
+
+    <!-- 削除確認モーダル（共有） -->
+    <x-ui-modal
+        id="delete-menu-modal"
+        :title="__('dixlase-menus::admin.menus.delete_confirm_title')"
+        :confirm_label="__('common.delete')"
+        icon_type="danger"
+        confirm_color="red"
+        form="delete-menu-form"
+    >
+        <p class="text-sm text-gray-600 dark:text-gray-400" x-text="'{{ __('dixlase-menus::admin.menus.delete_confirm_message') }}'"></p>
+    </x-ui-modal>
 </div>
 @endsection
 

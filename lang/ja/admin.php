@@ -114,6 +114,8 @@ return [
             'sidebar_open' => 'サイドバーを開く',
             'sidebar_close' => 'サイドバーを閉じる',
         ],
+        'delete_confirm_title' => 'メニューの削除',
+        'delete_confirm_message' => 'このメニューを削除してもよろしいですか？メニューアイテムも含めて削除されます。',
     ],
 
     // メニューアイテム

@@ -13,5 +13,17 @@ export default defineConfig({
     ],
     build: {
         outDir: 'plugins/DixlaseMenus/resources/assets',
+        rollupOptions: {
+            output: {
+                entryFileNames: (chunkInfo) => {
+                    if (chunkInfo.facadeModuleId?.includes('/admin/')) {
+                        return 'admin/js/[name].js';
+                    }
+                    return 'js/[name].js';
+                },
+                chunkFileNames: 'js/[name].js',
+                assetFileNames: 'css/[name][extname]',
+            },
+        },
     },
 });
