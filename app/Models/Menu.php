@@ -22,6 +22,7 @@
 
 namespace Plugins\DixlaseMenus\App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -34,6 +35,7 @@ use Plugins\DixlaseMenus\App\Enums\PlacementType;
  * @property int $id
  * @property string $name
  * @property string $slug
+ * @property string $lang 言語コード
  * @property string|null $location
  * @property PlacementType $placement_type
  * @property string|null $description
@@ -62,6 +64,7 @@ class Menu extends Model
     protected $fillable = [
         'name',
         'slug',
+        'lang',
         'location',
         'placement_type',
         'description',
@@ -163,6 +166,14 @@ class Menu extends Model
     public function scopeBySlug($query, string $slug)
     {
         return $query->where('slug', $slug);
+    }
+
+    /**
+     * 指定言語のメニューを取得するスコープ
+     */
+    public function scopeForLang(Builder $query, string $lang): Builder
+    {
+        return $query->where('lang', $lang);
     }
 
     /**

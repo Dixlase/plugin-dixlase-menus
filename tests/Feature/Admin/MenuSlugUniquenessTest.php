@@ -75,6 +75,7 @@ class MenuSlugUniquenessTest extends TestCase
                     ->name('dixlase-menus::admin.menus.')
                     ->group(function () use ($router) {
                         $router->post('/', [AdminMenuController::class, 'store'])->name('store');
+                        $router->get('/{id}/edit', [AdminMenuController::class, 'edit'])->name('edit');
                         $router->put('/{id}', [AdminMenuController::class, 'update'])->name('update');
                     });
             });
@@ -108,6 +109,7 @@ class MenuSlugUniquenessTest extends TestCase
         DB::table('plg_dixlase_menus')->insert([
             'name' => 'Existing Menu',
             'slug' => 'main-menu',
+            'lang' => 'en',
             'is_active' => true,
             'display_order' => 0,
             'created_at' => now(),
@@ -133,6 +135,7 @@ class MenuSlugUniquenessTest extends TestCase
         $menuId = DB::table('plg_dixlase_menus')->insertGetId([
             'name' => 'My Menu',
             'slug' => 'my-menu',
+            'lang' => 'en',
             'is_active' => true,
             'display_order' => 0,
             'created_at' => now(),
@@ -158,6 +161,7 @@ class MenuSlugUniquenessTest extends TestCase
         DB::table('plg_dixlase_menus')->insert([
             'name' => 'Other Menu',
             'slug' => 'other-menu',
+            'lang' => 'en',
             'is_active' => true,
             'display_order' => 0,
             'created_at' => now(),
@@ -167,6 +171,7 @@ class MenuSlugUniquenessTest extends TestCase
         $menuId = DB::table('plg_dixlase_menus')->insertGetId([
             'name' => 'My Menu',
             'slug' => 'my-menu',
+            'lang' => 'en',
             'is_active' => true,
             'display_order' => 1,
             'created_at' => now(),
@@ -192,6 +197,7 @@ class MenuSlugUniquenessTest extends TestCase
         DB::table('plg_dixlase_menus')->insert([
             'name' => 'Deleted Menu',
             'slug' => 'reusable-slug',
+            'lang' => 'en',
             'is_active' => true,
             'display_order' => 0,
             'deleted_at' => now(),
