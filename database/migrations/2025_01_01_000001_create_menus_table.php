@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('plg_dixlase_menus', function (Blueprint $table) {
             $table->id();
             $table->string('name')->comment('メニュー名');
-            $table->string('slug')->unique()->comment('メニュースラッグ（識別子）');
+            $table->string('slug')->comment('メニュースラッグ（識別子）');
+            $table->string('lang', 10)->comment('言語コード');
             $table->string('location')->nullable()->comment('表示位置（header, footer, sidebarなど）');
             $table->text('description')->nullable()->comment('メニューの説明');
             $table->boolean('is_active')->default(true)->comment('有効/無効');
@@ -22,8 +23,12 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
+            // ソフトデリート対応のユニーク制約（slug + lang + deleted_at）
+            $table->unique(['slug', 'lang', 'deleted_at'], 'plg_dixlase_menus_slug_lang_del_unique');
+
             // インデックス
             $table->index('slug');
+            $table->index('lang');
             $table->index('location');
             $table->index('is_active');
             $table->index('display_order');
