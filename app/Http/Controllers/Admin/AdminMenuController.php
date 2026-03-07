@@ -90,6 +90,7 @@ class AdminMenuController extends Controller
     public function store(AdminMenuStoreRequest $request)
     {
         $validated = $request->validated();
+        $validated['lang'] = app()->getLocale();
 
         $menu = $this->menuRepository->create($validated);
 
