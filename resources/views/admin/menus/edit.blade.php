@@ -497,21 +497,33 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             </div>
         </form>
 
-        <!-- 削除 -->
+        <!-- 削除ボタン -->
         <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-            <form id="delete-menu-form" action="{{ route('dixlase-menus::admin.menus.destroy', $menu->id) }}" method="POST">
-                @csrf
-                @method('DELETE')
-            </form>
-            <x-admin.delete-button
-                id_confirmation="delete-menu-modal"
-                form="delete-menu-form"
-                :title="__('dixlase-menus::admin.menus.delete_confirm_title')"
-                :message="__('dixlase-menus::admin.menus.delete_confirm_message')"
+            <x-form-button
+                type="button"
+                variant="danger"
+                :label="__('common.delete')"
+                icon="fas fa-trash-alt"
+                @click="openModal('delete-menu-modal')"
             />
         </div>
     </div>
 </div>
+
+<!-- 削除フォーム・モーダル（サイドバー外に配置して画面中央に表示） -->
+<form id="delete-menu-form" action="{{ route('dixlase-menus::admin.menus.destroy', $menu->id) }}" method="POST">
+    @csrf
+    @method('DELETE')
+</form>
+<x-ui-modal
+    id="delete-menu-modal"
+    :title="__('dixlase-menus::admin.menus.delete_confirm_title')"
+    :message="__('dixlase-menus::admin.menus.delete_confirm_message')"
+    :confirm_label="__('common.delete')"
+    icon_type="danger"
+    confirm_color="red"
+    form="delete-menu-form"
+/>
 @endsection
 
 @section('save')

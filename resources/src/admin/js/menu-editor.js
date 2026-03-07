@@ -8,10 +8,10 @@
  * edit.blade.php で使用: 配置タイプ切り替え + メニューアイテム管理 + リンクソース + 統合保存
  */
 
-import Alpine from 'alpinejs';
 import Sortable from 'sortablejs';
 
-Alpine.data('menuEditor', () => ({
+document.addEventListener('alpine:init', () => {
+    Alpine.data('menuEditor', () => ({
     // 配置タイプ
     placementType: 'manual',
     placementDescriptions: {},
@@ -396,4 +396,5 @@ Alpine.data('menuEditor', () => ({
     removeChildItem(parentIndex, childIndex) {
         this.items[parentIndex].children.splice(childIndex, 1);
     }
-}));
+    }));
+});
