@@ -1,10 +1,32 @@
 <?php
 
+/**
+ * This file is part of Dixlase Menu.
+ *
+ * Copyright (C) 2025 exc-D inc.
+ * https://exc-d.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 namespace Plugins\DixlaseMenus\Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+/**
+ * Plugin database seeder — runs on plugin installation.
+ */
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -12,16 +34,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // メニュー設定のシーダーを実行
         $this->call([
             MenuSettingsSeeder::class,
+            SampleMenuSeeder::class,
         ]);
-
-        // 開発環境でのみサンプルメニューを作成
-        if (!app()->environment('production')) {
-            $this->call([
-                SampleMenuSeeder::class,
-            ]);
-        }
     }
 }
