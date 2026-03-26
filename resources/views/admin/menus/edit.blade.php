@@ -36,137 +36,23 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     <!-- メインコンテンツ: メニューアイテム管理 -->
     <div class="space-y-6">
-        <!-- アイテムを追加パネル -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
-             x-data="{ activeTab: 'custom_url' }">
-            <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-                    {{ __('dixlase-menus::admin.menus.edit.add_items') }}
-                </h2>
-            </div>
-
-            <!-- タブナビゲーション -->
-            <div class="border-b border-gray-200 dark:border-gray-700">
-                <nav class="flex -mb-px overflow-x-auto" aria-label="Tabs">
-                    <!-- カスタムURLタブ -->
-                    <button type="button"
-                            @click="activeTab = 'custom_url'"
-                            :class="activeTab === 'custom_url'
-                                ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                                : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'"
-                            class="whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium flex items-center gap-2">
-                        <i class="fas fa-link"></i>
-                        {{ __('dixlase-menus::admin.menus.edit.custom_url') }}
-                    </button>
-
-                    <!-- プロバイダータブ（動的） -->
-                    <template x-for="source in linkSources.filter(s => s.hasItems)" :key="source.type">
-                        <button type="button"
-                                @click="activeTab = source.type; if (!sourceItems[source.type]) loadSourceItems(source.type)"
-                                :class="activeTab === source.type
-                                    ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'"
-                                class="whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium flex items-center gap-2">
-                            <i :class="source.icon"></i>
-                            <span x-text="source.label"></span>
-                        </button>
-                    </template>
-                </nav>
-            </div>
-
-            <!-- タブコンテンツ -->
-            <div class="p-4">
-                <!-- カスタムURLコンテンツ -->
-                <div x-show="activeTab === 'custom_url'" class="space-y-3">
-                    <div>
-                        <input type="text"
-                               x-model="customUrl.label"
-                               placeholder="{{ __('dixlase-menus::admin.menus.edit.custom_url_label') }}"
-                               class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    </div>
-                    <div>
-                        <input type="text"
-                               x-model="customUrl.url"
-                               placeholder="{{ __('dixlase-menus::admin.menus.edit.custom_url_url') }}"
-                               class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    </div>
-                </div>
-
-                <!-- プロバイダーコンテンツ（動的） -->
-                <template x-for="source in linkSources.filter(s => s.hasItems)" :key="'content-' + source.type">
-                    <div x-show="activeTab === source.type" class="space-y-3">
-                        <!-- 検索 -->
-                        <input type="text"
-                               :value="sourceSearch[source.type] || ''"
-                               @input.debounce.300ms="sourceSearch[source.type] = $event.target.value; searchSourceItems(source.type)"
-                               placeholder="{{ __('dixlase-menus::admin.menus.edit.search_items') }}"
-                               class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-
-                        <!-- 読み込み中 -->
-                        <div x-show="loadingSources[source.type]" class="text-center py-4 text-sm text-gray-500 dark:text-gray-400">
-                            <i class="fas fa-spinner fa-spin mr-1"></i>
-                            {{ __('dixlase-menus::admin.menus.edit.loading_items') }}
-                        </div>
-
-                        <!-- アイテムリスト -->
-                        <div x-show="!loadingSources[source.type] && sourceItems[source.type]" class="max-h-48 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-md">
-                            <template x-if="sourceItems[source.type] && sourceItems[source.type].length === 0">
-                                <div class="px-3 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                                    {{ __('dixlase-menus::admin.menus.edit.no_source_items') }}
-                                </div>
-                            </template>
-                            <template x-for="item in (sourceItems[source.type] || [])" :key="item.id">
-                                <label class="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
-                                    <input type="checkbox"
-                                           :checked="selectedItems[source.type] && selectedItems[source.type].has(item.id)"
-                                           @change="toggleSourceItem(source.type, item.id)"
-                                           class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500">
-                                    <span class="text-sm text-gray-700 dark:text-gray-300" x-text="item.title"></span>
-                                </label>
-                            </template>
-                        </div>
-                    </div>
-                </template>
-
-                <!-- メニューに追加ボタン（共通） -->
-                <div class="mt-4">
-                    <!-- カスタムURL用 -->
-                    <x-form-button
-                        type="button"
-                        variant="secondary"
-                        size="sm"
-                        icon="fas fa-plus"
-                        :label="__('dixlase-menus::admin.menus.edit.add_to_menu')"
-                        xClick="addCustomUrl()"
-                        xShow="activeTab === 'custom_url'"
-                        xBind:disabled="!customUrl.label || !customUrl.url"
-                    />
-
-                    <!-- プロバイダー用 -->
-                    <template x-for="source in linkSources.filter(s => s.hasItems)" :key="'btn-' + source.type">
-                        <div x-show="activeTab === source.type">
-                            <x-form-button
-                                type="button"
-                                variant="secondary"
-                                size="sm"
-                                icon="fas fa-plus"
-                                :label="__('dixlase-menus::admin.menus.edit.add_to_menu')"
-                                xClick="addSelectedItems(source.type)"
-                                xBind:disabled="!selectedItems[source.type] || selectedItems[source.type].size === 0"
-                            />
-                        </div>
-                    </template>
-                </div>
-            </div>
-        </div>
-
         <!-- メニューアイテム一覧 -->
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
             <!-- ヘッダー -->
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-                    {{ __('dixlase-menus::admin.menus.edit.menu_items') }}
-                </h2>
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        {{ __('dixlase-menus::admin.menus.edit.menu_items') }}
+                    </h2>
+                    <x-form-button
+                        type="button"
+                        variant="primary"
+                        icon="fas fa-plus"
+                        size="sm"
+                        :label="__('dixlase-menus::admin.menus.edit.add_item')"
+                        xClick="openAddItemModal()"
+                    />
+                </div>
             </div>
 
             <!-- メニューアイテム一覧 -->
@@ -181,6 +67,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                             {{ __('dixlase-menus::admin.menus.edit.no_items_description') }}
                         </p>
+                        <div class="mt-6">
+                            <x-form-button
+                                type="button"
+                                variant="primary"
+                                icon="fas fa-plus"
+                                :label="__('dixlase-menus::admin.menus.edit.add_first_item')"
+                                xClick="openAddItemModal()"
+                            />
+                        </div>
                     </div>
                 </template>
 
@@ -235,7 +130,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <div class="flex items-center gap-1">
                                     <!-- 子メニュー追加ボタン -->
                                     <button type="button"
-                                            @click="addChildItem(index)"
+                                            @click="openAddItemModal(index)"
                                             x-show="item.depth < maxDepth - 1"
                                             class="p-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                                             title="{{ __('dixlase-menus::admin.menus.edit.add_child') }}">
@@ -503,6 +398,173 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 icon="fas fa-trash-alt"
                 @click="openModal('delete-menu-modal')"
             />
+        </div>
+    </div>
+    <!-- アイテム追加モーダル -->
+    <div id="add-item-modal"
+         class="modal"
+         x-show="addItemModalOpen"
+         x-cloak
+         @keydown.escape.window="if (addItemModalOpen) addItemModalOpen = false"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         style="display: none;">
+        <div class="modal-overlay bg-white/80 dark:bg-black/50"
+             @click="addItemModalOpen = false"></div>
+        <div class="modal-container !max-w-xl"
+             @click.stop
+             style="transition: opacity 300ms ease-out, transform 300ms ease-out;">
+            <div class="modal-content !text-left !p-0">
+                <!-- モーダルヘッダー -->
+                <div class="flex items-center justify-between px-6 pt-6 pb-4">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        <span x-show="addItemParentIndex === null">{{ __('dixlase-menus::admin.menus.edit.add_items') }}</span>
+                        <span x-show="addItemParentIndex !== null">{{ __('dixlase-menus::admin.menus.edit.add_child') }}</span>
+                    </h2>
+                    <button type="button" @click="addItemModalOpen = false"
+                            class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- 追加先の親アイテム表示 -->
+                <div x-show="addItemParentIndex !== null && items[addItemParentIndex]"
+                     class="mx-6 mb-3 px-3 py-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-md text-sm text-indigo-700 dark:text-indigo-300">
+                    <i class="fas fa-level-down-alt mr-1"></i>
+                    <span x-text="addItemParentIndex !== null && items[addItemParentIndex] ? items[addItemParentIndex].label : ''"></span>
+                    {{ __('dixlase-menus::admin.menus.edit.add_child_hint') }}
+                </div>
+
+                <!-- タブナビゲーション -->
+                <div class="border-b border-gray-200 dark:border-gray-700">
+                    <nav class="flex -mb-px overflow-x-auto px-6" aria-label="Tabs">
+                        <!-- カスタムURLタブ -->
+                        <button type="button"
+                                @click="addItemActiveTab = 'custom_url'"
+                                :class="addItemActiveTab === 'custom_url'
+                                    ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
+                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'"
+                                class="whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium flex items-center gap-2">
+                            <i class="fas fa-link"></i>
+                            {{ __('dixlase-menus::admin.menus.edit.custom_url') }}
+                        </button>
+
+                        <!-- プロバイダータブ（動的） -->
+                        <template x-for="source in linkSources.filter(s => s.hasItems)" :key="'modal-tab-' + source.type">
+                            <button type="button"
+                                    @click="addItemActiveTab = source.type; if (!sourceItems[source.type]) loadSourceItems(source.type)"
+                                    :class="addItemActiveTab === source.type
+                                        ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
+                                        : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'"
+                                    class="whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium flex items-center gap-2">
+                                <i :class="source.icon"></i>
+                                <span x-text="source.label"></span>
+                            </button>
+                        </template>
+                    </nav>
+                </div>
+
+                <!-- タブコンテンツ -->
+                <div class="px-6 py-4">
+                    <!-- カスタムURLコンテンツ -->
+                    <div x-show="addItemActiveTab === 'custom_url'" class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                {{ __('dixlase-menus::admin.menu_items.create.title') }}
+                            </label>
+                            <input type="text"
+                                   x-model="customUrl.label"
+                                   placeholder="{{ __('dixlase-menus::admin.menus.edit.custom_url_label') }}"
+                                   class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                {{ __('dixlase-menus::admin.menu_items.create.url') }}
+                            </label>
+                            <input type="text"
+                                   x-model="customUrl.url"
+                                   placeholder="{{ __('dixlase-menus::admin.menus.edit.custom_url_url') }}"
+                                   class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                    </div>
+
+                    <!-- プロバイダーコンテンツ（動的） -->
+                    <template x-for="source in linkSources.filter(s => s.hasItems)" :key="'modal-content-' + source.type">
+                        <div x-show="addItemActiveTab === source.type" class="space-y-3">
+                            <!-- 検索 -->
+                            <input type="text"
+                                   :value="sourceSearch[source.type] || ''"
+                                   @input.debounce.300ms="sourceSearch[source.type] = $event.target.value; searchSourceItems(source.type)"
+                                   placeholder="{{ __('dixlase-menus::admin.menus.edit.search_items') }}"
+                                   class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+
+                            <!-- 読み込み中 -->
+                            <div x-show="loadingSources[source.type]" class="text-center py-4 text-sm text-gray-500 dark:text-gray-400">
+                                <i class="fas fa-spinner fa-spin mr-1"></i>
+                                {{ __('dixlase-menus::admin.menus.edit.loading_items') }}
+                            </div>
+
+                            <!-- アイテムリスト -->
+                            <div x-show="!loadingSources[source.type] && sourceItems[source.type]" class="max-h-48 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-md">
+                                <template x-if="sourceItems[source.type] && sourceItems[source.type].length === 0">
+                                    <div class="px-3 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                        {{ __('dixlase-menus::admin.menus.edit.no_source_items') }}
+                                    </div>
+                                </template>
+                                <template x-for="sourceItem in (sourceItems[source.type] || [])" :key="sourceItem.id">
+                                    <label class="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+                                        <input type="checkbox"
+                                               :checked="selectedItems[source.type] && selectedItems[source.type].has(sourceItem.id)"
+                                               @change="toggleSourceItem(source.type, sourceItem.id)"
+                                               class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500">
+                                        <span class="text-sm text-gray-700 dark:text-gray-300" x-text="sourceItem.title"></span>
+                                    </label>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- モーダルフッター -->
+            <div class="modal-actions">
+                <x-form-button
+                    type="button"
+                    variant="secondary"
+                    icon="fas fa-times"
+                    @click="addItemModalOpen = false"
+                    class="mx-2"
+                >{{ __('common.cancel') }}</x-form-button>
+
+                <!-- カスタムURL追加ボタン -->
+                <x-form-button
+                    type="button"
+                    variant="primary"
+                    icon="fas fa-plus"
+                    xShow="addItemActiveTab === 'custom_url'"
+                    xClick="addCustomUrl()"
+                    xBind:disabled="!customUrl.label || !customUrl.url"
+                    class="mx-2"
+                >{{ __('dixlase-menus::admin.menus.edit.add_to_menu') }}</x-form-button>
+
+                <!-- プロバイダー追加ボタン -->
+                <template x-for="source in linkSources.filter(s => s.hasItems)" :key="'modal-btn-' + source.type">
+                    <div x-show="addItemActiveTab === source.type" class="inline-block">
+                        <x-form-button
+                            type="button"
+                            variant="primary"
+                            icon="fas fa-plus"
+                            xClick="addSelectedItems(source.type)"
+                            xBind:disabled="!selectedItems[source.type] || selectedItems[source.type].size === 0"
+                            class="mx-2"
+                        >{{ __('dixlase-menus::admin.menus.edit.add_to_menu') }}</x-form-button>
+                    </div>
+                </template>
+            </div>
         </div>
     </div>
 </div>
