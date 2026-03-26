@@ -84,9 +84,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <template x-for="(item, index) in items" :key="item.id || index">
                         <div class="menu-item bg-gray-50 dark:bg-gray-700 rounded-md" :data-index="index">
                             <!-- 親メニュー -->
-                            <div class="flex items-center gap-2 p-4">
+                            <div class="flex items-end gap-2 p-4">
                                 <!-- ドラッグハンドル -->
-                                <div class="drag-handle cursor-move p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                <div class="drag-handle cursor-move p-1 mb-1.25 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                                     <i class="fas fa-grip-vertical"></i>
                                 </div>
 
@@ -127,7 +127,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 </div>
 
                                 <!-- アクションボタン -->
-                                <div class="flex items-center gap-1">
+                                <div class="flex items-center gap-1 mb-0.5">
                                     <!-- 子メニュー追加ボタン -->
                                     <button type="button"
                                             @click="openAddItemModal(index)"
