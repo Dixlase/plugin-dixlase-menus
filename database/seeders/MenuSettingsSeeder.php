@@ -1,10 +1,33 @@
 <?php
 
+/**
+ * This file is part of Dixlase Menu.
+ *
+ * Copyright (C) 2025 exc-D inc.
+ * https://exc-d.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 namespace Plugins\DixlaseMenus\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Default menu settings seeder.
+ */
 class MenuSettingsSeeder extends Seeder
 {
     /**
@@ -17,7 +40,7 @@ class MenuSettingsSeeder extends Seeder
                 'key' => 'max_menu_depth',
                 'value' => '3',
                 'type' => 'integer',
-                'description' => 'メニューの最大階層数',
+                'description' => 'Maximum menu nesting depth',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -25,7 +48,7 @@ class MenuSettingsSeeder extends Seeder
                 'key' => 'enable_menu_cache',
                 'value' => '1',
                 'type' => 'boolean',
-                'description' => 'メニューのキャッシュを有効化',
+                'description' => 'Enable menu cache',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -33,7 +56,7 @@ class MenuSettingsSeeder extends Seeder
                 'key' => 'cache_duration',
                 'value' => '3600',
                 'type' => 'integer',
-                'description' => 'キャッシュの有効期間（秒）',
+                'description' => 'Cache duration in seconds',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -41,7 +64,7 @@ class MenuSettingsSeeder extends Seeder
                 'key' => 'default_target',
                 'value' => '_self',
                 'type' => 'string',
-                'description' => 'デフォルトのリンクターゲット',
+                'description' => 'Default link target',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -49,12 +72,17 @@ class MenuSettingsSeeder extends Seeder
                 'key' => 'available_locations',
                 'value' => json_encode(['header', 'footer', 'sidebar', 'mobile']),
                 'type' => 'json',
-                'description' => '利用可能なメニュー位置',
+                'description' => 'Available menu locations',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ];
 
-        DB::table('menu_settings')->insert($settings);
+        foreach ($settings as $setting) {
+            DB::table('plg_dixlase_menu_settings')->updateOrInsert(
+                ['key' => $setting['key']],
+                $setting
+            );
+        }
     }
 }
