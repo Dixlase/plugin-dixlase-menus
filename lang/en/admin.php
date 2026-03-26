@@ -108,6 +108,7 @@ return [
             'children' => 'children',
             'order' => 'Order',
             'add_child' => 'Add Child Item',
+            'add_child_hint' => '— adding as child item',
             'toggle_children' => 'Toggle Children',
             'confirm_title' => 'Save Menu',
             'confirm_message' => 'Are you sure you want to save the changes to this menu?',
@@ -164,7 +165,7 @@ return [
     // Settings
     'settings' => [
         'heading' => 'Menu Settings',
-        
+
         'basic' => [
             'title' => 'Basic Settings',
             'menu_structure' => 'Menu Structure',
@@ -177,7 +178,7 @@ return [
             'target_parent' => 'Parent Frame (_parent)',
             'target_top' => 'Top Frame (_top)',
         ],
-        
+
         'cache' => [
             'title' => 'Cache Settings',
             'menu_cache' => 'Menu Cache',
@@ -189,7 +190,7 @@ return [
             'clear_cache_help' => 'Clear all menu caches',
             'clear_cache_confirm' => 'Are you sure you want to clear the cache?',
         ],
-        
+
         'menu_items' => [
             'title' => 'Menu Items',
             'add_item' => 'Add Menu',
@@ -206,7 +207,7 @@ return [
             'no_providers' => 'No content providers available',
             'items_help' => 'Add menu items. Drag and drop to reorder.',
         ],
-        
+
         'confirm' => [
             'title' => 'Save Settings',
             'message' => 'Are you sure you want to save the menu settings?',
@@ -222,7 +223,7 @@ return [
         'menu_restored' => 'Menu restored successfully',
         'menu_not_found' => 'Menu not found',
         'slug_already_exists' => 'This slug is already in use',
-        
+
         // Menu item
         'menu_item_created' => 'Menu item created successfully',
         'menu_item_updated' => 'Menu item updated successfully',
@@ -232,17 +233,17 @@ return [
         'max_depth_exceeded' => 'Maximum depth exceeded',
         'cannot_set_self_as_parent' => 'Cannot set self as parent',
         'cannot_set_descendant_as_parent' => 'Cannot set descendant as parent',
-        
+
         // Order
         'order_updated' => 'Order updated successfully',
         'order_update_failed' => 'Failed to update order',
         'no_items_to_update' => 'No items to update',
         'move_failed' => 'Failed to move item',
-        
+
         // Settings
         'settings_updated' => 'Settings updated successfully',
         'cache_cleared' => 'Cache cleared successfully',
-        
+
         // Bulk save
         'menu_items_saved' => 'Menu items saved successfully',
         'menu_items_save_failed' => 'Failed to save menu items',

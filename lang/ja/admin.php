@@ -108,6 +108,7 @@ return [
             'children' => '個の子アイテム',
             'order' => '順序',
             'add_child' => '子アイテムを追加',
+            'add_child_hint' => 'の子アイテムとして追加',
             'toggle_children' => '子アイテムを展開/折りたたみ',
             'confirm_title' => 'メニューの保存',
             'confirm_message' => 'このメニューの変更を保存してもよろしいですか？',
@@ -164,7 +165,7 @@ return [
     // 設定画面
     'settings' => [
         'heading' => 'メニュー設定',
-        
+
         'basic' => [
             'title' => '基本設定',
             'menu_structure' => 'メニュー構造',
@@ -177,7 +178,7 @@ return [
             'target_parent' => '親フレーム (_parent)',
             'target_top' => '最上位フレーム (_top)',
         ],
-        
+
         'cache' => [
             'title' => 'キャッシュ設定',
             'menu_cache' => 'メニューキャッシュ',
@@ -189,7 +190,7 @@ return [
             'clear_cache_help' => 'すべてのメニューキャッシュを削除します',
             'clear_cache_confirm' => '本当にキャッシュをクリアしますか？',
         ],
-        
+
         'menu_items' => [
             'title' => 'メニューアイテム',
             'add_item' => 'メニューを追加',
@@ -206,7 +207,7 @@ return [
             'no_providers' => '利用可能なコンテンツプロバイダーがありません',
             'items_help' => 'メニューアイテムを追加してください。ドラッグ＆ドロップで順序を変更できます。',
         ],
-        
+
         'confirm' => [
             'title' => '設定の保存',
             'message' => 'メニュー設定を保存してもよろしいですか？',
@@ -222,7 +223,7 @@ return [
         'menu_restored' => 'メニューを復元しました',
         'menu_not_found' => 'メニューが見つかりません',
         'slug_already_exists' => 'このスラッグは既に使用されています',
-        
+
         // メニューアイテム
         'menu_item_created' => 'メニューアイテムを作成しました',
         'menu_item_updated' => 'メニューアイテムを更新しました',
@@ -232,17 +233,17 @@ return [
         'max_depth_exceeded' => '最大階層深度を超えています',
         'cannot_set_self_as_parent' => '自分自身を親に設定できません',
         'cannot_set_descendant_as_parent' => '子孫を親に設定できません',
-        
+
         // 並び順
         'order_updated' => '並び順を更新しました',
         'order_update_failed' => '並び順の更新に失敗しました',
         'no_items_to_update' => '更新するアイテムがありません',
         'move_failed' => '移動に失敗しました',
-        
+
         // 設定
         'settings_updated' => '設定を更新しました',
         'cache_cleared' => 'キャッシュをクリアしました',
-        
+
         // 一括保存
         'menu_items_saved' => 'メニューアイテムを保存しました',
         'menu_items_save_failed' => 'メニューアイテムの保存に失敗しました',

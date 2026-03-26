@@ -36,6 +36,11 @@ document.addEventListener('alpine:init', () => {
     loadingSources: {},
     linkSourcesUrl: '',
 
+    // アイテム追加モーダル
+    addItemModalOpen: false,
+    addItemActiveTab: 'custom_url',
+    addItemParentIndex: null,
+
     /**
      * 自動配置かどうか
      */
@@ -192,7 +197,42 @@ document.addEventListener('alpine:init', () => {
     },
 
     /**
-     * 選択されたアイテムをメニューに追加
+     * Open the add item modal
+     *
+     * @param {number|null} parentIndex - Parent item index for child items, null for root
+     */
+    openAddItemModal(parentIndex = null) {
+        this.addItemParentIndex = parentIndex !== undefined ? parentIndex : null;
+        this.addItemActiveTab = 'custom_url';
+        this.customUrl = { label: '', url: '' };
+        this.addItemModalOpen = true;
+    },
+
+    /**
+     * Add a new item to the target (root or child)
+     *
+     * @param {Object} newItem - The item data to add
+     */
+    _addItemToTarget(newItem) {
+        if (this.addItemParentIndex !== null && this.items[this.addItemParentIndex]) {
+            // Add as child
+            const parent = this.items[this.addItemParentIndex];
+            if (!parent.children) {
+                parent.children = [];
+            }
+            newItem.depth = (parent.depth || 0) + 1;
+            parent.children.push(newItem);
+            this.$nextTick(() => this.initChildSortables());
+        } else {
+            // Add as root
+            newItem.depth = 0;
+            this.items.push(newItem);
+            this.$nextTick(() => this.initSortable());
+        }
+    },
+
+    /**
+     * Add selected source items to the menu
      */
     addSelectedItems(sourceType) {
         const selected = this.selectedItems[sourceType];
@@ -205,47 +245,45 @@ document.addEventListener('alpine:init', () => {
         selected.forEach((itemId) => {
             const sourceItem = items.find(i => i.id === itemId);
             if (sourceItem) {
-                this.items.push({
+                this._addItemToTarget({
                     id: this.generateId(),
                     label: sourceItem.title,
                     url: sourceItem.url,
                     target: '_self',
                     source_type: sourceType,
                     source_id: sourceItem.id,
-                    depth: 0,
                     children: []
                 });
             }
         });
 
-        // 選択をクリア
+        // Clear selection
         this.selectedItems[sourceType] = new Set();
         this.selectedItems = { ...this.selectedItems };
 
-        this.$nextTick(() => this.initSortable());
+        this.addItemModalOpen = false;
     },
 
     /**
-     * カスタムURLアイテムをメニューに追加
+     * Add a custom URL item to the menu
      */
     addCustomUrl() {
         if (!this.customUrl.label || !this.customUrl.url) {
             return;
         }
 
-        this.items.push({
+        this._addItemToTarget({
             id: this.generateId(),
             label: this.customUrl.label,
             url: this.customUrl.url,
             target: '_self',
             source_type: 'custom_url',
             source_id: null,
-            depth: 0,
             children: []
         });
 
         this.customUrl = { label: '', url: '' };
-        this.$nextTick(() => this.initSortable());
+        this.addItemModalOpen = false;
     },
 
     /**
