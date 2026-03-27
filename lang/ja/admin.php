@@ -109,6 +109,7 @@ return [
             'order' => '順序',
             'add_child' => '子アイテムを追加',
             'add_child_hint' => 'の子アイテムとして追加',
+            'published_only_hint' => '公開済みのページのみ表示されます。',
             'toggle_children' => '子アイテムを展開/折りたたみ',
             'confirm_title' => 'メニューの保存',
             'confirm_message' => 'このメニューの変更を保存してもよろしいですか？',
