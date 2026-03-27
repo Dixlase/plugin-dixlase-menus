@@ -527,6 +527,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             </div>
                         </div>
                     </template>
+
+                    <!-- 注意書き（プロバイダータブ選択時のみ表示） -->
+                    <p x-show="addItemActiveTab !== 'custom_url'"
+                       class="mt-3 text-xs text-gray-500 dark:text-gray-400">
+                        <i class="fas fa-info-circle mr-1"></i>{{ __('dixlase-menus::admin.menus.edit.published_only_hint') }}
+                    </p>
                 </div>
             </div>
 

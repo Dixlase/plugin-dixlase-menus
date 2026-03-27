@@ -109,6 +109,7 @@ return [
             'order' => 'Order',
             'add_child' => 'Add Child Item',
             'add_child_hint' => '— adding as child item',
+            'published_only_hint' => 'Only published pages are shown.',
             'toggle_children' => 'Toggle Children',
             'confirm_title' => 'Save Menu',
             'confirm_message' => 'Are you sure you want to save the changes to this menu?',
