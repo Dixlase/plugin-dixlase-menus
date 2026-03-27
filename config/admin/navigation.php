@@ -23,7 +23,7 @@
 return [
     // メニュー管理
     'menus' => [
-        '_insert_after' => 'media',
+        '_insert_before' => 'media',
         'text' => 'dixlase-menus::admin/navigation.menus.text',
         'icon' => 'fas fa-fw fa-bars',
         'can' => 'admin',
