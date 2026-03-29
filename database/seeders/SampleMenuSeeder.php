@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\DB;
 /**
  * Default sample menu seeder.
  *
- * Creates a header menu and a footer menu with typical items
+ * Creates a header menu and a footer menu
  * so that the plugin is immediately usable after installation.
  */
 class SampleMenuSeeder extends Seeder
@@ -81,17 +81,17 @@ class SampleMenuSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        // About with sub-items
-        $aboutItemId = DB::table('plg_dixlase_menu_items')->insertGetId([
+        // About Us
+        DB::table('plg_dixlase_menu_items')->insert([
             'menu_id' => $menuId,
             'parent_id' => null,
-            'title' => $isJapanese ? '会社概要' : 'About',
+            'title' => $isJapanese ? '私たちについて' : 'About Us',
             'url' => '/about',
             'source_type' => 'custom_url',
             'source_id' => null,
             'target' => '_self',
             'css_class' => null,
-            'icon_class' => 'fas fa-building',
+            'icon_class' => null,
             'description' => null,
             'depth' => 0,
             'display_order' => 2,
@@ -102,70 +102,8 @@ class SampleMenuSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        DB::table('plg_dixlase_menu_items')->insert([
-            [
-                'menu_id' => $menuId,
-                'parent_id' => $aboutItemId,
-                'title' => $isJapanese ? '企業理念' : 'Philosophy',
-                'url' => '/about/philosophy',
-                'source_type' => 'custom_url',
-                'source_id' => null,
-                'target' => '_self',
-                'css_class' => null,
-                'icon_class' => null,
-                'description' => null,
-                'depth' => 1,
-                'display_order' => 1,
-                'is_active' => true,
-                'is_visible' => true,
-                'visibility_conditions' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'menu_id' => $menuId,
-                'parent_id' => $aboutItemId,
-                'title' => $isJapanese ? '会社沿革' : 'History',
-                'url' => '/about/history',
-                'source_type' => 'custom_url',
-                'source_id' => null,
-                'target' => '_self',
-                'css_class' => null,
-                'icon_class' => null,
-                'description' => null,
-                'depth' => 1,
-                'display_order' => 2,
-                'is_active' => true,
-                'is_visible' => true,
-                'visibility_conditions' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
-
-        // Contact
-        DB::table('plg_dixlase_menu_items')->insert([
-            'menu_id' => $menuId,
-            'parent_id' => null,
-            'title' => $isJapanese ? 'お問い合わせ' : 'Contact',
-            'url' => '/contact',
-            'source_type' => 'custom_url',
-            'source_id' => null,
-            'target' => '_self',
-            'css_class' => null,
-            'icon_class' => 'fas fa-envelope',
-            'description' => null,
-            'depth' => 0,
-            'display_order' => 3,
-            'is_active' => true,
-            'is_visible' => true,
-            'visibility_conditions' => null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        // Footer menu
-        $footerMenuId = DB::table('plg_dixlase_menus')->insertGetId([
+        // Footer menu (empty — items added by user via Legal/SEO plugins)
+        DB::table('plg_dixlase_menus')->insert([
             'name' => $isJapanese ? 'フッターメニュー' : 'Footer Menu',
             'slug' => 'footer-menu',
             'lang' => $lang,
@@ -176,47 +114,6 @@ class SampleMenuSeeder extends Seeder
             'display_order' => 2,
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
-
-        DB::table('plg_dixlase_menu_items')->insert([
-            [
-                'menu_id' => $footerMenuId,
-                'parent_id' => null,
-                'title' => $isJapanese ? 'プライバシーポリシー' : 'Privacy Policy',
-                'url' => '/privacy',
-                'source_type' => 'custom_url',
-                'source_id' => null,
-                'target' => '_self',
-                'css_class' => null,
-                'icon_class' => null,
-                'description' => null,
-                'depth' => 0,
-                'display_order' => 1,
-                'is_active' => true,
-                'is_visible' => true,
-                'visibility_conditions' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'menu_id' => $footerMenuId,
-                'parent_id' => null,
-                'title' => $isJapanese ? '利用規約' : 'Terms of Service',
-                'url' => '/terms',
-                'source_type' => 'custom_url',
-                'source_id' => null,
-                'target' => '_self',
-                'css_class' => null,
-                'icon_class' => null,
-                'description' => null,
-                'depth' => 0,
-                'display_order' => 2,
-                'is_active' => true,
-                'is_visible' => true,
-                'visibility_conditions' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
         ]);
     }
 }

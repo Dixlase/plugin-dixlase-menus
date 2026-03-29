@@ -76,31 +76,31 @@ class SampleMenuSeederTest extends TestCase
         $mainMenu = DB::table('plg_dixlase_menus')->where('slug', 'main-menu')->first();
         $footerMenu = DB::table('plg_dixlase_menus')->where('slug', 'footer-menu')->first();
 
-        // Header menu: Home, About (with 2 children), Contact = 5 items
+        // Header menu: Home, About Us = 2 items
         $headerItemCount = DB::table('plg_dixlase_menu_items')
             ->where('menu_id', $mainMenu->id)
             ->count();
-        $this->assertSame(5, $headerItemCount);
+        $this->assertSame(2, $headerItemCount);
 
-        // Footer menu: Privacy Policy, Terms = 2 items
+        // Footer menu: empty (items added by user via plugins)
         $footerItemCount = DB::table('plg_dixlase_menu_items')
             ->where('menu_id', $footerMenu->id)
             ->count();
-        $this->assertSame(2, $footerItemCount);
+        $this->assertSame(0, $footerItemCount);
     }
 
-    public function test_sample_menu_seeder_creates_nested_items(): void
+    public function test_sample_menu_seeder_creates_flat_items(): void
     {
         $this->seed(SampleMenuSeeder::class);
 
         $mainMenu = DB::table('plg_dixlase_menus')->where('slug', 'main-menu')->first();
 
-        // About should have 2 child items at depth 1
+        // All items should be at root level (depth 0)
         $childItems = DB::table('plg_dixlase_menu_items')
             ->where('menu_id', $mainMenu->id)
-            ->where('depth', 1)
+            ->where('depth', '>', 0)
             ->count();
-        $this->assertSame(2, $childItems);
+        $this->assertSame(0, $childItems);
     }
 
     public function test_sample_menu_seeder_skips_duplicate_run(): void
