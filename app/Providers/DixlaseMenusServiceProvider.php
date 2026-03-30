@@ -22,30 +22,31 @@
 
 namespace Plugins\DixlaseMenus\App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Blade;
-use App\Traits\PluginLoaderTrait;
+use App\Contracts\PluginIntegration\LinkableProviderInterface;
 use App\Helpers\PluginHelper;
+use App\Traits\PluginLoaderTrait;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\ServiceProvider;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuItemRepositoryInterface;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuRepositoryInterface;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuSettingRepositoryInterface;
+use Plugins\DixlaseMenus\App\Models\Menu;
+use Plugins\DixlaseMenus\App\Models\MenuItem;
+use Plugins\DixlaseMenus\App\Observers\MenuItemObserver;
+use Plugins\DixlaseMenus\App\Observers\MenuObserver;
+use Plugins\DixlaseMenus\App\Repositories\MenuItemRepository;
+use Plugins\DixlaseMenus\App\Repositories\MenuRepository;
+use Plugins\DixlaseMenus\App\Repositories\MenuSettingRepository;
 use Plugins\DixlaseMenus\App\Services\MenuLinkSourceManager;
 use Plugins\DixlaseMenus\App\Services\MenuLinkSources\CustomUrlSource;
 use Plugins\DixlaseMenus\App\Services\MenuLinkSources\LinkableProviderAdapter;
-use App\Contracts\PluginIntegration\LinkableProviderInterface;
-use Plugins\DixlaseMenus\App\Shortcodes\MenuShortcode;
-use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuRepositoryInterface;
-use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuItemRepositoryInterface;
-use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuSettingRepositoryInterface;
-use Plugins\DixlaseMenus\App\Repositories\MenuRepository;
-use Plugins\DixlaseMenus\App\Repositories\MenuItemRepository;
-use Plugins\DixlaseMenus\App\Repositories\MenuSettingRepository;
 use Plugins\DixlaseMenus\App\Services\MenuService;
-use Plugins\DixlaseMenus\App\Models\Menu;
-use Plugins\DixlaseMenus\App\Models\MenuItem;
-use Plugins\DixlaseMenus\App\Observers\MenuObserver;
-use Plugins\DixlaseMenus\App\Observers\MenuItemObserver;
+use Plugins\DixlaseMenus\App\Shortcodes\MenuShortcode;
 
 class DixlaseMenusServiceProvider extends ServiceProvider
 {
     use PluginLoaderTrait;
+
     /**
      * Register services.
      */
@@ -53,13 +54,13 @@ class DixlaseMenusServiceProvider extends ServiceProvider
     {
         // 設定ファイルをマージ
         $this->mergeConfigFrom(
-            __DIR__ . '/../../config/dixlase_menus.php',
+            __DIR__.'/../../config/dixlase_menus.php',
             'dixlase_menus'
         );
 
         // MenuLinkSourceManagerをシングルトンとして登録
         $this->app->singleton(MenuLinkSourceManager::class, function ($app) {
-            return new MenuLinkSourceManager();
+            return new MenuLinkSourceManager;
         });
 
         // リポジトリをバインド
@@ -82,17 +83,21 @@ class DixlaseMenusServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // ビューの登録
-        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'dixlase-menus');
+        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'dixlase-menus');
 
         // 翻訳ファイルの登録
-        $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'dixlase-menus');
+        $this->loadTranslationsFrom(__DIR__.'/../../lang', 'dixlase-menus');
 
         // マイグレーションの登録
-        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
 
         // モデルオブザーバーの登録（キャッシュ自動破棄）
         Menu::observe(MenuObserver::class);
         MenuItem::observe(MenuItemObserver::class);
+
+        // Menu provider registration (for theme integration via Contract+DTO)
+        $this->app->singleton(\Plugins\DixlaseMenus\App\Services\DixlaseMenusMenuProvider::class);
+        $this->app->tag([\Plugins\DixlaseMenus\App\Services\DixlaseMenusMenuProvider::class], 'plugin.capabilities');
 
         // リンクソースの登録
         $this->registerLinkSources();
@@ -108,11 +113,11 @@ class DixlaseMenusServiceProvider extends ServiceProvider
         // 公開可能なアセット
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../../config/dixlase_menus.php' => config_path('dixlase_menus.php'),
+                __DIR__.'/../../config/dixlase_menus.php' => config_path('dixlase_menus.php'),
             ], 'dixlase-menus-config');
 
             $this->publishes([
-                __DIR__ . '/../../resources/views' => resource_path('views/vendor/dixlase-menus'),
+                __DIR__.'/../../resources/views' => resource_path('views/vendor/dixlase-menus'),
             ], 'dixlase-menus-views');
         }
     }
@@ -126,7 +131,7 @@ class DixlaseMenusServiceProvider extends ServiceProvider
     protected function registerLinkSources(): void
     {
         $manager = $this->app->make(MenuLinkSourceManager::class);
-        $manager->register(new CustomUrlSource());
+        $manager->register(new CustomUrlSource);
 
         // コアの linkable.providers タグ付きプロバイダーを自動検出
         try {
