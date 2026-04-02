@@ -92,12 +92,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
                                 <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <!-- タイトル -->
-                                    <div :class="item.source_type === 'category' ? 'md:col-span-3' : ''">
+                                    <div :class="item.source_type === 'menu_group' ? 'md:col-span-3' : ''">
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             {{ __('dixlase-menus::admin.menu_items.create.title') }}
-                                            <span x-show="item.source_type === 'category'"
+                                            <span x-show="item.source_type === 'menu_group'"
                                                   class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
-                                                <i class="fas fa-folder mr-1 text-[10px]"></i>{{ __('dixlase-menus::admin.menus.edit.category_badge') }}
+                                                <i class="fas fa-layer-group mr-1 text-[10px]"></i>{{ __('dixlase-menus::admin.menus.edit.menu_group_badge') }}
                                             </span>
                                         </label>
                                         <input type="text"
@@ -107,7 +107,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     </div>
 
                                     <!-- URL -->
-                                    <div x-show="item.source_type !== 'category'">
+                                    <div x-show="item.source_type !== 'menu_group'">
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             {{ __('dixlase-menus::admin.menu_items.create.url') }}
                                         </label>
@@ -118,7 +118,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     </div>
 
                                     <!-- ターゲット -->
-                                    <div x-show="item.source_type !== 'category'">
+                                    <div x-show="item.source_type !== 'menu_group'">
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             {{ __('dixlase-menus::admin.menu_items.create.target') }}
                                         </label>
@@ -135,7 +135,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     <!-- 子メニュー追加ボタン -->
                                     <button type="button"
                                             @click="openAddItemModal(index)"
-                                            x-show="item.depth < maxDepth - 1"
+                                            x-show="item.source_type === 'menu_group' && item.depth < maxDepth - 1"
                                             class="p-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                                             title="{{ __('dixlase-menus::admin.menus.edit.add_child') }}">
                                         <i class="fas fa-plus"></i>
@@ -457,18 +457,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             {{ __('dixlase-menus::admin.menus.edit.custom_url') }}
                         </button>
 
-                        <!-- カテゴリタブ（ルートレベルのみ） -->
-                        <button type="button"
-                                x-show="addItemParentIndex === null"
-                                @click="addItemActiveTab = 'category'"
-                                :class="addItemActiveTab === 'category'
-                                    ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'"
-                                class="whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium flex items-center gap-2">
-                            <i class="fas fa-folder"></i>
-                            {{ __('dixlase-menus::admin.menus.edit.category') }}
-                        </button>
-
                         <!-- プロバイダータブ（動的） -->
                         <template x-for="source in linkSources.filter(s => s.hasItems)" :key="'modal-tab-' + source.type">
                             <button type="button"
@@ -481,6 +469,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <span x-text="source.label"></span>
                             </button>
                         </template>
+
+                        <!-- メニューグループタブ（ルートレベルのみ） -->
+                        <button type="button"
+                                x-show="addItemParentIndex === null"
+                                @click="addItemActiveTab = 'menu_group'"
+                                :class="addItemActiveTab === 'menu_group'
+                                    ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
+                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'"
+                                class="whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium flex items-center gap-2">
+                            <i class="fas fa-layer-group"></i>
+                            {{ __('dixlase-menus::admin.menus.edit.menu_group') }}
+                        </button>
                     </nav>
                 </div>
 
@@ -509,18 +509,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     </div>
 
                     <!-- カテゴリコンテンツ -->
-                    <div x-show="addItemActiveTab === 'category'" class="space-y-3">
+                    <div x-show="addItemActiveTab === 'menu_group'" class="space-y-3">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {{ __('dixlase-menus::admin.menus.edit.category_label') }}
+                                {{ __('dixlase-menus::admin.menus.edit.menu_group_label') }}
                             </label>
                             <input type="text"
-                                   x-model="categoryLabel"
-                                   placeholder="{{ __('dixlase-menus::admin.menus.edit.category_label_placeholder') }}"
+                                   x-model="menuGroupLabel"
+                                   placeholder="{{ __('dixlase-menus::admin.menus.edit.menu_group_label_placeholder') }}"
                                    class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
                         <p class="text-xs text-gray-500 dark:text-gray-400">
-                            <i class="fas fa-info-circle mr-1"></i>{{ __('dixlase-menus::admin.menus.edit.category_hint') }}
+                            <i class="fas fa-info-circle mr-1"></i>{{ __('dixlase-menus::admin.menus.edit.menu_group_hint') }}
                         </p>
                     </div>
 
@@ -561,7 +561,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     </template>
 
                     <!-- 注意書き（プロバイダータブ選択時のみ表示） -->
-                    <p x-show="addItemActiveTab !== 'custom_url' && addItemActiveTab !== 'category'"
+                    <p x-show="addItemActiveTab !== 'custom_url' && addItemActiveTab !== 'menu_group'"
                        class="mt-3 text-xs text-gray-500 dark:text-gray-400">
                         <i class="fas fa-info-circle mr-1"></i>{{ __('dixlase-menus::admin.menus.edit.published_only_hint') }}
                     </p>
@@ -594,9 +594,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     type="button"
                     variant="primary"
                     icon="fas fa-plus"
-                    xShow="addItemActiveTab === 'category'"
-                    xClick="addCategory()"
-                    xBind:disabled="!categoryLabel"
+                    xShow="addItemActiveTab === 'menu_group'"
+                    xClick="addMenuGroup()"
+                    xBind:disabled="!menuGroupLabel"
                     class="mx-2"
                 >{{ __('dixlase-menus::admin.menus.edit.add_to_menu') }}</x-form-button>
 

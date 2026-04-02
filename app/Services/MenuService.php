@@ -124,7 +124,7 @@ class MenuService
             'menu_id' => $menuId,
             'parent_id' => $parentId,
             'title' => $data['label'] ?? $data['title'] ?? '',
-            'url' => ($data['source_type'] ?? '') === 'category' ? null : ($data['url'] ?? ''),
+            'url' => ($data['source_type'] ?? '') === 'menu_group' ? null : ($data['url'] ?? ''),
             'source_type' => $data['source_type'] ?? 'custom_url',
             'source_id' => $data['source_id'] ?? null,
             'target' => $data['target'] ?? '_self',
