@@ -14,15 +14,15 @@
     $hasChildren = !empty($item['children']) && ($options['show_children'] ?? true);
     $maxDepth = $options['depth'] ?? 0;
     $showChildren = $hasChildren && ($maxDepth === 0 || $depth < $maxDepth);
-    $isCategory = ($item['source_type'] ?? '') === 'category';
+    $isMenuGroup = ($item['source_type'] ?? '') === 'menu_group';
     $target = $item['target'] ?? $defaultTarget;
     $url = $item['url'] ?? '#';
     $label = $item['label'] ?? '';
 @endphp
 
-<li class="dixlase-menu__item {{ $showChildren ? 'dixlase-menu__item--has-children' : '' }} {{ $isCategory ? 'dixlase-menu__item--category' : '' }} dixlase-menu__item--depth-{{ $depth }}">
-    @if($isCategory)
-        <span class="dixlase-menu__link dixlase-menu__link--category" role="button" aria-haspopup="true">
+<li class="dixlase-menu__item {{ $showChildren ? 'dixlase-menu__item--has-children' : '' }} {{ $isMenuGroup ? 'dixlase-menu__item--menu-group' : '' }} dixlase-menu__item--depth-{{ $depth }}">
+    @if($isMenuGroup)
+        <span class="dixlase-menu__link dixlase-menu__link--menu-group" role="button" aria-haspopup="true">
             {{ $label }}
         </span>
     @else
