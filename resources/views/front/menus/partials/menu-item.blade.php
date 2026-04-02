@@ -14,18 +14,25 @@
     $hasChildren = !empty($item['children']) && ($options['show_children'] ?? true);
     $maxDepth = $options['depth'] ?? 0;
     $showChildren = $hasChildren && ($maxDepth === 0 || $depth < $maxDepth);
+    $isCategory = ($item['source_type'] ?? '') === 'category';
     $target = $item['target'] ?? $defaultTarget;
     $url = $item['url'] ?? '#';
     $label = $item['label'] ?? '';
 @endphp
 
-<li class="dixlase-menu__item {{ $showChildren ? 'dixlase-menu__item--has-children' : '' }} dixlase-menu__item--depth-{{ $depth }}">
-    <a href="{{ $url }}"
-       class="dixlase-menu__link"
-       @if($target !== '_self') target="{{ $target }}" @endif
-       @if($target === '_blank') rel="noopener noreferrer" @endif>
-        {{ $label }}
-    </a>
+<li class="dixlase-menu__item {{ $showChildren ? 'dixlase-menu__item--has-children' : '' }} {{ $isCategory ? 'dixlase-menu__item--category' : '' }} dixlase-menu__item--depth-{{ $depth }}">
+    @if($isCategory)
+        <span class="dixlase-menu__link dixlase-menu__link--category" role="button" aria-haspopup="true">
+            {{ $label }}
+        </span>
+    @else
+        <a href="{{ $url }}"
+           class="dixlase-menu__link"
+           @if($target !== '_self') target="{{ $target }}" @endif
+           @if($target === '_blank') rel="noopener noreferrer" @endif>
+            {{ $label }}
+        </a>
+    @endif
     
     @if($showChildren)
         <ul class="dixlase-menu__submenu">

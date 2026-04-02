@@ -22,13 +22,13 @@
 
 namespace Plugins\DixlaseMenus\App\Services;
 
-use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuRepositoryInterface;
-use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuItemRepositoryInterface;
-use Plugins\DixlaseMenus\App\Models\Menu;
-use Plugins\DixlaseMenus\App\Models\MenuItem;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuItemRepositoryInterface;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuRepositoryInterface;
+use Plugins\DixlaseMenus\App\Models\Menu;
+use Plugins\DixlaseMenus\App\Models\MenuItem;
 
 /**
  * メニュー操作サービス
@@ -52,14 +52,10 @@ class MenuService
 
     /**
      * メニューアイテムを一括保存
-     * 
+     *
      * フロントエンドから送信されたメニューアイテムの配列を
      * DBに保存します。既存のアイテムは更新、新規は作成、
      * 送信されなかったアイテムは削除されます。
-     *
-     * @param int $menuId
-     * @param array $items
-     * @return bool
      */
     public function syncMenuItems(int $menuId, array $items): bool
     {
@@ -74,7 +70,7 @@ class MenuService
 
             // 送信されなかったアイテムを削除
             $idsToDelete = array_diff($existingIds, $processedIds);
-            if (!empty($idsToDelete)) {
+            if (! empty($idsToDelete)) {
                 MenuItem::whereIn('id', $idsToDelete)->delete();
             }
 
@@ -88,19 +84,13 @@ class MenuService
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
+
             return false;
         }
     }
 
     /**
      * メニューアイテムを再帰的に処理
-     *
-     * @param int $menuId
-     * @param array $items
-     * @param int|null $parentId
-     * @param int $depth
-     * @param array &$processedIds
-     * @return void
      */
     protected function processItems(
         int $menuId,
@@ -114,7 +104,7 @@ class MenuService
             $processedIds[] = $item->id;
 
             // 子アイテムを処理
-            if (!empty($itemData['children']) && is_array($itemData['children'])) {
+            if (! empty($itemData['children']) && is_array($itemData['children'])) {
                 $this->processItems($menuId, $itemData['children'], $item->id, $depth + 1, $processedIds);
             }
         }
@@ -122,13 +112,6 @@ class MenuService
 
     /**
      * 単一のメニューアイテムを保存
-     *
-     * @param int $menuId
-     * @param array $data
-     * @param int|null $parentId
-     * @param int $depth
-     * @param int $order
-     * @return MenuItem
      */
     protected function saveItem(
         int $menuId,
@@ -141,7 +124,7 @@ class MenuService
             'menu_id' => $menuId,
             'parent_id' => $parentId,
             'title' => $data['label'] ?? $data['title'] ?? '',
-            'url' => $data['url'] ?? '',
+            'url' => ($data['source_type'] ?? '') === 'category' ? null : ($data['url'] ?? ''),
             'source_type' => $data['source_type'] ?? 'custom_url',
             'source_id' => $data['source_id'] ?? null,
             'target' => $data['target'] ?? '_self',
@@ -157,12 +140,13 @@ class MenuService
 
         // 既存のアイテムを更新、または新規作成
         $id = $data['id'] ?? null;
-        
+
         // IDが数値でない場合（フロントエンドで生成した一時ID）は新規作成
         if ($id && is_numeric($id)) {
             $existingItem = MenuItem::find($id);
             if ($existingItem && $existingItem->menu_id === $menuId) {
                 $existingItem->update($itemData);
+
                 return $existingItem;
             }
         }
@@ -172,14 +156,10 @@ class MenuService
 
     /**
      * メニューを階層構造で取得
-     *
-     * @param int $menuId
-     * @param bool $activeOnly
-     * @return array
      */
     public function getMenuHierarchy(int $menuId, bool $activeOnly = false): array
     {
-        $cacheKey = self::CACHE_PREFIX . "hierarchy:{$menuId}:" . ($activeOnly ? '1' : '0');
+        $cacheKey = self::CACHE_PREFIX."hierarchy:{$menuId}:".($activeOnly ? '1' : '0');
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($menuId, $activeOnly) {
             $query = MenuItem::where('menu_id', $menuId)
@@ -199,9 +179,7 @@ class MenuService
     /**
      * 階層構造を構築
      *
-     * @param \Illuminate\Database\Eloquent\Collection $items
-     * @param bool $activeOnly
-     * @return array
+     * @param  \Illuminate\Database\Eloquent\Collection  $items
      */
     protected function buildHierarchy($items, bool $activeOnly = false): array
     {
@@ -229,9 +207,6 @@ class MenuService
 
     /**
      * MenuItemを配列に変換
-     *
-     * @param MenuItem $item
-     * @return array
      */
     protected function itemToArray(MenuItem $item): array
     {
@@ -255,25 +230,21 @@ class MenuService
 
     /**
      * スラッグでメニューを取得
-     *
-     * @param string $slug
-     * @param bool $activeOnly
-     * @return array|null
      */
     public function getMenuBySlug(string $slug, bool $activeOnly = true): ?array
     {
-        $cacheKey = self::CACHE_PREFIX . "slug:{$slug}:" . ($activeOnly ? '1' : '0');
+        $cacheKey = self::CACHE_PREFIX."slug:{$slug}:".($activeOnly ? '1' : '0');
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($slug, $activeOnly) {
             $query = Menu::where('slug', $slug);
-            
+
             if ($activeOnly) {
                 $query->where('is_active', true);
             }
 
             $menu = $query->first();
 
-            if (!$menu) {
+            if (! $menu) {
                 return null;
             }
 
@@ -290,25 +261,21 @@ class MenuService
 
     /**
      * ロケーションでメニューを取得
-     *
-     * @param string $location
-     * @param bool $activeOnly
-     * @return array|null
      */
     public function getMenuByLocation(string $location, bool $activeOnly = true): ?array
     {
-        $cacheKey = self::CACHE_PREFIX . "location:{$location}:" . ($activeOnly ? '1' : '0');
+        $cacheKey = self::CACHE_PREFIX."location:{$location}:".($activeOnly ? '1' : '0');
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($location, $activeOnly) {
             $query = Menu::where('location', $location);
-            
+
             if ($activeOnly) {
                 $query->where('is_active', true);
             }
 
             $menu = $query->orderBy('display_order')->first();
 
-            if (!$menu) {
+            if (! $menu) {
                 return null;
             }
 
@@ -325,12 +292,10 @@ class MenuService
 
     /**
      * デフォルトメニューを取得（最初に作成されたアクティブなメニュー）
-     *
-     * @return array|null
      */
     public function getDefaultMenu(): ?array
     {
-        $cacheKey = self::CACHE_PREFIX . 'default';
+        $cacheKey = self::CACHE_PREFIX.'default';
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () {
             $menu = Menu::where('is_active', true)
@@ -338,7 +303,7 @@ class MenuService
                 ->orderBy('id')
                 ->first();
 
-            if (!$menu) {
+            if (! $menu) {
                 return null;
             }
 
@@ -355,22 +320,19 @@ class MenuService
 
     /**
      * メニューのキャッシュをクリア
-     *
-     * @param int|null $menuId
-     * @return void
      */
     public function clearMenuCache(?int $menuId = null): void
     {
         if ($menuId) {
             $menu = Menu::withTrashed()->find($menuId);
             if ($menu) {
-                Cache::forget(self::CACHE_PREFIX . "hierarchy:{$menuId}:0");
-                Cache::forget(self::CACHE_PREFIX . "hierarchy:{$menuId}:1");
-                Cache::forget(self::CACHE_PREFIX . "slug:{$menu->slug}:0");
-                Cache::forget(self::CACHE_PREFIX . "slug:{$menu->slug}:1");
+                Cache::forget(self::CACHE_PREFIX."hierarchy:{$menuId}:0");
+                Cache::forget(self::CACHE_PREFIX."hierarchy:{$menuId}:1");
+                Cache::forget(self::CACHE_PREFIX."slug:{$menu->slug}:0");
+                Cache::forget(self::CACHE_PREFIX."slug:{$menu->slug}:1");
                 if ($menu->location) {
-                    Cache::forget(self::CACHE_PREFIX . "location:{$menu->location}:0");
-                    Cache::forget(self::CACHE_PREFIX . "location:{$menu->location}:1");
+                    Cache::forget(self::CACHE_PREFIX."location:{$menu->location}:0");
+                    Cache::forget(self::CACHE_PREFIX."location:{$menu->location}:1");
                 }
 
                 // リポジトリ層のキャッシュもクリア
@@ -378,14 +340,12 @@ class MenuService
             }
         }
 
-        Cache::forget(self::CACHE_PREFIX . 'default');
+        Cache::forget(self::CACHE_PREFIX.'default');
         $this->menuRepository->clearAllCache();
     }
 
     /**
      * すべてのメニューキャッシュをクリア
-     *
-     * @return void
      */
     public function clearAllCache(): void
     {

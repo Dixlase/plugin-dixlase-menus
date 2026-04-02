@@ -116,7 +116,7 @@ class SampleMenuSeederTest extends TestCase
     {
         $this->seed(MenuSettingsSeeder::class);
 
-        $this->assertDatabaseHas('plg_dixlase_menu_settings', ['key' => 'max_menu_depth', 'value' => '3']);
+        $this->assertDatabaseHas('plg_dixlase_menu_settings', ['key' => 'max_menu_depth', 'value' => '2']);
         $this->assertDatabaseHas('plg_dixlase_menu_settings', ['key' => 'enable_menu_cache', 'value' => '1']);
         $this->assertDatabaseHas('plg_dixlase_menu_settings', ['key' => 'cache_duration', 'value' => '3600']);
         $this->assertDatabaseHas('plg_dixlase_menu_settings', ['key' => 'default_target', 'value' => '_self']);
