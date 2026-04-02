@@ -359,6 +359,9 @@ document.addEventListener('alpine:init', () => {
 
     /**
      * SortableJSを親リストに初期化
+     *
+     * DOM の並び順を読み取ってデータ配列を再構築する
+     * 「DOM読み取り」パターンで Alpine.js との競合を防止する
      */
     initSortable() {
         const menuList = document.getElementById('menu-items-list');
@@ -381,7 +384,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     /**
-     * DOM の並び順からアイテム配列を再構築（親レベル）
+     * DOM の並び順から items 配列を再構築
      */
     syncItemsFromDom() {
         const menuList = document.getElementById('menu-items-list');
@@ -392,7 +395,7 @@ document.addEventListener('alpine:init', () => {
         const rows = menuList.querySelectorAll(':scope > .menu-item');
         const itemsByKey = {};
         this.items.forEach(item => {
-            itemsByKey[item.id] = item;
+            itemsByKey[String(item.id)] = item;
         });
 
         const newItems = [];
@@ -440,16 +443,16 @@ document.addEventListener('alpine:init', () => {
         }
 
         const rows = childList.querySelectorAll(':scope > .child-menu-item');
-        const childrenByKey = {};
+        const childByKey = {};
         parent.children.forEach(child => {
-            childrenByKey[child.id] = child;
+            childByKey[String(child.id)] = child;
         });
 
         const newChildren = [];
         rows.forEach((row) => {
             const key = row.getAttribute('data-item-key');
-            if (key && childrenByKey[key]) {
-                newChildren.push(childrenByKey[key]);
+            if (key && childByKey[key]) {
+                newChildren.push(childByKey[key]);
             }
         });
 
