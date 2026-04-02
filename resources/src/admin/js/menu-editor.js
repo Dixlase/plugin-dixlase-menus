@@ -376,7 +376,7 @@ document.addEventListener('alpine:init', () => {
             draggable: '> .menu-item',
             onEnd: (evt) => {
                 // SortableJS の DOM 移動を元に戻す（Alpine の内部状態と一致させる）
-                this.revertSortableDom(evt);
+                this.revertSortableDom(evt, '.menu-item');
 
                 // 新しい配列を一括代入（splice 変異ではなく完全置換で確実にリアクティビティ発火）
                 const newItems = [...this.items];
@@ -392,12 +392,16 @@ document.addEventListener('alpine:init', () => {
 
     /**
      * SortableJS が移動した DOM 要素を元の位置に戻す
+     *
+     * from.children には Alpine の <template> マーカーも含まれるため、
+     * draggable セレクタでフィルタして正しい位置に戻す
      */
-    revertSortableDom(evt) {
+    revertSortableDom(evt, draggableSelector) {
         const { from, item, oldIndex } = evt;
         from.removeChild(item);
-        if (oldIndex < from.children.length) {
-            from.insertBefore(item, from.children[oldIndex]);
+        const draggables = from.querySelectorAll(`:scope > ${draggableSelector}`);
+        if (oldIndex < draggables.length) {
+            from.insertBefore(item, draggables[oldIndex]);
         } else {
             from.appendChild(item);
         }
@@ -423,7 +427,7 @@ document.addEventListener('alpine:init', () => {
                             }
 
                             // SortableJS の DOM 移動を元に戻す
-                            this.revertSortableDom(evt);
+                            this.revertSortableDom(evt, '.child-menu-item');
 
                             // 新しい配列を一括代入
                             const newChildren = [...parent.children];
