@@ -362,18 +362,49 @@ document.addEventListener('alpine:init', () => {
      */
     initSortable() {
         const menuList = document.getElementById('menu-items-list');
-        if (menuList) {
-            this.sortableInstance = new Sortable(menuList, {
-                handle: '.drag-handle',
-                animation: 150,
-                ghostClass: 'opacity-50',
-                onEnd: (evt) => {
-                    const item = this.items.splice(evt.oldIndex, 1)[0];
-                    this.items.splice(evt.newIndex, 0, item);
-                }
-            });
+        if (!menuList || menuList._sortableInitialized) {
+            return;
+        }
 
-            this.initChildSortables();
+        new Sortable(menuList, {
+            handle: '.drag-handle',
+            animation: 150,
+            ghostClass: 'opacity-50',
+            draggable: '> .menu-item',
+            onEnd: () => {
+                this.syncItemsFromDom();
+            }
+        });
+
+        menuList._sortableInitialized = true;
+        this.initChildSortables();
+    },
+
+    /**
+     * DOM の並び順からアイテム配列を再構築（親レベル）
+     */
+    syncItemsFromDom() {
+        const menuList = document.getElementById('menu-items-list');
+        if (!menuList) {
+            return;
+        }
+
+        const rows = menuList.querySelectorAll(':scope > .menu-item');
+        const itemsByKey = {};
+        this.items.forEach(item => {
+            itemsByKey[item.id] = item;
+        });
+
+        const newItems = [];
+        rows.forEach((row) => {
+            const key = row.getAttribute('data-item-key');
+            if (key && itemsByKey[key]) {
+                newItems.push(itemsByKey[key]);
+            }
+        });
+
+        if (newItems.length === this.items.length) {
+            this.items = newItems;
         }
     },
 
@@ -384,21 +415,47 @@ document.addEventListener('alpine:init', () => {
         this.$nextTick(() => {
             document.querySelectorAll('.children-list').forEach((childList) => {
                 if (!childList._sortable) {
-                    const parentIndex = parseInt(childList.dataset.parentIndex);
                     childList._sortable = new Sortable(childList, {
                         handle: '.child-drag-handle',
                         animation: 150,
                         ghostClass: 'opacity-50',
-                        onEnd: (evt) => {
-                            if (this.items[parentIndex] && this.items[parentIndex].children) {
-                                const child = this.items[parentIndex].children.splice(evt.oldIndex, 1)[0];
-                                this.items[parentIndex].children.splice(evt.newIndex, 0, child);
-                            }
+                        draggable: '> .child-menu-item',
+                        onEnd: () => {
+                            this.syncChildItemsFromDom(childList);
                         }
                     });
                 }
             });
         });
+    },
+
+    /**
+     * DOM の並び順から子アイテム配列を再構築
+     */
+    syncChildItemsFromDom(childList) {
+        const parentKey = childList.getAttribute('data-parent-key');
+        const parent = this.items.find(item => String(item.id) === parentKey);
+        if (!parent || !parent.children) {
+            return;
+        }
+
+        const rows = childList.querySelectorAll(':scope > .child-menu-item');
+        const childrenByKey = {};
+        parent.children.forEach(child => {
+            childrenByKey[child.id] = child;
+        });
+
+        const newChildren = [];
+        rows.forEach((row) => {
+            const key = row.getAttribute('data-item-key');
+            if (key && childrenByKey[key]) {
+                newChildren.push(childrenByKey[key]);
+            }
+        });
+
+        if (newChildren.length === parent.children.length) {
+            parent.children = newChildren;
+        }
     },
 
     /**
