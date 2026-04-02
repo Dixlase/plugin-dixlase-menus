@@ -81,8 +81,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
                 <!-- メニューアイテムリスト -->
                 <div id="menu-items-list" class="space-y-3" x-show="items.length > 0">
-                    <template x-for="(item, index) in items" :key="item.id || index">
-                        <div class="menu-item bg-gray-50 dark:bg-gray-700 rounded-md" :data-index="index">
+                    <template x-for="(item, index) in items" :key="item.id">
+                        <div class="menu-item bg-gray-50 dark:bg-gray-700 rounded-md" :data-item-key="item.id">
                             <!-- 親メニュー -->
                             <div class="flex items-end gap-2 p-4">
                                 <!-- ドラッグハンドル -->
@@ -152,9 +152,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
                             <!-- 子メニュー -->
                             <template x-if="item.children && item.children.length > 0">
-                                <div class="children-list ml-8 border-l-2 border-gray-300 dark:border-gray-600 pl-4 pb-4 space-y-3" :data-parent-index="index">
-                                    <template x-for="(child, childIndex) in item.children" :key="child.id || childIndex">
-                                        <div class="child-menu-item flex items-center gap-2 p-3 bg-gray-100 dark:bg-gray-600 rounded-md">
+                                <div class="children-list ml-8 border-l-2 border-gray-300 dark:border-gray-600 pl-4 pb-4 space-y-3" :data-parent-key="item.id">
+                                    <template x-for="(child, childIndex) in item.children" :key="child.id">
+                                        <div class="child-menu-item flex items-center gap-2 p-3 bg-gray-100 dark:bg-gray-600 rounded-md" :data-item-key="child.id">
                                             <!-- ドラッグハンドル -->
                                             <div class="child-drag-handle cursor-move p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                                                 <i class="fas fa-grip-vertical text-sm"></i>
