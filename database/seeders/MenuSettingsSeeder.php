@@ -38,7 +38,7 @@ class MenuSettingsSeeder extends Seeder
         $settings = [
             [
                 'key' => 'max_menu_depth',
-                'value' => '3',
+                'value' => '2',
                 'type' => 'integer',
                 'description' => 'Maximum menu nesting depth',
                 'created_at' => now(),

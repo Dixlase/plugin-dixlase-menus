@@ -33,6 +33,7 @@ document.addEventListener('alpine:init', () => {
     sourceSearch: {},
     selectedItems: {},
     customUrl: { label: '', url: '' },
+    categoryLabel: '',
     loadingSources: {},
     linkSourcesUrl: '',
 
@@ -205,6 +206,7 @@ document.addEventListener('alpine:init', () => {
         this.addItemParentIndex = parentIndex !== undefined ? parentIndex : null;
         this.addItemActiveTab = 'custom_url';
         this.customUrl = { label: '', url: '' };
+        this.categoryLabel = '';
         this.addItemModalOpen = true;
     },
 
@@ -283,6 +285,28 @@ document.addEventListener('alpine:init', () => {
         });
 
         this.customUrl = { label: '', url: '' };
+        this.addItemModalOpen = false;
+    },
+
+    /**
+     * カテゴリ（ラベルのみ）アイテムを追加
+     */
+    addCategory() {
+        if (!this.categoryLabel) {
+            return;
+        }
+
+        this._addItemToTarget({
+            id: this.generateId(),
+            label: this.categoryLabel,
+            url: null,
+            target: '_self',
+            source_type: 'category',
+            source_id: null,
+            children: []
+        });
+
+        this.categoryLabel = '';
         this.addItemModalOpen = false;
     },
 
