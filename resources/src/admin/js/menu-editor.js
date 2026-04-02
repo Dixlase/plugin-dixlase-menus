@@ -360,8 +360,8 @@ document.addEventListener('alpine:init', () => {
     /**
      * SortableJSを親リストに初期化
      *
-     * DOM の並び順を読み取ってデータ配列を再構築する
-     * 「DOM読み取り」パターンで Alpine.js との競合を防止する
+     * SortableJS の DOM 移動を元に戻してから新しい配列を一括代入する
+     * 「revert + atomic assign」パターンで Alpine.js との競合を防止する
      */
     initSortable() {
         const menuList = document.getElementById('menu-items-list');
@@ -374,8 +374,15 @@ document.addEventListener('alpine:init', () => {
             animation: 150,
             ghostClass: 'opacity-50',
             draggable: '> .menu-item',
-            onEnd: () => {
-                this.syncItemsFromDom();
+            onEnd: (evt) => {
+                // SortableJS の DOM 移動を元に戻す（Alpine の内部状態と一致させる）
+                this.revertSortableDom(evt);
+
+                // 新しい配列を一括代入（splice 変異ではなく完全置換で確実にリアクティビティ発火）
+                const newItems = [...this.items];
+                const [moved] = newItems.splice(evt.oldIndex, 1);
+                newItems.splice(evt.newIndex, 0, moved);
+                this.items = newItems;
             }
         });
 
@@ -384,30 +391,15 @@ document.addEventListener('alpine:init', () => {
     },
 
     /**
-     * DOM の並び順から items 配列を再構築
+     * SortableJS が移動した DOM 要素を元の位置に戻す
      */
-    syncItemsFromDom() {
-        const menuList = document.getElementById('menu-items-list');
-        if (!menuList) {
-            return;
-        }
-
-        const rows = menuList.querySelectorAll(':scope > .menu-item');
-        const itemsByKey = {};
-        this.items.forEach(item => {
-            itemsByKey[String(item.id)] = item;
-        });
-
-        const newItems = [];
-        rows.forEach((row) => {
-            const key = row.getAttribute('data-item-key');
-            if (key && itemsByKey[key]) {
-                newItems.push(itemsByKey[key]);
-            }
-        });
-
-        if (newItems.length === this.items.length) {
-            this.items = newItems;
+    revertSortableDom(evt) {
+        const { from, item, oldIndex } = evt;
+        from.removeChild(item);
+        if (oldIndex < from.children.length) {
+            from.insertBefore(item, from.children[oldIndex]);
+        } else {
+            from.appendChild(item);
         }
     },
 
@@ -423,42 +415,26 @@ document.addEventListener('alpine:init', () => {
                         animation: 150,
                         ghostClass: 'opacity-50',
                         draggable: '> .child-menu-item',
-                        onEnd: () => {
-                            this.syncChildItemsFromDom(childList);
+                        onEnd: (evt) => {
+                            const parentKey = childList.getAttribute('data-parent-key');
+                            const parent = this.items.find(item => String(item.id) === parentKey);
+                            if (!parent || !parent.children) {
+                                return;
+                            }
+
+                            // SortableJS の DOM 移動を元に戻す
+                            this.revertSortableDom(evt);
+
+                            // 新しい配列を一括代入
+                            const newChildren = [...parent.children];
+                            const [moved] = newChildren.splice(evt.oldIndex, 1);
+                            newChildren.splice(evt.newIndex, 0, moved);
+                            parent.children = newChildren;
                         }
                     });
                 }
             });
         });
-    },
-
-    /**
-     * DOM の並び順から子アイテム配列を再構築
-     */
-    syncChildItemsFromDom(childList) {
-        const parentKey = childList.getAttribute('data-parent-key');
-        const parent = this.items.find(item => String(item.id) === parentKey);
-        if (!parent || !parent.children) {
-            return;
-        }
-
-        const rows = childList.querySelectorAll(':scope > .child-menu-item');
-        const childByKey = {};
-        parent.children.forEach(child => {
-            childByKey[String(child.id)] = child;
-        });
-
-        const newChildren = [];
-        rows.forEach((row) => {
-            const key = row.getAttribute('data-item-key');
-            if (key && childByKey[key]) {
-                newChildren.push(childByKey[key]);
-            }
-        });
-
-        if (newChildren.length === parent.children.length) {
-            parent.children = newChildren;
-        }
     },
 
     /**
