@@ -60,7 +60,7 @@ class DixlaseMenusMenuProvider implements MenuProviderInterface
         try {
             $menu = Menu::query()
                 ->active()
-                ->with(['activeItems' => fn ($q) => $q->whereNull('parent_id')->orderBy('display_order')])
+                ->with(['activeItems' => fn ($q) => $q->orderBy('display_order')])
                 ->find($menuId);
 
             if (! $menu) {
@@ -82,7 +82,7 @@ class DixlaseMenusMenuProvider implements MenuProviderInterface
             $menus = Menu::query()
                 ->active()
                 ->ordered()
-                ->with(['activeItems' => fn ($q) => $q->whereNull('parent_id')->orderBy('display_order')])
+                ->with(['activeItems' => fn ($q) => $q->orderBy('display_order')])
                 ->get();
 
             return $menus->map(fn (Menu $menu) => $this->toDTO($menu))->toArray();
@@ -93,10 +93,45 @@ class DixlaseMenusMenuProvider implements MenuProviderInterface
 
     /**
      * Menuモデル → MenuDTO に変換
+     *
+     * 全アクティブ項目を1クエリで取得し、PHPでツリー構築（N+1回避）
      */
     private function toDTO(Menu $menu): MenuDTO
     {
-        $items = $menu->activeItems->map(fn ($item) => new MenuItemDTO(
+        $allItems = $menu->activeItems;
+        $roots = $allItems->whereNull('parent_id')->sortBy('display_order');
+
+        /** @var array<int, \Illuminate\Support\Collection> $childrenByParent */
+        $childrenByParent = $allItems->whereNotNull('parent_id')
+            ->sortBy('display_order')
+            ->groupBy('parent_id');
+
+        $items = $roots->map(fn ($item) => $this->buildItemDTO($item, $childrenByParent))->values()->toArray();
+
+        return new MenuDTO(
+            id: $menu->id,
+            name: $menu->name,
+            slug: $menu->slug,
+            items: $items,
+        );
+    }
+
+    /**
+     * MenuItemモデル → MenuItemDTO に再帰的に変換
+     *
+     * @param  \Illuminate\Support\Collection<int, \Illuminate\Support\Collection>  $childrenByParent  parent_idでグルーピングされた子アイテム
+     */
+    private function buildItemDTO(mixed $item, \Illuminate\Support\Collection $childrenByParent): MenuItemDTO
+    {
+        $children = [];
+        if ($childrenByParent->has($item->id)) {
+            $children = $childrenByParent->get($item->id)
+                ->map(fn ($child) => $this->buildItemDTO($child, $childrenByParent))
+                ->values()
+                ->toArray();
+        }
+
+        return new MenuItemDTO(
             label: $item->title,
             url: $item->url ?? '#',
             target: $item->target ?? '_self',
@@ -106,13 +141,7 @@ class DixlaseMenusMenuProvider implements MenuProviderInterface
             cssClass: $item->css_class,
             displayOrder: $item->display_order ?? 0,
             isActive: true,
-        ))->toArray();
-
-        return new MenuDTO(
-            id: $menu->id,
-            name: $menu->name,
-            slug: $menu->slug,
-            items: $items,
+            children: $children,
         );
     }
 }
