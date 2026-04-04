@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\DB;
 /**
  * Default sample menu seeder.
  *
- * Creates a header menu and a footer menu
+ * Creates a main menu and a footer menu
  * so that the plugin is immediately usable after installation.
  */
 class SampleMenuSeeder extends Seeder
@@ -46,14 +46,14 @@ class SampleMenuSeeder extends Seeder
             return;
         }
 
-        // Header menu
+        // Main menu
         $menuId = DB::table('plg_dixlase_menus')->insertGetId([
             'name' => $isJapanese ? 'メインメニュー' : 'Main Menu',
             'slug' => 'main-menu',
             'lang' => $lang,
             'location' => 'header',
             'placement_type' => 'manual',
-            'description' => $isJapanese ? 'ヘッダーに表示されるメインメニュー' : 'Main navigation menu displayed in the header',
+            'description' => $isJapanese ? 'サイトのメインナビゲーションメニュー' : 'Main navigation menu for the site',
             'is_active' => true,
             'display_order' => 1,
             'created_at' => now(),
