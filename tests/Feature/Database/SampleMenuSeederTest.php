@@ -76,11 +76,11 @@ class SampleMenuSeederTest extends TestCase
         $mainMenu = DB::table('plg_dixlase_menus')->where('slug', 'main-menu')->first();
         $footerMenu = DB::table('plg_dixlase_menus')->where('slug', 'footer-menu')->first();
 
-        // Header menu: Home, About Us = 2 items
-        $headerItemCount = DB::table('plg_dixlase_menu_items')
+        // Main menu: Home, About Us = 2 items
+        $mainItemCount = DB::table('plg_dixlase_menu_items')
             ->where('menu_id', $mainMenu->id)
             ->count();
-        $this->assertSame(2, $headerItemCount);
+        $this->assertSame(2, $mainItemCount);
 
         // Footer menu: empty (items added by user via plugins)
         $footerItemCount = DB::table('plg_dixlase_menu_items')
