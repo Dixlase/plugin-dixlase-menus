@@ -1,8 +1,8 @@
 {{--
-This file is part of Dixlase Menu.
+This file is part of Dixlase Menus.
 
-Copyright (C) 2025 exc-D inc.
-Website: https://exc-d.com
+Copyright (C) 2026 exc-D inc.
+https://exc-d.com
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

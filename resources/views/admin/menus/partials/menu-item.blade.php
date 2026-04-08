@@ -1,10 +1,21 @@
 {{--
-This file is part of Dixlase Menu.
+This file is part of Dixlase Menus.
 
-Copyright (C) 2025 exc-D inc.
-Website: https://exc-d.com
+Copyright (C) 2026 exc-D inc.
+https://exc-d.com
 
-Menu Item Partial - ドラッグ&ドロップ可能なメニューアイテム
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
 --}}
 
 <div class="menu-item bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-4 hover:shadow-md transition-shadow duration-150"
