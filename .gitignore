@@ -20,3 +20,6 @@ yarn-error.log
 CLAUDE.md
 /.claude/
 /.mcp.json
+
+# Claude Code sandbox tests
+/tests/Sandbox/
