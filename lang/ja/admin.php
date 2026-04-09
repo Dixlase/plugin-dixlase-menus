@@ -1,9 +1,9 @@
 <?php
 
 /**
- * This file is part of Dixlase Menu.
+ * This file is part of Dixlase Menus.
  *
- * Copyright (C) 2025 exc-D inc.
+ * Copyright (C) 2026 exc-D inc.
  * https://exc-d.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -110,6 +110,11 @@ return [
             'add_child' => '子アイテムを追加',
             'add_child_hint' => 'の子アイテムとして追加',
             'published_only_hint' => '公開済みのページのみ表示されます。',
+            'menu_group' => 'メニューグループ',
+            'menu_group_label' => 'グループ名',
+            'menu_group_label_placeholder' => '例: 製品情報、サービス',
+            'menu_group_hint' => 'メニューグループはリンクなしのラベル専用アイテムです。ドロップダウンやメガメニューの親コンテナとして使用します。',
+            'menu_group_badge' => 'グループ',
             'toggle_children' => '子アイテムを展開/折りたたみ',
             'confirm_title' => 'メニューの保存',
             'confirm_message' => 'このメニューの変更を保存してもよろしいですか？',

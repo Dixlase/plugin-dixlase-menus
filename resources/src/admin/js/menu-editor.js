@@ -33,6 +33,7 @@ document.addEventListener('alpine:init', () => {
     sourceSearch: {},
     selectedItems: {},
     customUrl: { label: '', url: '' },
+    menuGroupLabel: '',
     loadingSources: {},
     linkSourcesUrl: '',
 
@@ -205,6 +206,7 @@ document.addEventListener('alpine:init', () => {
         this.addItemParentIndex = parentIndex !== undefined ? parentIndex : null;
         this.addItemActiveTab = 'custom_url';
         this.customUrl = { label: '', url: '' };
+        this.menuGroupLabel = '';
         this.addItemModalOpen = true;
     },
 
@@ -287,6 +289,28 @@ document.addEventListener('alpine:init', () => {
     },
 
     /**
+     * メニューグループ（ラベルのみ）アイテムを追加
+     */
+    addMenuGroup() {
+        if (!this.menuGroupLabel) {
+            return;
+        }
+
+        this._addItemToTarget({
+            id: this.generateId(),
+            label: this.menuGroupLabel,
+            url: null,
+            target: '_self',
+            source_type: 'menu_group',
+            source_id: null,
+            children: []
+        });
+
+        this.menuGroupLabel = '';
+        this.addItemModalOpen = false;
+    },
+
+    /**
      * 統合保存: メニューアイテムをAJAX保存後、フォームをPOST送信
      */
     async saveAll() {
@@ -335,21 +359,51 @@ document.addEventListener('alpine:init', () => {
 
     /**
      * SortableJSを親リストに初期化
+     *
+     * SortableJS の DOM 移動を元に戻してから新しい配列を一括代入する
+     * 「revert + atomic assign」パターンで Alpine.js との競合を防止する
      */
     initSortable() {
         const menuList = document.getElementById('menu-items-list');
-        if (menuList) {
-            this.sortableInstance = new Sortable(menuList, {
-                handle: '.drag-handle',
-                animation: 150,
-                ghostClass: 'opacity-50',
-                onEnd: (evt) => {
-                    const item = this.items.splice(evt.oldIndex, 1)[0];
-                    this.items.splice(evt.newIndex, 0, item);
-                }
-            });
+        if (!menuList || menuList._sortableInitialized) {
+            return;
+        }
 
-            this.initChildSortables();
+        new Sortable(menuList, {
+            handle: '.drag-handle',
+            animation: 150,
+            ghostClass: 'opacity-50',
+            draggable: '> .menu-item',
+            onEnd: (evt) => {
+                // SortableJS の DOM 移動を元に戻す（Alpine の内部状態と一致させる）
+                this.revertSortableDom(evt, '.menu-item');
+
+                // 新しい配列を一括代入（splice 変異ではなく完全置換で確実にリアクティビティ発火）
+                const newItems = [...this.items];
+                const [moved] = newItems.splice(evt.oldIndex, 1);
+                newItems.splice(evt.newIndex, 0, moved);
+                this.items = newItems;
+            }
+        });
+
+        menuList._sortableInitialized = true;
+        this.initChildSortables();
+    },
+
+    /**
+     * SortableJS が移動した DOM 要素を元の位置に戻す
+     *
+     * from.children には Alpine の <template> マーカーも含まれるため、
+     * draggable セレクタでフィルタして正しい位置に戻す
+     */
+    revertSortableDom(evt, draggableSelector) {
+        const { from, item, oldIndex } = evt;
+        from.removeChild(item);
+        const draggables = from.querySelectorAll(`:scope > ${draggableSelector}`);
+        if (oldIndex < draggables.length) {
+            from.insertBefore(item, draggables[oldIndex]);
+        } else {
+            from.appendChild(item);
         }
     },
 
@@ -360,16 +414,26 @@ document.addEventListener('alpine:init', () => {
         this.$nextTick(() => {
             document.querySelectorAll('.children-list').forEach((childList) => {
                 if (!childList._sortable) {
-                    const parentIndex = parseInt(childList.dataset.parentIndex);
                     childList._sortable = new Sortable(childList, {
                         handle: '.child-drag-handle',
                         animation: 150,
                         ghostClass: 'opacity-50',
+                        draggable: '> .child-menu-item',
                         onEnd: (evt) => {
-                            if (this.items[parentIndex] && this.items[parentIndex].children) {
-                                const child = this.items[parentIndex].children.splice(evt.oldIndex, 1)[0];
-                                this.items[parentIndex].children.splice(evt.newIndex, 0, child);
+                            const parentKey = childList.getAttribute('data-parent-key');
+                            const parent = this.items.find(item => String(item.id) === parentKey);
+                            if (!parent || !parent.children) {
+                                return;
                             }
+
+                            // SortableJS の DOM 移動を元に戻す
+                            this.revertSortableDom(evt, '.child-menu-item');
+
+                            // 新しい配列を一括代入
+                            const newChildren = [...parent.children];
+                            const [moved] = newChildren.splice(evt.oldIndex, 1);
+                            newChildren.splice(evt.newIndex, 0, moved);
+                            parent.children = newChildren;
                         }
                     });
                 }

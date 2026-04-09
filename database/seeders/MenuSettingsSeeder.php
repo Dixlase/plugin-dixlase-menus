@@ -1,9 +1,9 @@
 <?php
 
 /**
- * This file is part of Dixlase Menu.
+ * This file is part of Dixlase Menus.
  *
- * Copyright (C) 2025 exc-D inc.
+ * Copyright (C) 2026 exc-D inc.
  * https://exc-d.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ class MenuSettingsSeeder extends Seeder
         $settings = [
             [
                 'key' => 'max_menu_depth',
-                'value' => '3',
+                'value' => '2',
                 'type' => 'integer',
                 'description' => 'Maximum menu nesting depth',
                 'created_at' => now(),
