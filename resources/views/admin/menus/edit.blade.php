@@ -1,8 +1,8 @@
 {{--
-This file is part of Dixlase Menu.
+This file is part of Dixlase Menus.
 
-Copyright (C) 2025 exc-D inc.
-Website: https://exc-d.com
+Copyright (C) 2026 exc-D inc.
+https://exc-d.com
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -81,8 +81,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
                 <!-- メニューアイテムリスト -->
                 <div id="menu-items-list" class="space-y-3" x-show="items.length > 0">
-                    <template x-for="(item, index) in items" :key="item.id || index">
-                        <div class="menu-item bg-gray-50 dark:bg-gray-700 rounded-md" :data-index="index">
+                    <template x-for="(item, index) in items" :key="item.id">
+                        <div class="menu-item bg-gray-50 dark:bg-gray-700 rounded-md" :data-item-key="item.id">
                             <!-- 親メニュー -->
                             <div class="flex items-end gap-2 p-4">
                                 <!-- ドラッグハンドル -->
@@ -92,9 +92,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
                                 <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <!-- タイトル -->
-                                    <div>
+                                    <div :class="item.source_type === 'menu_group' ? 'md:col-span-3' : ''">
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             {{ __('dixlase-menus::admin.menu_items.create.title') }}
+                                            <span x-show="item.source_type === 'menu_group'"
+                                                  class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+                                                <i class="fas fa-layer-group mr-1 text-[10px]"></i>{{ __('dixlase-menus::admin.menus.edit.menu_group_badge') }}
+                                            </span>
                                         </label>
                                         <input type="text"
                                                x-model="item.label"
@@ -103,7 +107,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     </div>
 
                                     <!-- URL -->
-                                    <div>
+                                    <div x-show="item.source_type !== 'menu_group'">
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             {{ __('dixlase-menus::admin.menu_items.create.url') }}
                                         </label>
@@ -114,7 +118,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     </div>
 
                                     <!-- ターゲット -->
-                                    <div>
+                                    <div x-show="item.source_type !== 'menu_group'">
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             {{ __('dixlase-menus::admin.menu_items.create.target') }}
                                         </label>
@@ -131,7 +135,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     <!-- 子メニュー追加ボタン -->
                                     <button type="button"
                                             @click="openAddItemModal(index)"
-                                            x-show="item.depth < maxDepth - 1"
+                                            x-show="item.source_type === 'menu_group' && item.depth < maxDepth - 1"
                                             class="p-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                                             title="{{ __('dixlase-menus::admin.menus.edit.add_child') }}">
                                         <i class="fas fa-plus"></i>
@@ -148,9 +152,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
                             <!-- 子メニュー -->
                             <template x-if="item.children && item.children.length > 0">
-                                <div class="children-list ml-8 border-l-2 border-gray-300 dark:border-gray-600 pl-4 pb-4 space-y-3" :data-parent-index="index">
-                                    <template x-for="(child, childIndex) in item.children" :key="child.id || childIndex">
-                                        <div class="child-menu-item flex items-center gap-2 p-3 bg-gray-100 dark:bg-gray-600 rounded-md">
+                                <div class="children-list ml-8 border-l-2 border-gray-300 dark:border-gray-600 pl-4 pb-4 space-y-3" :data-parent-key="item.id">
+                                    <template x-for="(child, childIndex) in item.children" :key="child.id">
+                                        <div class="child-menu-item flex items-center gap-2 p-3 bg-gray-100 dark:bg-gray-600 rounded-md" :data-item-key="child.id">
                                             <!-- ドラッグハンドル -->
                                             <div class="child-drag-handle cursor-move p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                                                 <i class="fas fa-grip-vertical text-sm"></i>
@@ -213,28 +217,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         </div>
     </div>
 
-    <!-- 右サイドバートグルボタン -->
-    <button type="button"
-            @click="toggleRightSidebar()"
-            class="flex fixed top-14 right-0 z-50 items-center backdrop-blur-sm dark:bg-gray-900/75 bg-white/75 text-blue-400 dark:text-white px-1.5 py-4 rounded-l-lg shadow-md border border-r-0 border-gray-300 dark:border-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
-            :class="{
-                'translate-x-0': rightSidebarCollapsed,
-                '-translate-x-80': !rightSidebarCollapsed
-            }"
-            :style="rightSidebarReady ? 'transition: transform 200ms ease-in-out' : ''"
-            :aria-label="rightSidebarCollapsed
-                ? '{{ __('dixlase-menus::admin.menus.edit.sidebar_open') }}'
-                : '{{ __('dixlase-menus::admin.menus.edit.sidebar_close') }}'">
-        <i class="fas text-sm" :class="rightSidebarCollapsed ? 'fa-chevron-left' : 'fa-chevron-right'"></i>
-    </button>
-
     <!-- 右サイドバー -->
-    <div class="space-y-6 fixed top-12 right-0 bottom-0 w-80 z-50 overflow-y-auto bg-white/75 dark:bg-gray-900/75 backdrop-blur-sm border-l border-gray-200 dark:border-gray-600 shadow-md px-6 py-6"
-         :class="{
-             'translate-x-80': rightSidebarCollapsed,
-             'translate-x-0': !rightSidebarCollapsed
-         }"
-         :style="rightSidebarReady ? 'transition: transform 300ms ease-in-out' : ''">
+    <x-admin.right-sidebar
+        :openLabel="__('dixlase-menus::admin.menus.edit.sidebar_open')"
+        :closeLabel="__('dixlase-menus::admin.menus.edit.sidebar_close')"
+    >
 
         <form id="menu-form" x-ref="menuForm" action="{{ route('dixlase-menus::admin.menus.update', $menu->id) }}" method="POST" @submit.prevent>
             @csrf
@@ -399,7 +386,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 @click="openModal('delete-menu-modal')"
             />
         </div>
-    </div>
+    </x-admin.right-sidebar>
     <!-- アイテム追加モーダル -->
     <div id="add-item-modal"
          class="modal"
@@ -465,6 +452,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <span x-text="source.label"></span>
                             </button>
                         </template>
+
+                        <!-- メニューグループタブ（ルートレベルのみ） -->
+                        <button type="button"
+                                x-show="addItemParentIndex === null"
+                                @click="addItemActiveTab = 'menu_group'"
+                                :class="addItemActiveTab === 'menu_group'
+                                    ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
+                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'"
+                                class="whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium flex items-center gap-2">
+                            <i class="fas fa-layer-group"></i>
+                            {{ __('dixlase-menus::admin.menus.edit.menu_group') }}
+                        </button>
                     </nav>
                 </div>
 
@@ -490,6 +489,22 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                    placeholder="{{ __('dixlase-menus::admin.menus.edit.custom_url_url') }}"
                                    class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
+                    </div>
+
+                    <!-- カテゴリコンテンツ -->
+                    <div x-show="addItemActiveTab === 'menu_group'" class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                {{ __('dixlase-menus::admin.menus.edit.menu_group_label') }}
+                            </label>
+                            <input type="text"
+                                   x-model="menuGroupLabel"
+                                   placeholder="{{ __('dixlase-menus::admin.menus.edit.menu_group_label_placeholder') }}"
+                                   class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                            <i class="fas fa-info-circle mr-1"></i>{{ __('dixlase-menus::admin.menus.edit.menu_group_hint') }}
+                        </p>
                     </div>
 
                     <!-- プロバイダーコンテンツ（動的） -->
@@ -529,7 +544,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     </template>
 
                     <!-- 注意書き（プロバイダータブ選択時のみ表示） -->
-                    <p x-show="addItemActiveTab !== 'custom_url'"
+                    <p x-show="addItemActiveTab !== 'custom_url' && addItemActiveTab !== 'menu_group'"
                        class="mt-3 text-xs text-gray-500 dark:text-gray-400">
                         <i class="fas fa-info-circle mr-1"></i>{{ __('dixlase-menus::admin.menus.edit.published_only_hint') }}
                     </p>
@@ -554,6 +569,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     xShow="addItemActiveTab === 'custom_url'"
                     xClick="addCustomUrl()"
                     xBind:disabled="!customUrl.label || !customUrl.url"
+                    class="mx-2"
+                >{{ __('dixlase-menus::admin.menus.edit.add_to_menu') }}</x-form-button>
+
+                <!-- カテゴリ追加ボタン -->
+                <x-form-button
+                    type="button"
+                    variant="primary"
+                    icon="fas fa-plus"
+                    xShow="addItemActiveTab === 'menu_group'"
+                    xClick="addMenuGroup()"
+                    xBind:disabled="!menuGroupLabel"
                     class="mx-2"
                 >{{ __('dixlase-menus::admin.menus.edit.add_to_menu') }}</x-form-button>
 

@@ -1,19 +1,17 @@
 import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
+import path from 'path';
 
 export default defineConfig({
-    plugins: [
-        laravel({
-            input: [
-                'plugins/DixlaseMenus/resources/src/js/app.js',
-                'plugins/DixlaseMenus/resources/src/admin/js/app.js',
-            ],
-            refresh: true,
-        }),
-    ],
     build: {
-        outDir: 'plugins/DixlaseMenus/resources/assets',
+        outDir: path.resolve(__dirname, 'resources/assets'),
+        emptyOutDir: false,
+        copyPublicDir: false,
+        manifest: 'manifest.json',
         rollupOptions: {
+            input: {
+                app: path.resolve(__dirname, 'resources/src/js/app.js'),
+                'admin-app': path.resolve(__dirname, 'resources/src/admin/js/app.js'),
+            },
             output: {
                 entryFileNames: (chunkInfo) => {
                     if (chunkInfo.facadeModuleId?.includes('/admin/')) {
