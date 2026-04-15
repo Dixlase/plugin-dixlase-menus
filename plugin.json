@@ -8,6 +8,8 @@
         "en": "This plugin provides menu management functionality."
     },
     "author": "exc-D inc.",
+    "author_id": "exc-d-inc",
+    "publisher_key_id": "dixlase-authority-2026",
     "email": "office@exc-d.com",
     "url": "https://exc-d.com",
     "license": "GPL-3.0",
@@ -40,8 +42,12 @@
             "navigation": true
         },
         "assets": {
-            "common": ["js/app.js"],
-            "admin": ["admin/js/app.js"],
+            "common": [
+                "js/app.js"
+            ],
+            "admin": [
+                "admin/js/app.js"
+            ],
             "front": []
         },
         "contracts": [],
