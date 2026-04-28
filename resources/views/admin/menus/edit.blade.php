@@ -154,45 +154,114 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             <template x-if="item.children && item.children.length > 0">
                                 <div class="children-list ml-8 border-l-2 border-gray-300 dark:border-gray-600 pl-4 pb-4 space-y-3" :data-parent-key="item.id">
                                     <template x-for="(child, childIndex) in item.children" :key="child.id">
-                                        <div class="child-menu-item flex items-center gap-2 p-3 bg-gray-100 dark:bg-gray-600 rounded-md" :data-item-key="child.id">
-                                            <!-- ドラッグハンドル -->
-                                            <div class="child-drag-handle cursor-move p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                                                <i class="fas fa-grip-vertical text-sm"></i>
+                                        <div class="child-menu-item bg-gray-100 dark:bg-gray-600 rounded-md" :data-item-key="child.id">
+                                            <div class="flex items-center gap-2 p-3">
+                                                <!-- ドラッグハンドル -->
+                                                <div class="child-drag-handle cursor-move p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                                    <i class="fas fa-grip-vertical text-sm"></i>
+                                                </div>
+
+                                                <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
+                                                    <!-- タイトル -->
+                                                    <div :class="child.source_type === 'menu_group' ? 'md:col-span-3' : ''">
+                                                        <div class="flex items-center gap-2">
+                                                            <input type="text"
+                                                                   x-model="child.label"
+                                                                   placeholder="{{ __('dixlase-menus::admin.settings.menu_items.label_placeholder') }}"
+                                                                   class="block flex-1 px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                                            <span x-show="child.source_type === 'menu_group'"
+                                                                  class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 whitespace-nowrap">
+                                                                <i class="fas fa-layer-group mr-1 text-[10px]"></i>{{ __('dixlase-menus::admin.menus.edit.menu_group_badge') }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- URL -->
+                                                    <div x-show="child.source_type !== 'menu_group'">
+                                                        <input type="text"
+                                                               x-model="child.url"
+                                                               placeholder="{{ __('dixlase-menus::admin.settings.menu_items.url_placeholder') }}"
+                                                               class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                                    </div>
+
+                                                    <!-- ターゲット -->
+                                                    <div x-show="child.source_type !== 'menu_group'">
+                                                        <select x-model="child.target"
+                                                                class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                                            <option value="_self">{{ __('dixlase-menus::admin.settings.basic.target_self') }}</option>
+                                                            <option value="_blank">{{ __('dixlase-menus::admin.settings.basic.target_blank') }}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex items-center gap-1">
+                                                    <!-- 孫メニュー追加ボタン -->
+                                                    <button type="button"
+                                                            @click="openAddItemModal(index, childIndex)"
+                                                            x-show="child.source_type === 'menu_group' && child.depth < maxDepth - 1"
+                                                            class="p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                                                            title="{{ __('dixlase-menus::admin.menus.edit.add_child') }}">
+                                                        <i class="fas fa-plus text-sm"></i>
+                                                    </button>
+
+                                                    <!-- 削除ボタン -->
+                                                    <button type="button"
+                                                            @click="removeChildItem(index, childIndex)"
+                                                            class="p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                                                        <i class="fas fa-times text-sm"></i>
+                                                    </button>
+                                                </div>
                                             </div>
 
-                                            <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
-                                                <!-- タイトル -->
-                                                <div>
-                                                    <input type="text"
-                                                           x-model="child.label"
-                                                           placeholder="{{ __('dixlase-menus::admin.settings.menu_items.label_placeholder') }}"
-                                                           class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                                                </div>
+                                            <!-- 孫メニュー -->
+                                            <template x-if="child.children && child.children.length > 0">
+                                                <div class="grandchildren-list ml-8 border-l-2 border-gray-400 dark:border-gray-500 pl-4 pb-3 space-y-2"
+                                                     :data-grandparent-key="item.id"
+                                                     :data-parent-key="child.id">
+                                                    <template x-for="(grandchild, grandIndex) in child.children" :key="grandchild.id">
+                                                        <div class="grandchild-menu-item flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-700 rounded-md" :data-item-key="grandchild.id">
+                                                            <!-- ドラッグハンドル -->
+                                                            <div class="grandchild-drag-handle cursor-move p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                                                <i class="fas fa-grip-vertical text-xs"></i>
+                                                            </div>
 
-                                                <!-- URL -->
-                                                <div>
-                                                    <input type="text"
-                                                           x-model="child.url"
-                                                           placeholder="{{ __('dixlase-menus::admin.settings.menu_items.url_placeholder') }}"
-                                                           class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                                                </div>
+                                                            <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2">
+                                                                <!-- タイトル -->
+                                                                <div>
+                                                                    <input type="text"
+                                                                           x-model="grandchild.label"
+                                                                           placeholder="{{ __('dixlase-menus::admin.settings.menu_items.label_placeholder') }}"
+                                                                           class="block w-full px-2 py-1 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                                                </div>
 
-                                                <!-- ターゲット -->
-                                                <div>
-                                                    <select x-model="child.target"
-                                                            class="block w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                                                        <option value="_self">{{ __('dixlase-menus::admin.settings.basic.target_self') }}</option>
-                                                        <option value="_blank">{{ __('dixlase-menus::admin.settings.basic.target_blank') }}</option>
-                                                    </select>
-                                                </div>
-                                            </div>
+                                                                <!-- URL -->
+                                                                <div>
+                                                                    <input type="text"
+                                                                           x-model="grandchild.url"
+                                                                           placeholder="{{ __('dixlase-menus::admin.settings.menu_items.url_placeholder') }}"
+                                                                           class="block w-full px-2 py-1 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                                                </div>
 
-                                            <!-- 削除ボタン -->
-                                            <button type="button"
-                                                    @click="removeChildItem(index, childIndex)"
-                                                    class="p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
-                                                <i class="fas fa-times text-sm"></i>
-                                            </button>
+                                                                <!-- ターゲット -->
+                                                                <div>
+                                                                    <select x-model="grandchild.target"
+                                                                            class="block w-full px-2 py-1 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                                                        <option value="_self">{{ __('dixlase-menus::admin.settings.basic.target_self') }}</option>
+                                                                        <option value="_blank">{{ __('dixlase-menus::admin.settings.basic.target_blank') }}</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- 削除ボタン -->
+                                                            <button type="button"
+                                                                    @click="removeGrandchildItem(index, childIndex, grandIndex)"
+                                                                    class="p-1 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                                                                <i class="fas fa-times text-xs"></i>
+                                                            </button>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
                                         </div>
                                     </template>
                                 </div>
@@ -422,7 +491,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <div x-show="addItemParentIndex !== null && items[addItemParentIndex]"
                      class="mx-6 mb-3 px-3 py-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-md text-sm text-indigo-700 dark:text-indigo-300">
                     <i class="fas fa-level-down-alt mr-1"></i>
-                    <span x-text="addItemParentIndex !== null && items[addItemParentIndex] ? items[addItemParentIndex].label : ''"></span>
+                    <span x-text="(() => {
+                        if (addItemParentIndex === null || !items[addItemParentIndex]) return '';
+                        if (addItemChildIndex !== null && items[addItemParentIndex].children && items[addItemParentIndex].children[addItemChildIndex]) {
+                            return items[addItemParentIndex].children[addItemChildIndex].label;
+                        }
+                        return items[addItemParentIndex].label;
+                    })()"></span>
                     {{ __('dixlase-menus::admin.menus.edit.add_child_hint') }}
                 </div>
 
@@ -453,9 +528,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             </button>
                         </template>
 
-                        <!-- メニューグループタブ（ルートレベルのみ） -->
+                        <!-- メニューグループタブ（追加先の階層が maxDepth - 1 未満の場合のみ） -->
                         <button type="button"
-                                x-show="addItemParentIndex === null"
+                                x-show="canAddMenuGroup"
                                 @click="addItemActiveTab = 'menu_group'"
                                 :class="addItemActiveTab === 'menu_group'
                                     ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'

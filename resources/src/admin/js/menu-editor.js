@@ -41,6 +41,7 @@ document.addEventListener('alpine:init', () => {
     addItemModalOpen: false,
     addItemActiveTab: 'custom_url',
     addItemParentIndex: null,
+    addItemChildIndex: null,
 
     /**
      * 自動配置かどうか
@@ -200,10 +201,12 @@ document.addEventListener('alpine:init', () => {
     /**
      * Open the add item modal
      *
-     * @param {number|null} parentIndex - Parent item index for child items, null for root
+     * @param {number|null} parentIndex - Top-level parent index (null for root)
+     * @param {number|null} childIndex - Child index under parent (for grandchild adds)
      */
-    openAddItemModal(parentIndex = null) {
+    openAddItemModal(parentIndex = null, childIndex = null) {
         this.addItemParentIndex = parentIndex !== undefined ? parentIndex : null;
+        this.addItemChildIndex = childIndex !== undefined ? childIndex : null;
         this.addItemActiveTab = 'custom_url';
         this.customUrl = { label: '', url: '' };
         this.menuGroupLabel = '';
@@ -211,13 +214,53 @@ document.addEventListener('alpine:init', () => {
     },
 
     /**
-     * Add a new item to the target (root or child)
+     * Get the current target depth where a new item would be inserted
+     * (depth of the parent + 1, or 0 for root)
+     */
+    get addItemTargetDepth() {
+        if (this.addItemParentIndex === null) {
+            return 0;
+        }
+        if (this.addItemChildIndex === null) {
+            return 1;
+        }
+        return 2;
+    },
+
+    /**
+     * Whether the menu_group tab should be available in the modal
+     * (a menu_group can only be added if the new item itself can have children)
+     */
+    get canAddMenuGroup() {
+        return this.addItemTargetDepth < this.maxDepth - 1;
+    },
+
+    /**
+     * Add a new item to the target (root, child, or grandchild)
      *
      * @param {Object} newItem - The item data to add
      */
     _addItemToTarget(newItem) {
+        // Grandchild: parent + child indices both set
+        if (
+            this.addItemParentIndex !== null &&
+            this.addItemChildIndex !== null &&
+            this.items[this.addItemParentIndex] &&
+            this.items[this.addItemParentIndex].children &&
+            this.items[this.addItemParentIndex].children[this.addItemChildIndex]
+        ) {
+            const child = this.items[this.addItemParentIndex].children[this.addItemChildIndex];
+            if (!child.children) {
+                child.children = [];
+            }
+            newItem.depth = (child.depth || 1) + 1;
+            child.children.push(newItem);
+            this.$nextTick(() => this.initGrandchildSortables());
+            return;
+        }
+
+        // Child: only parent index set
         if (this.addItemParentIndex !== null && this.items[this.addItemParentIndex]) {
-            // Add as child
             const parent = this.items[this.addItemParentIndex];
             if (!parent.children) {
                 parent.children = [];
@@ -225,12 +268,13 @@ document.addEventListener('alpine:init', () => {
             newItem.depth = (parent.depth || 0) + 1;
             parent.children.push(newItem);
             this.$nextTick(() => this.initChildSortables());
-        } else {
-            // Add as root
-            newItem.depth = 0;
-            this.items.push(newItem);
-            this.$nextTick(() => this.initSortable());
+            return;
         }
+
+        // Root
+        newItem.depth = 0;
+        this.items.push(newItem);
+        this.$nextTick(() => this.initSortable());
     },
 
     /**
@@ -438,6 +482,49 @@ document.addEventListener('alpine:init', () => {
                     });
                 }
             });
+
+            // 孫リストも同時に初期化
+            this.initGrandchildSortables();
+        });
+    },
+
+    /**
+     * SortableJSを孫リストに初期化
+     *
+     * .grandchildren-list は data-grandparent-key（トップ親ID）と
+     * data-parent-key（子のID）の両方を保持し、items[].children[].children を辿る。
+     */
+    initGrandchildSortables() {
+        this.$nextTick(() => {
+            document.querySelectorAll('.grandchildren-list').forEach((grandList) => {
+                if (!grandList._sortable) {
+                    grandList._sortable = new Sortable(grandList, {
+                        handle: '.grandchild-drag-handle',
+                        animation: 150,
+                        ghostClass: 'opacity-50',
+                        draggable: '> .grandchild-menu-item',
+                        onEnd: (evt) => {
+                            const grandparentKey = grandList.getAttribute('data-grandparent-key');
+                            const parentKey = grandList.getAttribute('data-parent-key');
+                            const grandparent = this.items.find(item => String(item.id) === grandparentKey);
+                            if (!grandparent || !grandparent.children) {
+                                return;
+                            }
+                            const child = grandparent.children.find(c => String(c.id) === parentKey);
+                            if (!child || !child.children) {
+                                return;
+                            }
+
+                            this.revertSortableDom(evt, '.grandchild-menu-item');
+
+                            const newGrandchildren = [...child.children];
+                            const [moved] = newGrandchildren.splice(evt.oldIndex, 1);
+                            newGrandchildren.splice(evt.newIndex, 0, moved);
+                            child.children = newGrandchildren;
+                        }
+                    });
+                }
+            });
         });
     },
 
@@ -476,17 +563,18 @@ document.addEventListener('alpine:init', () => {
      * 子メニューアイテムを追加
      */
     addChildItem(parentIndex) {
-        if (!this.items[parentIndex].children) {
-            this.items[parentIndex].children = [];
+        const parent = this.items[parentIndex];
+        if (!parent.children) {
+            parent.children = [];
         }
-        this.items[parentIndex].children.push({
+        parent.children.push({
             id: this.generateId(),
             label: '',
             url: '',
             target: '_self',
             source_type: 'custom_url',
             source_id: null,
-            depth: 1,
+            depth: (parent.depth || 0) + 1,
             children: []
         });
         this.$nextTick(() => this.initChildSortables());
@@ -497,6 +585,15 @@ document.addEventListener('alpine:init', () => {
      */
     removeChildItem(parentIndex, childIndex) {
         this.items[parentIndex].children.splice(childIndex, 1);
+    },
+
+    /**
+     * 孫メニューアイテムを削除
+     */
+    removeGrandchildItem(parentIndex, childIndex, grandchildIndex) {
+        this.items[parentIndex]
+            .children[childIndex]
+            .children.splice(grandchildIndex, 1);
     }
     }));
 });
