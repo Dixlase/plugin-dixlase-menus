@@ -12,12 +12,22 @@
     "authority_key_id": "dixlase-authority-2026",
     "email": "office@exc-d.com",
     "url": "https://exc-d.com",
-    "license": "GPL-3.0",
-    "license_template": "license-gpl.txt",
+    "license": "GPL-3.0-or-later",
+    "license_template": "license-dual-gpl.txt",
+    "commercial_license": {
+        "available": true,
+        "file": "LICENSE.commercial",
+        "contact": "office@exc-d.com"
+    },
+    "assets": {
+        "license": null,
+        "attributions_file": null,
+        "third_party": []
+    },
+    "namespace": "Plugins\\DixlaseMenus",
     "providers": [
         "Plugins\\DixlaseMenus\\App\\Providers\\DixlaseMenusServiceProvider"
     ],
-    "namespace": "Plugins\\DixlaseMenus",
     "type": "dixlase-plugin",
     "category": "navigation",
     "tags": [
