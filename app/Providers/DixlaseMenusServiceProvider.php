@@ -60,7 +60,7 @@ class DixlaseMenusServiceProvider extends ServiceProvider
 
         // MenuLinkSourceManagerをシングルトンとして登録
         $this->app->singleton(MenuLinkSourceManager::class, function ($app) {
-            return new MenuLinkSourceManager;
+            return new MenuLinkSourceManager();
         });
 
         // リポジトリをバインド
@@ -131,15 +131,22 @@ class DixlaseMenusServiceProvider extends ServiceProvider
     protected function registerLinkSources(): void
     {
         $manager = $this->app->make(MenuLinkSourceManager::class);
-        $manager->register(new CustomUrlSource);
+        $manager->register(new CustomUrlSource());
 
         // コアの linkable.providers タグ付きプロバイダーを自動検出
+        // plugin.json で linkable capability を宣言したプラグインのみ受け入れる
         try {
             $providers = $this->app->tagged('linkable.providers');
             foreach ($providers as $provider) {
-                if ($provider instanceof LinkableProviderInterface) {
-                    $manager->register(new LinkableProviderAdapter($provider));
+                if (! $provider instanceof LinkableProviderInterface) {
+                    continue;
                 }
+
+                if (! PluginHelper::pluginHasCapability($provider->getProviderKey(), 'linkable')) {
+                    continue;
+                }
+
+                $manager->register(new LinkableProviderAdapter($provider));
             }
         } catch (\Exception $e) {
             // タグ未登録の場合は無視
