@@ -60,7 +60,12 @@
             ],
             "front": []
         },
-        "contracts": [],
+        "contracts": [
+            "MenuItemRepositoryInterface",
+            "MenuLinkSource",
+            "MenuRepositoryInterface",
+            "MenuSettingRepositoryInterface"
+        ],
         "migrations": true,
         "commands": false,
         "middleware": false
