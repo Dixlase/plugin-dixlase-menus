@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * This file is part of Dixlase Menus.
  *
@@ -34,8 +33,8 @@
 namespace Plugins\DixlaseMenus\Tests\Unit\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Plugins\DixlaseMenus\app\Models\Menu;
-use Plugins\DixlaseMenus\app\Models\MenuItem;
+use Plugins\DixlaseMenus\App\Models\Menu;
+use Plugins\DixlaseMenus\App\Models\MenuItem;
 use Tests\TestCase;
 
 class MenuItemModelTest extends TestCase
