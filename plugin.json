@@ -2,7 +2,7 @@
     "name": "Dixlase Menus",
     "package_name": "dixlase/dixlase-menus",
     "slug": "dixlase-menus",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "description": {
         "ja": "メニュー管理機能を提供するプラグインです。",
         "en": "This plugin provides menu management functionality."
