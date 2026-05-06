@@ -61,6 +61,9 @@ class MenuSlugUniquenessTest extends TestCase
         $_ENV['INSTALLED'] = 'true';
         $_SERVER['INSTALLED'] = 'true';
 
+        // Seed primary site (required by SiteContext after core update)
+        $this->seed(\Database\Seeders\SitesSeeder::class);
+
         $this->artisan('migrate', [
             '--path' => base_path('plugins/DixlaseMenus/database/migrations'),
             '--realpath' => true,

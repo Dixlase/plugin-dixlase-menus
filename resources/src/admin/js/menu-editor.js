@@ -43,6 +43,11 @@ document.addEventListener('alpine:init', () => {
     addItemParentIndex: null,
     addItemChildIndex: null,
 
+    // 多言語編集
+    availableLocales: [],
+    localeNames: {},
+    currentLocale: '',
+
     /**
      * 自動配置かどうか
      */
@@ -87,6 +92,19 @@ document.addEventListener('alpine:init', () => {
             console.error('Failed to parse menu items:', e);
             this.items = [];
         }
+
+        // 多言語編集の初期化
+        try {
+            this.availableLocales = JSON.parse(el.dataset.availableLocales || '[]');
+            this.localeNames = JSON.parse(el.dataset.localeNames || '{}');
+        } catch (e) {
+            this.availableLocales = [];
+            this.localeNames = {};
+        }
+        this.currentLocale = el.dataset.currentLocale || '';
+
+        // 各アイテムに title_translations を確実に持たせる
+        this.normalizeItemTranslations(this.items);
 
         // リンクソースURL初期化
         this.linkSourcesUrl = el.dataset.linkSourcesUrl || '';
@@ -241,6 +259,15 @@ document.addEventListener('alpine:init', () => {
      * @param {Object} newItem - The item data to add
      */
     _addItemToTarget(newItem) {
+        // 新規アイテムには title_translations を必ず初期化
+        // 入力された label を現在のロケールの翻訳としてセット
+        if (!newItem.title_translations) {
+            newItem.title_translations = {};
+        }
+        if (this.currentLocale && newItem.label) {
+            newItem.title_translations[this.currentLocale] = newItem.label;
+        }
+
         // Grandchild: parent + child indices both set
         if (
             this.addItemParentIndex !== null &&
@@ -529,6 +556,22 @@ document.addEventListener('alpine:init', () => {
     },
 
     /**
+     * すべてのアイテムに title_translations オブジェクトを確実に持たせる
+     * （サーバから読み込んだアイテムは null や undefined のことがある）
+     */
+    normalizeItemTranslations(items) {
+        if (!Array.isArray(items)) return;
+        items.forEach((item) => {
+            if (!item.title_translations || typeof item.title_translations !== 'object') {
+                item.title_translations = {};
+            }
+            if (Array.isArray(item.children)) {
+                this.normalizeItemTranslations(item.children);
+            }
+        });
+    },
+
+    /**
      * 一意なIDを生成
      */
     generateId() {
@@ -542,6 +585,7 @@ document.addEventListener('alpine:init', () => {
         this.items.push({
             id: this.generateId(),
             label: '',
+            title_translations: {},
             url: '',
             target: '_self',
             source_type: 'custom_url',
@@ -570,6 +614,7 @@ document.addEventListener('alpine:init', () => {
         parent.children.push({
             id: this.generateId(),
             label: '',
+            title_translations: {},
             url: '',
             target: '_self',
             source_type: 'custom_url',

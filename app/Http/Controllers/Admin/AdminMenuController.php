@@ -32,16 +32,16 @@
 
 namespace Plugins\DixlaseMenus\App\Http\Controllers\Admin;
 
-use Illuminate\Routing\Controller;
-use Illuminate\Http\Request;
 use App\Traits\AdminInterfaceTrait;
 use App\Traits\AdminLoggedInTrait;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuRepositoryInterface;
 use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuSettingRepositoryInterface;
-use Plugins\DixlaseMenus\App\Http\Requests\AdminMenuStoreRequest;
-use Plugins\DixlaseMenus\App\Http\Requests\AdminMenuUpdateRequest;
 use Plugins\DixlaseMenus\App\Enums\MenuLocation;
 use Plugins\DixlaseMenus\App\Enums\PlacementType;
+use Plugins\DixlaseMenus\App\Http\Requests\AdminMenuStoreRequest;
+use Plugins\DixlaseMenus\App\Http\Requests\AdminMenuUpdateRequest;
 
 /**
  * メニュー管理コントローラー
@@ -94,7 +94,6 @@ class AdminMenuController extends Controller
     /**
      * メニュー保存
      *
-     * @param AdminMenuStoreRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(AdminMenuStoreRequest $request)
@@ -112,43 +111,43 @@ class AdminMenuController extends Controller
     /**
      * メニュー編集フォーム表示
      *
-     * @param int $id
      * @return \Illuminate\View\View
      */
     public function edit(int $id)
     {
-        $menu = $this->menuRepository->findWithItems($id);
+        $maxDepth = $this->settingRepository->getInteger('max_menu_depth', 3);
+        $menu = $this->menuRepository->findWithHierarchy($id, $maxDepth);
 
-        if (!$menu) {
+        if (! $menu) {
             abort(404);
         }
 
-        $maxDepth = $this->settingRepository->getInteger('max_menu_depth', 3);
+        // 利用可能なロケール一覧（多言語編集UI用）
+        $availableLocales = \App\Support\TranslationManager::getAvailableLocales();
+        $localeNames = \App\Support\TranslationManager::getLocaleNames();
 
-        // ルートレベルのメニューアイテムをフロントエンド用配列に変換
-        $menuItems = $menu->items()
-            ->whereNull('parent_id')
-            ->orderBy('display_order')
-            ->get()
-            ->map(fn ($item) => [
+        // 再帰的にメニューアイテムを配列化（最大3階層 = depth 0/1/2）
+        $mapItem = function ($item, int $depth) use (&$mapItem) {
+            return [
                 'id' => $item->id,
                 'label' => $item->title,
+                'title_translations' => $item->title_translations ?? [],
                 'url' => $item->url,
                 'target' => $item->target,
                 'source_type' => $item->source_type,
                 'source_id' => $item->source_id,
-                'depth' => 0,
-                'children' => $item->children->map(fn ($child) => [
-                    'id' => $child->id,
-                    'label' => $child->title,
-                    'url' => $child->url,
-                    'target' => $child->target,
-                    'source_type' => $child->source_type,
-                    'source_id' => $child->source_id,
-                    'depth' => 1,
-                    'children' => [],
-                ])->toArray(),
-            ])
+                'depth' => $depth,
+                'children' => $item->children
+                    ->map(fn ($child) => $mapItem($child, $depth + 1))
+                    ->toArray(),
+            ];
+        };
+
+        $menuItems = $menu->items()
+            ->whereNull('parent_id')
+            ->orderBy('display_order')
+            ->get()
+            ->map(fn ($item) => $mapItem($item, 0))
             ->toArray();
 
         $this->viewParams['menu'] = $menu;
@@ -157,6 +156,8 @@ class AdminMenuController extends Controller
         $this->viewParams['placementTypeOptions'] = PlacementType::options();
         $this->viewParams['placementTypeDescriptions'] = PlacementType::descriptions();
         $this->viewParams['maxDepth'] = $maxDepth;
+        $this->viewParams['availableLocales'] = $availableLocales;
+        $this->viewParams['localeNames'] = $localeNames;
         $this->viewParams['linkSourcesUrl'] = route('dixlase-menus::admin.menus.link-sources.index');
 
         return view('dixlase-menus::admin.menus.edit', $this->viewParams);
@@ -165,8 +166,6 @@ class AdminMenuController extends Controller
     /**
      * メニュー更新
      *
-     * @param AdminMenuUpdateRequest $request
-     * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(AdminMenuUpdateRequest $request, int $id)
@@ -183,14 +182,13 @@ class AdminMenuController extends Controller
     /**
      * メニュー削除実行
      *
-     * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(int $id)
     {
         $menu = $this->menuRepository->find($id);
 
-        if (!$menu) {
+        if (! $menu) {
             return redirect()
                 ->route('dixlase-menus::admin.menus.index')
                 ->withErrors(['error' => __('dixlase-menus::admin.messages.menu_not_found')]);
@@ -207,7 +205,6 @@ class AdminMenuController extends Controller
     /**
      * メニュー復元
      *
-     * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function restore(int $id)
@@ -218,5 +215,4 @@ class AdminMenuController extends Controller
             ->route('dixlase-menus::admin.menus.index')
             ->with('success', __('dixlase-menus::admin.messages.menu_restored'));
     }
-
 }

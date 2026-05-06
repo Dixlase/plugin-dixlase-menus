@@ -130,10 +130,22 @@ class MenuService
         int $depth,
         int $order
     ): MenuItem {
+        $translations = $data['title_translations'] ?? $data['label_translations'] ?? null;
+        if (is_array($translations)) {
+            // Drop empty entries so the JSON column doesn't accumulate blanks
+            $translations = array_filter(
+                $translations,
+                fn ($v) => is_string($v) && $v !== ''
+            );
+        } else {
+            $translations = null;
+        }
+
         $itemData = [
             'menu_id' => $menuId,
             'parent_id' => $parentId,
             'title' => $data['label'] ?? $data['title'] ?? '',
+            'title_translations' => $translations,
             'url' => ($data['source_type'] ?? '') === 'menu_group' ? null : ($data['url'] ?? ''),
             'source_type' => $data['source_type'] ?? 'custom_url',
             'source_id' => $data['source_id'] ?? null,
@@ -255,7 +267,7 @@ class MenuService
             $menu = $query->first();
 
             if (! $menu) {
-                return null;
+                return;
             }
 
             return [
@@ -286,7 +298,7 @@ class MenuService
             $menu = $query->orderBy('display_order')->first();
 
             if (! $menu) {
-                return null;
+                return;
             }
 
             return [
@@ -314,7 +326,7 @@ class MenuService
                 ->first();
 
             if (! $menu) {
-                return null;
+                return;
             }
 
             return [
