@@ -152,7 +152,10 @@ class DixlaseMenusMenuProvider implements MenuProviderInterface
         }
 
         return new MenuItemDTO(
-            label: $item->title,
+            // 多言語対応: 現在のロケールに対応する翻訳があれば使用、なければ primary title にフォールバック
+            label: method_exists($item, 'getLocalizedTitle')
+                ? $item->getLocalizedTitle()
+                : $item->title,
             url: $item->url ?? '#',
             target: $item->target ?? '_self',
             sourceType: $item->source_type,

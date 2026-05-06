@@ -125,6 +125,8 @@ return [
             'menu_group_label_placeholder' => 'e.g. Products, Services',
             'menu_group_hint' => 'Menu groups are label-only items with no link. Use them as parent containers for dropdown or mega menus.',
             'menu_group_badge' => 'Group',
+            'translation_primary' => 'primary',
+            'translation_other' => 'translation',
             'toggle_children' => 'Toggle Children',
             'confirm_title' => 'Save Menu',
             'confirm_message' => 'Are you sure you want to save the changes to this menu?',

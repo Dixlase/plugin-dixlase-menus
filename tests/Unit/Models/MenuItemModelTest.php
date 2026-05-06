@@ -194,4 +194,47 @@ class MenuItemModelTest extends TestCase
 
         $this->assertEquals('My Link', $item->label);
     }
+
+    public function test_get_localized_title_returns_translation_when_available(): void
+    {
+        $item = $this->createItem([
+            'title' => 'ホーム',
+            'title_translations' => ['ja' => 'ホーム', 'en' => 'Home'],
+        ]);
+
+        $this->assertSame('Home', $item->getLocalizedTitle('en'));
+        $this->assertSame('ホーム', $item->getLocalizedTitle('ja'));
+    }
+
+    public function test_get_localized_title_falls_back_to_primary_title(): void
+    {
+        $item = $this->createItem([
+            'title' => 'ホーム',
+            'title_translations' => ['ja' => 'ホーム'],
+        ]);
+
+        // No 'fr' translation → falls back to primary title
+        $this->assertSame('ホーム', $item->getLocalizedTitle('fr'));
+    }
+
+    public function test_get_localized_title_falls_back_when_translations_null(): void
+    {
+        $item = $this->createItem([
+            'title' => 'ホーム',
+            'title_translations' => null,
+        ]);
+
+        $this->assertSame('ホーム', $item->getLocalizedTitle('en'));
+    }
+
+    public function test_get_localized_title_uses_app_locale_when_locale_arg_omitted(): void
+    {
+        app()->setLocale('en');
+        $item = $this->createItem([
+            'title' => 'ホーム',
+            'title_translations' => ['en' => 'Home'],
+        ]);
+
+        $this->assertSame('Home', $item->getLocalizedTitle());
+    }
 }

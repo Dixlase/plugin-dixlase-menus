@@ -32,15 +32,15 @@
 
 namespace Plugins\DixlaseMenus\App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * メニューアイテムモデル
- * 
+ *
  * @property int $id
  * @property int $menu_id
  * @property int|null $parent_id
@@ -81,6 +81,7 @@ class MenuItem extends Model
         'menu_id',
         'parent_id',
         'title',
+        'title_translations',
         'url',
         'source_type',
         'source_id',
@@ -108,7 +109,24 @@ class MenuItem extends Model
         'is_active' => 'boolean',
         'is_visible' => 'boolean',
         'visibility_conditions' => 'array',
+        'title_translations' => 'array',
     ];
+
+    /**
+     * Get the title resolved for the given locale.
+     *
+     * Falls back to the primary `title` column when the locale has no
+     * translation. The `title` column always holds the value entered when
+     * the item was created (typically the primary locale's text).
+     */
+    public function getLocalizedTitle(?string $locale = null): string
+    {
+        $locale ??= app()->getLocale();
+        $translations = $this->title_translations ?? [];
+        $value = $translations[$locale] ?? null;
+
+        return is_string($value) && $value !== '' ? $value : (string) $this->title;
+    }
 
     /**
      * デフォルト値
@@ -125,8 +143,6 @@ class MenuItem extends Model
 
     /**
      * 所属するメニューとのリレーション
-     *
-     * @return BelongsTo
      */
     public function menu(): BelongsTo
     {
@@ -135,8 +151,6 @@ class MenuItem extends Model
 
     /**
      * 親アイテムとのリレーション
-     *
-     * @return BelongsTo
      */
     public function parent(): BelongsTo
     {
@@ -145,8 +159,6 @@ class MenuItem extends Model
 
     /**
      * 子アイテムとのリレーション
-     *
-     * @return HasMany
      */
     public function children(): HasMany
     {
@@ -156,8 +168,6 @@ class MenuItem extends Model
 
     /**
      * 有効な子アイテムのみ取得
-     *
-     * @return HasMany
      */
     public function activeChildren(): HasMany
     {
@@ -205,7 +215,7 @@ class MenuItem extends Model
     /**
      * 有効なアイテムのみ取得するスコープ
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeActive($query)
@@ -217,7 +227,7 @@ class MenuItem extends Model
     /**
      * ルートレベルのアイテムのみ取得するスコープ
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeRoot($query)
@@ -228,8 +238,7 @@ class MenuItem extends Model
     /**
      * 特定の深さのアイテムを取得するスコープ
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param int $depth
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeByDepth($query, int $depth)
@@ -240,8 +249,7 @@ class MenuItem extends Model
     /**
      * 特定のソースタイプのアイテムを取得するスコープ
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $sourceType
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeBySourceType($query, string $sourceType)
@@ -252,8 +260,7 @@ class MenuItem extends Model
     /**
      * 表示順でソートするスコープ
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $direction
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeOrdered($query, string $direction = 'asc')
@@ -263,8 +270,6 @@ class MenuItem extends Model
 
     /**
      * ルートアイテムかどうかを判定
-     *
-     * @return bool
      */
     public function isRoot(): bool
     {
@@ -273,8 +278,6 @@ class MenuItem extends Model
 
     /**
      * 子アイテムを持つかどうかを判定
-     *
-     * @return bool
      */
     public function hasChildren(): bool
     {
@@ -283,8 +286,6 @@ class MenuItem extends Model
 
     /**
      * 有効な子アイテムを持つかどうかを判定
-     *
-     * @return bool
      */
     public function hasActiveChildren(): bool
     {
@@ -293,23 +294,19 @@ class MenuItem extends Model
 
     /**
      * 外部リンクかどうかを判定
-     *
-     * @return bool
      */
     public function isExternalLink(): bool
     {
-        if (!$this->url) {
+        if (! $this->url) {
             return false;
         }
 
-        return str_starts_with($this->url, 'http://') 
+        return str_starts_with($this->url, 'http://')
             || str_starts_with($this->url, 'https://');
     }
 
     /**
      * カスタムURLかどうかを判定
-     *
-     * @return bool
      */
     public function isCustomUrl(): bool
     {
@@ -318,22 +315,18 @@ class MenuItem extends Model
 
     /**
      * アイコンを持つかどうかを判定
-     *
-     * @return bool
      */
     public function hasIcon(): bool
     {
-        return !empty($this->icon_class);
+        return ! empty($this->icon_class);
     }
 
     /**
      * 表示条件を満たすかどうかを判定
-     *
-     * @return bool
      */
     public function shouldDisplay(): bool
     {
-        if (!$this->is_active || !$this->is_visible) {
+        if (! $this->is_active || ! $this->is_visible) {
             return false;
         }
 
@@ -348,9 +341,6 @@ class MenuItem extends Model
 
     /**
      * 完全なパス（祖先のタイトル）を取得
-     *
-     * @param string $separator
-     * @return string
      */
     public function getFullPath(string $separator = ' > '): string
     {
@@ -362,8 +352,6 @@ class MenuItem extends Model
 
     /**
      * ラベル（表示用タイトル）を取得するアクセサ
-     *
-     * @return string
      */
     public function getLabelAttribute(): string
     {
