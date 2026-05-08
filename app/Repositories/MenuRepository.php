@@ -242,11 +242,11 @@ class MenuRepository implements MenuRepositoryInterface
     protected function buildHierarchyRelations(int $depth): array
     {
         $relations = ['rootItems'];
-        
+
         for ($i = 1; $i < $depth; $i++) {
-            $relations[] = str_repeat('children.', $i) . 'children';
+            $relations[] = 'rootItems.' . str_repeat('children.', $i - 1) . 'children';
         }
-        
+
         return $relations;
     }
 

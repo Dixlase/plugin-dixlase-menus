@@ -55,7 +55,7 @@ return new class extends Migration
             ->get();
 
         foreach ($rows as $row) {
-            $lang = $row->lang ?: config('app.locale', 'en');
+            $lang = $row->lang ?: 'en';
             DB::table('plg_dixlase_menu_items')
                 ->where('id', $row->id)
                 ->update([

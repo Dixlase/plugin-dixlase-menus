@@ -236,6 +236,7 @@ class MenuService
             'id' => $item->id,
             'label' => $item->title,
             'title' => $item->title,
+            'title_translations' => $item->title_translations ?? [],
             'url' => $item->url,
             'target' => $item->target,
             'source_type' => $item->source_type,
