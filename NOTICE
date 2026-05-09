@@ -34,3 +34,25 @@ File map:
     NOTICE.ja              Japanese counterpart of this file
 
 =======================================================================
+
+Third-party assets
+------------------
+
+This plugin bundles a derivative manifest (resources/src/admin/js/data/
+fa-free-icons.json) generated from Font Awesome Free metadata. The
+manifest only contains icon identifiers and search terms — no SVG or
+font binaries are included.
+
+    Font Awesome Free
+        https://fontawesome.com/license/free
+
+        Icons:        CC BY 4.0 License (https://creativecommons.org/licenses/by/4.0/)
+        Fonts:        SIL OFL 1.1 License (https://scripts.sil.org/OFL)
+        Code:         MIT License (https://opensource.org/licenses/MIT)
+
+        Copyright (c) Fonticons, Inc.
+
+The Font Awesome icon webfont/SVGs themselves are loaded by the host
+site or theme and are not redistributed by this plugin.
+
+=======================================================================

@@ -132,6 +132,7 @@ class AdminMenuController extends Controller
                 'id' => $item->id,
                 'label' => $item->title,
                 'title_translations' => $item->title_translations ?? [],
+                'icon_class' => $item->icon_class ?? '',
                 'url' => $item->url,
                 'target' => $item->target,
                 'source_type' => $item->source_type,

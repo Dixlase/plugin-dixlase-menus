@@ -34,3 +34,25 @@
     NOTICE.ja              本ファイル(日本語版)
 
 =======================================================================
+
+サードパーティ素材
+------------------
+
+本プラグインには Font Awesome Free のメタデータから生成した派生マニ
+フェスト (resources/src/admin/js/data/fa-free-icons.json) を同梱して
+います。マニフェストにはアイコン識別子と検索用語のみが含まれ、SVG や
+フォントバイナリは含みません。
+
+    Font Awesome Free
+        https://fontawesome.com/license/free
+
+        アイコン: CC BY 4.0 License (https://creativecommons.org/licenses/by/4.0/)
+        フォント: SIL OFL 1.1 License (https://scripts.sil.org/OFL)
+        コード:   MIT License (https://opensource.org/licenses/MIT)
+
+        Copyright (c) Fonticons, Inc.
+
+Font Awesome のアイコン Web フォントや SVG 自体は、ホストサイトや
+テーマ側で読み込まれるものであり、本プラグインから再配布はしません。
+
+=======================================================================
