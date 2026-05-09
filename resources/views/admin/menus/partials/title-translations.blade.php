@@ -8,7 +8,7 @@
  *   $itemRef - the Alpine.js variable name referencing the current item
  *              (e.g. 'item', 'child', 'grandchild')
 --}}
-<div x-show="availableLocales.length > 1"
+<div x-show="availableLocales.length > 0"
      class="mt-2 space-y-1">
     <template x-for="loc in availableLocales" :key="loc">
         <div class="flex items-center gap-2">
@@ -17,7 +17,7 @@
             <input type="text"
                    :value="(({{ $itemRef }}.title_translations || {})[loc]) || ''"
                    @input="if (!{{ $itemRef }}.title_translations) {{ $itemRef }}.title_translations = {}; {{ $itemRef }}.title_translations[loc] = $event.target.value"
-                   :placeholder="(localeNames[loc] || loc) + ' / ' + (loc === currentLocale ? '{{ __('dixlase-menus::admin.menus.edit.translation_primary') }}' : '{{ __('dixlase-menus::admin.menus.edit.translation_other') }}')"
+                   :placeholder="localeNames[loc] || loc"
                    class="block flex-1 px-2 py-1 text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
         </div>
     </template>

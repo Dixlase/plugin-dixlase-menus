@@ -122,9 +122,33 @@ class AdminMenuController extends Controller
             abort(404);
         }
 
-        // 利用可能なロケール一覧（多言語編集UI用）
-        $availableLocales = \App\Support\TranslationManager::getAvailableLocales();
+        // Per-item translation fields are driven by the DixlaseMultilingual
+        // plugin: only non-fallback locales it has enabled get an input field.
+        // The main label input always represents the fallback (typically EN)
+        // value, so we exclude it from the per-locale field list. When the
+        // plugin is missing or its URL-routing toggle is off, no translation
+        // fields are shown.
+        $translationLocales = [];
         $localeNames = \App\Support\TranslationManager::getLocaleNames();
+        $resolverClass = \Plugins\DixlaseMultilingual\App\Services\EnabledLocaleResolver::class;
+        $fallbackLocale = config('app.fallback_locale', 'en');
+
+        if (class_exists($resolverClass)
+            && config('dixlase_multilingual.locale_url_routing_enabled', false)
+        ) {
+            try {
+                $resolver = app($resolverClass);
+                $fallbackLocale = $resolver->getFallbackLocale();
+                $translationLocales = array_values(array_filter(
+                    $resolver->getEnabledLocales(),
+                    fn (string $loc) => $loc !== $fallbackLocale
+                ));
+            } catch (\Throwable $e) {
+                $translationLocales = [];
+            }
+        }
+
+        $availableLocales = $translationLocales;
 
         // 再帰的にメニューアイテムを配列化（最大3階層 = depth 0/1/2）
         $mapItem = function ($item, int $depth) use (&$mapItem) {
@@ -159,6 +183,7 @@ class AdminMenuController extends Controller
         $this->viewParams['maxDepth'] = $maxDepth;
         $this->viewParams['availableLocales'] = $availableLocales;
         $this->viewParams['localeNames'] = $localeNames;
+        $this->viewParams['fallbackLocale'] = $fallbackLocale;
         $this->viewParams['linkSourcesUrl'] = route('dixlase-menus::admin.menus.link-sources.index');
 
         return view('dixlase-menus::admin.menus.edit', $this->viewParams);
