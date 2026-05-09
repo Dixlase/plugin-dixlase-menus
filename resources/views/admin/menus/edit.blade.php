@@ -45,7 +45,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
      data-link-sources-url="{{ $linkSourcesUrl }}"
      data-available-locales='@json($availableLocales)'
      data-locale-names='@json($localeNames)'
-     data-current-locale="{{ app()->getLocale() }}">
+     data-current-locale="{{ $fallbackLocale ?? app()->getLocale() }}">
 
     <!-- メインコンテンツ: メニューアイテム管理 -->
     <div class="space-y-6">
