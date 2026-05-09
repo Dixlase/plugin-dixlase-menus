@@ -48,6 +48,16 @@ document.addEventListener('alpine:init', () => {
     localeNames: {},
     currentLocale: '',
 
+    // アイコンピッカー
+    iconPickerOpen: false,
+    iconPickerTarget: null,
+    iconPickerSearch: '',
+    iconPickerStyle: 'all',
+    iconPickerCategory: 'all',
+    iconPickerData: [],
+    iconPickerLoading: false,
+    iconPickerLimit: 200,
+
     /**
      * 自動配置かどうか
      */
@@ -325,6 +335,7 @@ document.addEventListener('alpine:init', () => {
                     target: '_self',
                     source_type: sourceType,
                     source_id: sourceItem.id,
+                    icon_class: '',
                     children: []
                 });
             }
@@ -352,6 +363,7 @@ document.addEventListener('alpine:init', () => {
             target: '_self',
             source_type: 'custom_url',
             source_id: null,
+            icon_class: '',
             children: []
         });
 
@@ -374,6 +386,7 @@ document.addEventListener('alpine:init', () => {
             target: '_self',
             source_type: 'menu_group',
             source_id: null,
+            icon_class: '',
             children: []
         });
 
@@ -556,7 +569,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     /**
-     * すべてのアイテムに title_translations オブジェクトを確実に持たせる
+     * すべてのアイテムに title_translations と icon_class を確実に持たせる
      * （サーバから読み込んだアイテムは null や undefined のことがある）
      */
     normalizeItemTranslations(items) {
@@ -564,6 +577,9 @@ document.addEventListener('alpine:init', () => {
         items.forEach((item) => {
             if (!item.title_translations || typeof item.title_translations !== 'object') {
                 item.title_translations = {};
+            }
+            if (typeof item.icon_class !== 'string') {
+                item.icon_class = item.icon_class || '';
             }
             if (Array.isArray(item.children)) {
                 this.normalizeItemTranslations(item.children);
@@ -590,6 +606,7 @@ document.addEventListener('alpine:init', () => {
             target: '_self',
             source_type: 'custom_url',
             source_id: null,
+            icon_class: '',
             depth: 0,
             children: []
         });
@@ -619,6 +636,7 @@ document.addEventListener('alpine:init', () => {
             target: '_self',
             source_type: 'custom_url',
             source_id: null,
+            icon_class: '',
             depth: (parent.depth || 0) + 1,
             children: []
         });
@@ -639,6 +657,111 @@ document.addEventListener('alpine:init', () => {
         this.items[parentIndex]
             .children[childIndex]
             .children.splice(grandchildIndex, 1);
-    }
+    },
+
+    /**
+     * Open the icon picker modal targeting the given menu item.
+     * Lazy-loads the FA Free icon manifest on first invocation so the
+     * ~240KB JSON does not bloat the initial admin bundle.
+     */
+    async openIconPicker(item) {
+        this.iconPickerTarget = item;
+        this.iconPickerSearch = '';
+        this.iconPickerStyle = 'all';
+        this.iconPickerCategory = 'all';
+
+        if (this.iconPickerData.length === 0 && !this.iconPickerLoading) {
+            this.iconPickerLoading = true;
+            try {
+                const mod = await import('./data/fa-free-icons.json');
+                this.iconPickerData = mod.default || mod;
+            } catch (e) {
+                console.error('Failed to load icon manifest:', e);
+                this.iconPickerData = [];
+            } finally {
+                this.iconPickerLoading = false;
+            }
+        }
+
+        this.iconPickerOpen = true;
+    },
+
+    closeIconPicker() {
+        this.iconPickerOpen = false;
+        this.iconPickerTarget = null;
+    },
+
+    /**
+     * Apply an icon selection to the current target item and close the picker.
+     */
+    selectIcon(name, prefix) {
+        if (this.iconPickerTarget) {
+            this.iconPickerTarget.icon_class = `${prefix} fa-${name}`;
+        }
+        this.closeIconPicker();
+    },
+
+    /**
+     * Clear the current target item's icon and close the picker.
+     */
+    clearIcon() {
+        if (this.iconPickerTarget) {
+            this.iconPickerTarget.icon_class = '';
+        }
+        this.closeIconPicker();
+    },
+
+    /**
+     * The icon list filtered by the user's search term, style, and category.
+     * Capped at iconPickerLimit so the DOM doesn't have to render all 1900
+     * icons at once when the filter is broad.
+     */
+    get filteredIcons() {
+        const search = this.iconPickerSearch.trim().toLowerCase();
+        const style = this.iconPickerStyle;
+        const category = this.iconPickerCategory;
+
+        const matches = this.iconPickerData.filter((icon) => {
+            if (style !== 'all' && !icon.s.includes(style)) return false;
+            if (category !== 'all' && !icon.c.includes(category)) return false;
+            if (!search) return true;
+            if (icon.n.includes(search)) return true;
+            if (icon.l.toLowerCase().includes(search)) return true;
+            return icon.t.some((term) => term.toLowerCase().includes(search));
+        });
+
+        return matches.slice(0, this.iconPickerLimit);
+    },
+
+    get filteredIconsTotal() {
+        const search = this.iconPickerSearch.trim().toLowerCase();
+        const style = this.iconPickerStyle;
+        const category = this.iconPickerCategory;
+
+        return this.iconPickerData.reduce((count, icon) => {
+            if (style !== 'all' && !icon.s.includes(style)) return count;
+            if (category !== 'all' && !icon.c.includes(category)) return count;
+            if (!search) return count + 1;
+            if (
+                icon.n.includes(search) ||
+                icon.l.toLowerCase().includes(search) ||
+                icon.t.some((t) => t.toLowerCase().includes(search))
+            ) {
+                return count + 1;
+            }
+            return count;
+        }, 0);
+    },
+
+    /**
+     * Sorted unique category list for the category dropdown.
+     */
+    get iconCategories() {
+        const set = new Set();
+        for (const icon of this.iconPickerData) {
+            for (const cat of icon.c) set.add(cat);
+        }
+        return Array.from(set).sort();
+    },
     }));
 });

@@ -113,10 +113,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                 <i class="fas fa-layer-group mr-1 text-[10px]"></i>{{ __('dixlase-menus::admin.menus.edit.menu_group_badge') }}
                                             </span>
                                         </label>
-                                        <input type="text"
-                                               x-model="item.label"
-                                               placeholder="{{ __('dixlase-menus::admin.settings.menu_items.label_placeholder') }}"
-                                               class="block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        <div class="flex items-center gap-2">
+                                            @include('dixlase-menus::admin.menus.partials.icon-button', ['itemRef' => 'item'])
+                                            <input type="text"
+                                                   x-model="item.label"
+                                                   placeholder="{{ __('dixlase-menus::admin.settings.menu_items.label_placeholder') }}"
+                                                   class="block flex-1 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        </div>
                                         @include('dixlase-menus::admin.menus.partials.title-translations', ['itemRef' => 'item'])
                                     </div>
 
@@ -179,6 +182,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                     <!-- タイトル -->
                                                     <div :class="child.source_type === 'menu_group' ? 'md:col-span-3' : ''">
                                                         <div class="flex items-center gap-2">
+                                                            @include('dixlase-menus::admin.menus.partials.icon-button', ['itemRef' => 'child', 'size' => 'sm'])
                                                             <input type="text"
                                                                    x-model="child.label"
                                                                    placeholder="{{ __('dixlase-menus::admin.settings.menu_items.label_placeholder') }}"
@@ -243,10 +247,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                             <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2">
                                                                 <!-- タイトル -->
                                                                 <div>
-                                                                    <input type="text"
-                                                                           x-model="grandchild.label"
-                                                                           placeholder="{{ __('dixlase-menus::admin.settings.menu_items.label_placeholder') }}"
-                                                                           class="block w-full px-2 py-1 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                                                    <div class="flex items-center gap-2">
+                                                                        @include('dixlase-menus::admin.menus.partials.icon-button', ['itemRef' => 'grandchild', 'size' => 'sm'])
+                                                                        <input type="text"
+                                                                               x-model="grandchild.label"
+                                                                               placeholder="{{ __('dixlase-menus::admin.settings.menu_items.label_placeholder') }}"
+                                                                               class="block flex-1 px-2 py-1 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                                                    </div>
                                                                     @include('dixlase-menus::admin.menus.partials.title-translations', ['itemRef' => 'grandchild'])
                                                                 </div>
 
@@ -690,6 +697,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             </div>
         </div>
     </div>
+
+    {{-- アイコンピッカー モーダル --}}
+    @include('dixlase-menus::admin.menus.partials.icon-picker')
 </div>
 
 <!-- 削除フォーム・モーダル（サイドバー外に配置して画面中央に表示） -->
