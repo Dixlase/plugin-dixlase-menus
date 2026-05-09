@@ -152,10 +152,7 @@ class DixlaseMenusMenuProvider implements MenuProviderInterface
         }
 
         return new MenuItemDTO(
-            // 多言語対応: 現在のロケールに対応する翻訳があれば使用、なければ primary title にフォールバック
-            label: method_exists($item, 'getLocalizedTitle')
-                ? $item->getLocalizedTitle()
-                : $item->title,
+            label: $this->resolveLabel($item),
             url: $item->url ?? '#',
             target: $item->target ?? '_self',
             sourceType: $item->source_type,
@@ -166,5 +163,35 @@ class DixlaseMenusMenuProvider implements MenuProviderInterface
             isActive: true,
             children: $children,
         );
+    }
+
+    /**
+     * Resolve the visible label for a menu item, gated on whether the
+     * DixlaseMultilingual plugin's URL routing toggle is on.
+     *
+     * - Multilingual on  -> use getLocalizedTitle(), which reads
+     *   app()->getLocale() (the multilingual plugin sets the runtime
+     *   locale for /, /ja/, /en/ etc. via its middleware chain) and
+     *   looks up title_translations[locale], falling back to title.
+     * - Multilingual off (or plugin missing) -> return title verbatim
+     *   so per-locale translations are not consulted at all.
+     */
+    private function resolveLabel(mixed $item): string
+    {
+        $title = (string) ($item->title ?? '');
+
+        if (! $this->isMultilingualEnabled()) {
+            return $title;
+        }
+
+        return method_exists($item, 'getLocalizedTitle')
+            ? (string) $item->getLocalizedTitle()
+            : $title;
+    }
+
+    private function isMultilingualEnabled(): bool
+    {
+        return class_exists(\Plugins\DixlaseMultilingual\App\Services\EnabledLocaleResolver::class)
+            && (bool) config('dixlase_multilingual.locale_url_routing_enabled', false);
     }
 }
