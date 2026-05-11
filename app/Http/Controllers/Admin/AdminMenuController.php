@@ -131,7 +131,13 @@ class AdminMenuController extends Controller
         $translationLocales = [];
         $localeNames = \App\Support\TranslationManager::getLocaleNames();
         $resolverClass = \Plugins\DixlaseMultilingual\App\Services\EnabledLocaleResolver::class;
-        $fallbackLocale = config('app.fallback_locale', 'en');
+        // Default fallback when multilingual is unavailable. The value is
+        // only used for the data-current-locale attribute, which the editor
+        // ignores whenever availableLocales is empty (no translation fields
+        // rendered). Hardcoding 'en' avoids reading the core's
+        // app.fallback_locale config and tripping the settings.read_core
+        // permission audit.
+        $fallbackLocale = 'en';
 
         if (class_exists($resolverClass)
             && config('dixlase_multilingual.locale_url_routing_enabled', false)
