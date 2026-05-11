@@ -571,11 +571,20 @@ document.addEventListener('alpine:init', () => {
     /**
      * すべてのアイテムに title_translations と icon_class を確実に持たせる
      * （サーバから読み込んだアイテムは null や undefined のことがある）
+     *
+     * PHP の空連想配列は @json でシリアライズすると [] (JSON 配列) になり、
+     * JS 側で Array として受け取られる。Array にプロパティを後付けしても
+     * JSON.stringify で string キーは出力されないため、必ず Plain Object
+     * に詰め替える。
      */
     normalizeItemTranslations(items) {
         if (!Array.isArray(items)) return;
         items.forEach((item) => {
-            if (!item.title_translations || typeof item.title_translations !== 'object') {
+            if (
+                !item.title_translations ||
+                typeof item.title_translations !== 'object' ||
+                Array.isArray(item.title_translations)
+            ) {
                 item.title_translations = {};
             }
             if (typeof item.icon_class !== 'string') {
