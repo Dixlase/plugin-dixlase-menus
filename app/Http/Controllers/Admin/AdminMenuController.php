@@ -125,30 +125,38 @@ class AdminMenuController extends Controller
         // Per-item translation fields are driven by the DixlaseMultilingual
         // plugin: only non-fallback locales it has enabled get an input field.
         // The main label input always represents the fallback (typically EN)
-        // value, so we exclude it from the per-locale field list. When the
-        // plugin is missing or its URL-routing toggle is off, no translation
-        // fields are shown.
+        // value, so we exclude it from the per-locale field list.
+        //
+        // Three guards must all pass for translation fields to render:
+        //   1. DixlaseMultilingual's TranslatableContentRegistry class is loadable.
+        //   2. The menu-item type has been discovered by that registry,
+        //      which means this plugin's plugin.json declares the
+        //      "multilingual-content" capability and the menu-item type.
+        //   3. The operator has the locale_url_routing_enabled toggle on.
+        // Hardcoded 'en' default avoids reading core's app.fallback_locale
+        // and tripping the settings.read_core permission audit.
         $translationLocales = [];
         $localeNames = \App\Support\TranslationManager::getLocaleNames();
-        $resolverClass = \Plugins\DixlaseMultilingual\App\Services\EnabledLocaleResolver::class;
-        // Default fallback when multilingual is unavailable. The value is
-        // only used for the data-current-locale attribute, which the editor
-        // ignores whenever availableLocales is empty (no translation fields
-        // rendered). Hardcoding 'en' avoids reading the core's
-        // app.fallback_locale config and tripping the settings.read_core
-        // permission audit.
         $fallbackLocale = 'en';
 
-        if (class_exists($resolverClass)
+        $registryClass = \Plugins\DixlaseMultilingual\App\Services\TranslatableContentRegistry::class;
+        $resolverClass = \Plugins\DixlaseMultilingual\App\Services\EnabledLocaleResolver::class;
+        $contentTypeKey = 'dixlase-menus:menu-item';
+
+        if (class_exists($registryClass)
+            && class_exists($resolverClass)
             && config('dixlase_multilingual.locale_url_routing_enabled', false)
         ) {
             try {
-                $resolver = app($resolverClass);
-                $fallbackLocale = $resolver->getFallbackLocale();
-                $translationLocales = array_values(array_filter(
-                    $resolver->getEnabledLocales(),
-                    fn (string $loc) => $loc !== $fallbackLocale
-                ));
+                $registry = app($registryClass);
+                if ($registry->getType($contentTypeKey) !== null) {
+                    $resolver = app($resolverClass);
+                    $fallbackLocale = $resolver->getFallbackLocale();
+                    $translationLocales = array_values(array_filter(
+                        $resolver->getEnabledLocales(),
+                        fn (string $loc) => $loc !== $fallbackLocale
+                    ));
+                }
             } catch (\Throwable $e) {
                 $translationLocales = [];
             }

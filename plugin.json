@@ -35,6 +35,26 @@
         "navigation",
         "cms"
     ],
+    "capabilities": [
+        "multilingual-content"
+    ],
+    "multilingual_content": {
+        "storage": "inline",
+        "types": [
+            {
+                "key": "dixlase-menus:menu-item",
+                "model": "Plugins\\DixlaseMenus\\App\\Models\\MenuItem",
+                "label_field": "title",
+                "fields": [
+                    {
+                        "name": "title",
+                        "type": "text",
+                        "rules": "required|string|max:255"
+                    }
+                ]
+            }
+        ]
+    },
     "requires": {
         "dixlase": "^0.1.0",
         "php": ">=8.0"
