@@ -189,9 +189,41 @@ class DixlaseMenusMenuProvider implements MenuProviderInterface
             : $title;
     }
 
+    /**
+     * Runtime gate for multilingual menu rendering.
+     *
+     * Anchored on the capability declaration in plugin.json:
+     *   "capabilities": ["multilingual-content"],
+     *   "multilingual_content": { "storage": "inline", "types": [...] }
+     *
+     * The DixlaseMultilingual plugin's TranslatableContentRegistry discovers
+     * that declaration during boot and registers the menu-item type. If the
+     * declaration is removed from plugin.json the registry no longer has the
+     * type and this method returns false, so the menu silently stops
+     * consulting translations. The locale_url_routing_enabled config check
+     * additionally ensures the operator has actually turned multilingual on
+     * (registry presence alone does not mean the feature is active).
+     */
+    private const MULTILINGUAL_CONTENT_TYPE_KEY = 'dixlase-menus:menu-item';
+
     private function isMultilingualEnabled(): bool
     {
-        return class_exists(\Plugins\DixlaseMultilingual\App\Services\EnabledLocaleResolver::class)
-            && (bool) config('dixlase_multilingual.locale_url_routing_enabled', false);
+        $registryClass = \Plugins\DixlaseMultilingual\App\Services\TranslatableContentRegistry::class;
+
+        if (! class_exists($registryClass)) {
+            return false;
+        }
+
+        if (! (bool) config('dixlase_multilingual.locale_url_routing_enabled', false)) {
+            return false;
+        }
+
+        try {
+            $registry = app($registryClass);
+        } catch (\Throwable) {
+            return false;
+        }
+
+        return $registry->getType(self::MULTILINGUAL_CONTENT_TYPE_KEY) !== null;
     }
 }
