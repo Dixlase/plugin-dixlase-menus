@@ -269,13 +269,17 @@ document.addEventListener('alpine:init', () => {
      * @param {Object} newItem - The item data to add
      */
     _addItemToTarget(newItem) {
-        // 新規アイテムには title_translations を必ず初期化
-        // 入力された label を現在のロケールの翻訳としてセット
+        // Ensure title_translations is always a plain Object so per-locale
+        // inputs can write to it later. Do NOT auto-copy newItem.label into
+        // title_translations[fallback]: the main label IS the fallback value
+        // by design, and MenuItem::getLocalizedTitle() falls back to the
+        // `title` column whenever a locale-specific translation is missing.
+        // Auto-copying would freeze the label as it was at creation time,
+        // and subsequent edits to the main label would not propagate to the
+        // fallback translation - causing the front-end to show stale
+        // (typically the wrong-language) text for the fallback locale.
         if (!newItem.title_translations) {
             newItem.title_translations = {};
-        }
-        if (this.currentLocale && newItem.label) {
-            newItem.title_translations[this.currentLocale] = newItem.label;
         }
 
         // Grandchild: parent + child indices both set
