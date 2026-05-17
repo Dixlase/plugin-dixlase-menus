@@ -42,10 +42,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
      data-items='@json($menuItems)'
      data-error-message="{{ __('dixlase-menus::admin.messages.menu_items_save_failed') }}"
      data-placement-descriptions='@json($placementTypeDescriptions)'
-     data-link-sources-url="{{ $linkSourcesUrl }}"
-     data-available-locales='@json($availableLocales)'
-     data-locale-names='@json($localeNames)'
-     data-current-locale="{{ $fallbackLocale ?? app()->getLocale() }}">
+     data-link-sources-url="{{ $linkSourcesUrl }}">
 
     <!-- メインコンテンツ: メニューアイテム管理 -->
     <div class="space-y-6">
@@ -120,7 +117,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                    placeholder="{{ __('dixlase-menus::admin.settings.menu_items.label_placeholder') }}"
                                                    class="block flex-1 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         </div>
-                                        @include('dixlase-menus::admin.menus.partials.title-translations', ['itemRef' => 'item'])
                                     </div>
 
                                     <!-- URL -->
@@ -192,7 +188,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                                 <i class="fas fa-layer-group mr-1 text-[10px]"></i>{{ __('dixlase-menus::admin.menus.edit.menu_group_badge') }}
                                                             </span>
                                                         </div>
-                                                        @include('dixlase-menus::admin.menus.partials.title-translations', ['itemRef' => 'child'])
                                                     </div>
 
                                                     <!-- URL -->
@@ -254,7 +249,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                                                placeholder="{{ __('dixlase-menus::admin.settings.menu_items.label_placeholder') }}"
                                                                                class="block flex-1 px-2 py-1 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                                                                     </div>
-                                                                    @include('dixlase-menus::admin.menus.partials.title-translations', ['itemRef' => 'grandchild'])
                                                                 </div>
 
                                                                 <!-- URL -->

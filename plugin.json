@@ -39,7 +39,6 @@
         "multilingual-content"
     ],
     "multilingual_content": {
-        "storage": "inline",
         "types": [
             {
                 "key": "dixlase-menus:menu-item",
