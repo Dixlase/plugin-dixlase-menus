@@ -43,11 +43,6 @@ document.addEventListener('alpine:init', () => {
     addItemParentIndex: null,
     addItemChildIndex: null,
 
-    // 多言語編集
-    availableLocales: [],
-    localeNames: {},
-    currentLocale: '',
-
     // アイコンピッカー
     iconPickerOpen: false,
     iconPickerTarget: null,
@@ -103,18 +98,8 @@ document.addEventListener('alpine:init', () => {
             this.items = [];
         }
 
-        // 多言語編集の初期化
-        try {
-            this.availableLocales = JSON.parse(el.dataset.availableLocales || '[]');
-            this.localeNames = JSON.parse(el.dataset.localeNames || '{}');
-        } catch (e) {
-            this.availableLocales = [];
-            this.localeNames = {};
-        }
-        this.currentLocale = el.dataset.currentLocale || '';
-
-        // 各アイテムに title_translations を確実に持たせる
-        this.normalizeItemTranslations(this.items);
+        // Ensure each item has icon_class defined (server may send null).
+        this.normalizeItemDefaults(this.items);
 
         // リンクソースURL初期化
         this.linkSourcesUrl = el.dataset.linkSourcesUrl || '';
@@ -269,18 +254,10 @@ document.addEventListener('alpine:init', () => {
      * @param {Object} newItem - The item data to add
      */
     _addItemToTarget(newItem) {
-        // Ensure title_translations is always a plain Object so per-locale
-        // inputs can write to it later. Do NOT auto-copy newItem.label into
-        // title_translations[fallback]: the main label IS the fallback value
-        // by design, and MenuItem::getLocalizedTitle() falls back to the
-        // `title` column whenever a locale-specific translation is missing.
-        // Auto-copying would freeze the label as it was at creation time,
-        // and subsequent edits to the main label would not propagate to the
-        // fallback translation - causing the front-end to show stale
-        // (typically the wrong-language) text for the fallback locale.
-        if (!newItem.title_translations) {
-            newItem.title_translations = {};
-        }
+        // Translations are now stored centrally in DixlaseMultilingual and
+        // edited through that plugin's translation manager UI. The menu
+        // editor only carries the primary-locale label (newItem.label)
+        // and structural fields; no per-locale state is tracked here.
 
         // Grandchild: parent + child indices both set
         if (
@@ -573,29 +550,19 @@ document.addEventListener('alpine:init', () => {
     },
 
     /**
-     * すべてのアイテムに title_translations と icon_class を確実に持たせる
-     * （サーバから読み込んだアイテムは null や undefined のことがある）
-     *
-     * PHP の空連想配列は @json でシリアライズすると [] (JSON 配列) になり、
-     * JS 側で Array として受け取られる。Array にプロパティを後付けしても
-     * JSON.stringify で string キーは出力されないため、必ず Plain Object
-     * に詰め替える。
+     * Ensure every item carries the structural fields the editor binds
+     * to with sensible defaults. The server may send icon_class as null
+     * when it has not been set; bind targets expect a string.
+     * Translations are NOT tracked here (see _addItemToTarget comment).
      */
-    normalizeItemTranslations(items) {
+    normalizeItemDefaults(items) {
         if (!Array.isArray(items)) return;
         items.forEach((item) => {
-            if (
-                !item.title_translations ||
-                typeof item.title_translations !== 'object' ||
-                Array.isArray(item.title_translations)
-            ) {
-                item.title_translations = {};
-            }
             if (typeof item.icon_class !== 'string') {
                 item.icon_class = item.icon_class || '';
             }
             if (Array.isArray(item.children)) {
-                this.normalizeItemTranslations(item.children);
+                this.normalizeItemDefaults(item.children);
             }
         });
     },
@@ -614,7 +581,6 @@ document.addEventListener('alpine:init', () => {
         this.items.push({
             id: this.generateId(),
             label: '',
-            title_translations: {},
             url: '',
             target: '_self',
             source_type: 'custom_url',
@@ -644,7 +610,6 @@ document.addEventListener('alpine:init', () => {
         parent.children.push({
             id: this.generateId(),
             label: '',
-            title_translations: {},
             url: '',
             target: '_self',
             source_type: 'custom_url',

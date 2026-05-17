@@ -122,54 +122,25 @@ class AdminMenuController extends Controller
             abort(404);
         }
 
-        // Per-item translation fields are driven by the DixlaseMultilingual
-        // plugin: only non-fallback locales it has enabled get an input field.
-        // The main label input always represents the fallback (typically EN)
-        // value, so we exclude it from the per-locale field list.
-        //
-        // Three guards must all pass for translation fields to render:
-        //   1. DixlaseMultilingual's TranslatableContentRegistry class is loadable.
-        //   2. The menu-item type has been discovered by that registry,
-        //      which means this plugin's plugin.json declares the
-        //      "multilingual-content" capability and the menu-item type.
-        //   3. The operator has the locale_url_routing_enabled toggle on.
-        // Hardcoded 'en' default avoids reading core's app.fallback_locale
-        // and tripping the settings.read_core permission audit.
-        $translationLocales = [];
-        $localeNames = \App\Support\TranslationManager::getLocaleNames();
-        $fallbackLocale = 'en';
+        // Per-item translations are now stored in the central
+        // plg_dixlase_multilingual_translations table and edited from the
+        // DixlaseMultilingual translation manager UI (the menu-item type
+        // is registered there via plugin.json's multilingual-content
+        // capability, now without the "storage: inline" flag). The menu
+        // edit page is structure + primary-locale title only, mirroring
+        // how Pages and Legal behave -- no inline per-locale fields here.
 
-        $registryClass = \Plugins\DixlaseMultilingual\App\Services\TranslatableContentRegistry::class;
-        $resolverClass = \Plugins\DixlaseMultilingual\App\Services\EnabledLocaleResolver::class;
-        $contentTypeKey = 'dixlase-menus:menu-item';
-
-        if (class_exists($registryClass)
-            && class_exists($resolverClass)
-            && config('dixlase_multilingual.locale_url_routing_enabled', false)
-        ) {
-            try {
-                $registry = app($registryClass);
-                if ($registry->getType($contentTypeKey) !== null) {
-                    $resolver = app($resolverClass);
-                    $fallbackLocale = $resolver->getFallbackLocale();
-                    $translationLocales = array_values(array_filter(
-                        $resolver->getEnabledLocales(),
-                        fn (string $loc) => $loc !== $fallbackLocale
-                    ));
-                }
-            } catch (\Throwable $e) {
-                $translationLocales = [];
-            }
-        }
-
-        $availableLocales = $translationLocales;
-
-        // 再帰的にメニューアイテムを配列化（最大3階層 = depth 0/1/2）
+        // Map each MenuItem into the array shape the editor's JS state
+        // expects. We read the primary `title` via getRawOriginal so the
+        // editor always shows the canonical (untranslated) value -- the
+        // model's TranslatableTrait getAttribute override would otherwise
+        // return whatever locale the admin happens to be browsing in,
+        // which would let an operator overwrite the primary value with
+        // a translation when they hit Save.
         $mapItem = function ($item, int $depth) use (&$mapItem) {
             return [
                 'id' => $item->id,
-                'label' => $item->title,
-                'title_translations' => $item->title_translations ?? [],
+                'label' => (string) $item->getRawOriginal('title'),
                 'icon_class' => $item->icon_class ?? '',
                 'url' => $item->url,
                 'target' => $item->target,
@@ -195,9 +166,6 @@ class AdminMenuController extends Controller
         $this->viewParams['placementTypeOptions'] = PlacementType::options();
         $this->viewParams['placementTypeDescriptions'] = PlacementType::descriptions();
         $this->viewParams['maxDepth'] = $maxDepth;
-        $this->viewParams['availableLocales'] = $availableLocales;
-        $this->viewParams['localeNames'] = $localeNames;
-        $this->viewParams['fallbackLocale'] = $fallbackLocale;
         $this->viewParams['linkSourcesUrl'] = route('dixlase-menus::admin.menus.link-sources.index');
 
         return view('dixlase-menus::admin.menus.edit', $this->viewParams);

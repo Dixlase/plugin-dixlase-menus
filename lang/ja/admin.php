@@ -125,8 +125,6 @@ return [
             'menu_group_label_placeholder' => '例: 製品情報、サービス',
             'menu_group_hint' => 'メニューグループはリンクなしのラベル専用アイテムです。ドロップダウンやメガメニューの親コンテナとして使用します。',
             'menu_group_badge' => 'グループ',
-            'translation_primary' => '主言語',
-            'translation_other' => '翻訳',
             'icon_pick' => 'アイコンを選択',
             'icon_picker' => [
                 'title' => 'アイコンを選択',

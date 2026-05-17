@@ -130,22 +130,15 @@ class MenuService
         int $depth,
         int $order
     ): MenuItem {
-        $translations = $data['title_translations'] ?? $data['label_translations'] ?? null;
-        if (is_array($translations)) {
-            // Drop empty entries so the JSON column doesn't accumulate blanks
-            $translations = array_filter(
-                $translations,
-                fn ($v) => is_string($v) && $v !== ''
-            );
-        } else {
-            $translations = null;
-        }
-
+        // Translations are now persisted centrally in
+        // plg_dixlase_multilingual_translations via the DixlaseMultilingual
+        // translation manager UI. We no longer accept title_translations /
+        // label_translations from the menu editor payload; the title column
+        // alone carries the primary-locale value.
         $itemData = [
             'menu_id' => $menuId,
             'parent_id' => $parentId,
             'title' => $data['label'] ?? $data['title'] ?? '',
-            'title_translations' => $translations,
             'url' => ($data['source_type'] ?? '') === 'menu_group' ? null : ($data['url'] ?? ''),
             'source_type' => $data['source_type'] ?? 'custom_url',
             'source_id' => $data['source_id'] ?? null,
@@ -232,11 +225,17 @@ class MenuService
      */
     protected function itemToArray(MenuItem $item): array
     {
+        // Use getRawOriginal so the JS state seeded into the editor
+        // shows the primary-locale title even when the trait's
+        // getAttribute override would otherwise return a translation
+        // matching the current admin locale. (Same reason as
+        // AdminMenuController::edit()'s $mapItem.)
+        $primaryTitle = (string) $item->getRawOriginal('title');
+
         return [
             'id' => $item->id,
-            'label' => $item->title,
-            'title' => $item->title,
-            'title_translations' => $item->title_translations ?? [],
+            'label' => $primaryTitle,
+            'title' => $primaryTitle,
             'url' => $item->url,
             'target' => $item->target,
             'source_type' => $item->source_type,
