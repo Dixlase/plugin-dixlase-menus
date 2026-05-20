@@ -107,6 +107,29 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 {{ __('dixlase-menus::admin.menus.create.description_help') }}
                             </p>
                         </div>
+
+                        {{-- メニュー言語: 多言語プラグイン有効時のみ表示。
+                             無効時はサイト基本言語がコントローラで自動設定される。 --}}
+                        @if(($languageContext['enabled'] ?? false))
+                            <div>
+                                <label for="lang" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    {{ __('dixlase-menus::admin.menus.create.language') }}
+                                </label>
+                                <select id="lang"
+                                        name="lang"
+                                        class="block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('lang') border-red-500 @enderror">
+                                    @foreach($languageContext['options'] as $code => $name)
+                                        <option value="{{ $code }}" @selected(old('lang', $languageContext['default']) === $code)>{{ $name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('lang')
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                    {{ __('dixlase-menus::admin.menus.create.language_help') }}
+                                </p>
+                            </div>
+                        @endif
                     </div>
                 </fieldset>
             </section>

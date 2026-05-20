@@ -87,6 +87,7 @@ class AdminMenuController extends Controller
     {
         $this->viewParams['locationOptions'] = MenuLocation::options();
         $this->viewParams['placementTypeOptions'] = PlacementType::getRadioCardOptions();
+        $this->viewParams['languageContext'] = $this->menuLanguageContext();
 
         return view('dixlase-menus::admin.menus.create', $this->viewParams);
     }
@@ -99,13 +100,72 @@ class AdminMenuController extends Controller
     public function store(AdminMenuStoreRequest $request)
     {
         $validated = $request->validated();
-        $validated['lang'] = app()->getLocale();
+        $validated['lang'] = $this->resolveMenuLang($request);
 
         $menu = $this->menuRepository->create($validated);
 
         return redirect()
             ->route('dixlase-menus::admin.menus.edit', $menu->id)
             ->with('success', __('dixlase-menus::admin.messages.menu_created'));
+    }
+
+    /**
+     * Resolve the language-picker context for the menu create / edit forms.
+     *
+     * When DixlaseMultilingual is active (URL routing on) the operator
+     * picks which locale the menu's primary labels are authored in; the
+     * picker offers that plugin's enabled locales. When it is off (or
+     * absent) there is a single content language -- the site default --
+     * so no picker is shown and the controller auto-fills `lang`.
+     *
+     * @return array{enabled: bool, options: array<string, string>, default: string}
+     */
+    private function menuLanguageContext(): array
+    {
+        $siteDefault = \App\Helpers\LocaleHelper::getSiteDefaultLocale();
+        $resolverClass = \Plugins\DixlaseMultilingual\App\Services\EnabledLocaleResolver::class;
+
+        if (! class_exists($resolverClass)
+            || ! config('dixlase_multilingual.locale_url_routing_enabled', false)
+        ) {
+            return ['enabled' => false, 'options' => [], 'default' => $siteDefault];
+        }
+
+        try {
+            $resolver = app($resolverClass);
+            $locales = $resolver->getEnabledLocales();
+            $default = $resolver->getFallbackLocale();
+        } catch (\Throwable $e) {
+            return ['enabled' => false, 'options' => [], 'default' => $siteDefault];
+        }
+
+        $options = [];
+        foreach ($locales as $code) {
+            $options[$code] = \App\Helpers\LocaleHelper::getLocaleName($code, true);
+        }
+
+        return ['enabled' => true, 'options' => $options, 'default' => $default];
+    }
+
+    /**
+     * Resolve the `lang` value to persist for a menu from the request.
+     *
+     * With the picker active, honour a submitted locale that is one of
+     * the enabled options; otherwise (picker off, or an out-of-range
+     * value) fall back to the context default.
+     */
+    private function resolveMenuLang(\Illuminate\Http\Request $request): string
+    {
+        $context = $this->menuLanguageContext();
+
+        if ($context['enabled']) {
+            $requested = $request->input('lang');
+            if (is_string($requested) && isset($context['options'][$requested])) {
+                return $requested;
+            }
+        }
+
+        return $context['default'];
     }
 
     /**
@@ -167,6 +227,7 @@ class AdminMenuController extends Controller
         $this->viewParams['placementTypeDescriptions'] = PlacementType::descriptions();
         $this->viewParams['maxDepth'] = $maxDepth;
         $this->viewParams['linkSourcesUrl'] = route('dixlase-menus::admin.menus.link-sources.index');
+        $this->viewParams['languageContext'] = $this->menuLanguageContext();
 
         return view('dixlase-menus::admin.menus.edit', $this->viewParams);
     }
@@ -179,6 +240,7 @@ class AdminMenuController extends Controller
     public function update(AdminMenuUpdateRequest $request, int $id)
     {
         $validated = $request->validated();
+        $validated['lang'] = $this->resolveMenuLang($request);
 
         $menu = $this->menuRepository->update($id, $validated);
 
