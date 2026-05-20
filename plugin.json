@@ -41,16 +41,10 @@
     "multilingual_content": {
         "types": [
             {
-                "key": "dixlase-menus:menu-item",
-                "model": "Plugins\\DixlaseMenus\\App\\Models\\MenuItem",
-                "label_field": "title",
-                "fields": [
-                    {
-                        "name": "title",
-                        "type": "text",
-                        "rules": "required|string|max:255"
-                    }
-                ]
+                "key": "dixlase-menus:menu",
+                "model": "Plugins\\DixlaseMenus\\App\\Models\\Menu",
+                "label_field": "name",
+                "fields": []
             }
         ]
     },

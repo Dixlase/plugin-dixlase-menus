@@ -63,16 +63,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class MenuItem extends Model
 {
-    use HasFactory, SoftDeletes, \App\Traits\TranslatableTrait;
-
-    /**
-     * Fields that route through the DixlaseMultilingual translation
-     * resolver. The `title` column stores the primary-locale value (the
-     * fallback that getLocalizedTitle returns when no translation row
-     * exists); per-locale overrides live in plg_dixlase_multilingual_translations
-     * keyed by morph alias 'dixlase-menus:menu-item'.
-     */
-    protected $translatable = ['title'];
+    use HasFactory, SoftDeletes;
 
     /**
      * テーブル名
@@ -124,25 +115,36 @@ class MenuItem extends Model
     /**
      * Get the title resolved for the given locale.
      *
-     * Looks up the multilingual resolver's row for the requested locale
-     * only (fallback=false on getTranslation). We do NOT let
-     * TranslatableTrait walk to app.fallback_locale, because in
-     * multilingual sites that config value is whatever the operator
-     * set as the *content* fallback (often JA) and walking there would
-     * make an English request return Japanese text. Instead, when the
-     * requested locale has no row we read the entity's primary `title`
-     * column directly via getRawOriginal (bypassing the trait's
-     * getAttribute override that would re-enter the resolver chain).
+     * The translatable entity is the parent Menu, not the item: a
+     * menu's translation row stores all its item labels under
+     * item_<id> keys (see Menu::translatableFieldDefinitions()). So we
+     * resolve the parent menu's translation for the key item_<this id>.
+     *
+     * Falls back to this item's primary `title` column when the
+     * requested locale has no translation, when the menu relation is
+     * missing, or when the multilingual resolver is not bound (plugin
+     * absent / disabled). We deliberately do not let the resolver walk
+     * to app.fallback_locale: in multilingual sites that config value
+     * is the operator's *content* fallback (often JA), and walking
+     * there would make an English request return Japanese text.
      */
     public function getLocalizedTitle(?string $locale = null): string
     {
-        $value = $this->getTranslation('title', $locale, false);
+        $primary = (string) $this->getRawOriginal('title');
 
-        if (is_string($value) && $value !== '') {
-            return $value;
+        $locale ??= app()->getLocale();
+        $menu = $this->menu;
+
+        if ($menu !== null && app()->bound(\App\Contracts\TranslationResolver::class)) {
+            $resolver = app(\App\Contracts\TranslationResolver::class);
+            $value = $resolver->resolve($menu, 'item_'.$this->getKey(), $locale);
+
+            if (is_string($value) && $value !== '') {
+                return $value;
+            }
         }
 
-        return (string) $this->getRawOriginal('title');
+        return $primary;
     }
 
     /**
@@ -157,31 +159,6 @@ class MenuItem extends Model
         'is_active' => true,
         'is_visible' => true,
     ];
-
-    /**
-     * When a menu item is force-deleted (not soft-deleted, since the
-     * row could come back via restore()), drop its companion rows in
-     * plg_dixlase_multilingual_translations so the morph table does
-     * not accumulate orphans. The multilingual plugin's morph table
-     * has no FK / cascade (cannot reference a polymorphic target) so
-     * cleanup has to be wired here. Pages tolerates the orphans; we
-     * choose to clean them up to keep the central translation manager
-     * UI free of dangling "item #N" entries the operator can no longer
-     * map back to a menu item.
-     */
-    protected static function booted(): void
-    {
-        static::forceDeleted(function (self $item) {
-            if (! \Illuminate\Support\Facades\Schema::hasTable('plg_dixlase_multilingual_translations')) {
-                return;
-            }
-
-            \Illuminate\Support\Facades\DB::table('plg_dixlase_multilingual_translations')
-                ->where('translatable_type', 'dixlase-menus:menu-item')
-                ->where('translatable_id', $item->getKey())
-                ->delete();
-        });
-    }
 
     /**
      * 所属するメニューとのリレーション
