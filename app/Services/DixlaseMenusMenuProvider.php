@@ -194,17 +194,22 @@ class DixlaseMenusMenuProvider implements MenuProviderInterface
      *
      * Anchored on the capability declaration in plugin.json:
      *   "capabilities": ["multilingual-content"],
-     *   "multilingual_content": { "storage": "inline", "types": [...] }
+     *   "multilingual_content": { "types": [{ "key": "dixlase-menus:menu", ... }] }
      *
      * The DixlaseMultilingual plugin's TranslatableContentRegistry discovers
-     * that declaration during boot and registers the menu-item type. If the
+     * that declaration during boot and registers the menu type. If the
      * declaration is removed from plugin.json the registry no longer has the
      * type and this method returns false, so the menu silently stops
      * consulting translations. The locale_url_routing_enabled config check
      * additionally ensures the operator has actually turned multilingual on
      * (registry presence alone does not mean the feature is active).
+     *
+     * NB: this key must match plugin.json's multilingual_content type key.
+     * It moved from dixlase-menus:menu-item to dixlase-menus:menu when the
+     * translation model became per-menu; keeping the old value here would
+     * make getType() miss and silently disable translated menu rendering.
      */
-    private const MULTILINGUAL_CONTENT_TYPE_KEY = 'dixlase-menus:menu-item';
+    private const MULTILINGUAL_CONTENT_TYPE_KEY = 'dixlase-menus:menu';
 
     private function isMultilingualEnabled(): bool
     {
