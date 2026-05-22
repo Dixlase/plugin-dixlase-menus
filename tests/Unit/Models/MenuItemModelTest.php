@@ -195,46 +195,112 @@ class MenuItemModelTest extends TestCase
         $this->assertEquals('My Link', $item->label);
     }
 
-    public function test_get_localized_title_returns_translation_when_available(): void
+    /**
+     * Menu item translations live in the DixlaseMultilingual plugin's
+     * central table, keyed by the *parent menu* with item_<id> fields;
+     * getLocalizedTitle() reads them through the TranslationResolver
+     * contract. When that contract is not bound -- this plugin's
+     * isolated test suite, or any site without DixlaseMultilingual --
+     * there is no translation source and the primary `title` column is
+     * the correct answer for every locale.
+     */
+    public function test_get_localized_title_falls_back_to_primary_when_no_resolver(): void
     {
-        $item = $this->createItem([
-            'title' => 'ホーム',
-            'title_translations' => ['ja' => 'ホーム', 'en' => 'Home'],
-        ]);
+        $this->app->forgetInstance(\App\Contracts\TranslationResolver::class);
+
+        $item = $this->createItem(['title' => 'Home']);
 
         $this->assertSame('Home', $item->getLocalizedTitle('en'));
+        $this->assertSame('Home', $item->getLocalizedTitle('ja'));
+    }
+
+    /**
+     * With a resolver bound, getLocalizedTitle() returns the value the
+     * resolver yields for the item_<id> field on the parent menu.
+     */
+    public function test_get_localized_title_reads_translation_via_resolver(): void
+    {
+        $item = $this->createItem(['title' => 'Home']);
+
+        $this->bindResolver([
+            'item_'.$item->id => ['ja' => 'ホーム'],
+        ]);
+
         $this->assertSame('ホーム', $item->getLocalizedTitle('ja'));
     }
 
-    public function test_get_localized_title_falls_back_to_primary_title(): void
+    /**
+     * When the resolver has no entry for the requested locale, the
+     * primary `title` column is used as the fallback.
+     */
+    public function test_get_localized_title_falls_back_when_resolver_returns_null(): void
     {
-        $item = $this->createItem([
-            'title' => 'ホーム',
-            'title_translations' => ['ja' => 'ホーム'],
+        $item = $this->createItem(['title' => 'Home']);
+
+        $this->bindResolver([
+            'item_'.$item->id => ['ja' => 'ホーム'],
         ]);
 
-        // No 'fr' translation → falls back to primary title
-        $this->assertSame('ホーム', $item->getLocalizedTitle('fr'));
+        // No 'fr' translation → falls back to the primary title column.
+        $this->assertSame('Home', $item->getLocalizedTitle('fr'));
     }
 
-    public function test_get_localized_title_falls_back_when_translations_null(): void
-    {
-        $item = $this->createItem([
-            'title' => 'ホーム',
-            'title_translations' => null,
-        ]);
-
-        $this->assertSame('ホーム', $item->getLocalizedTitle('en'));
-    }
-
+    /**
+     * Omitting the locale argument resolves against app()->getLocale().
+     */
     public function test_get_localized_title_uses_app_locale_when_locale_arg_omitted(): void
     {
-        app()->setLocale('en');
-        $item = $this->createItem([
-            'title' => 'ホーム',
-            'title_translations' => ['en' => 'Home'],
+        app()->setLocale('ja');
+        $item = $this->createItem(['title' => 'Home']);
+
+        $this->bindResolver([
+            'item_'.$item->id => ['ja' => 'ホーム', 'en' => 'Home'],
         ]);
 
-        $this->assertSame('Home', $item->getLocalizedTitle());
+        $this->assertSame('ホーム', $item->getLocalizedTitle());
+    }
+
+    /**
+     * Bind a stand-in TranslationResolver that serves a fixed
+     * field => locale => value map, mimicking how DixlaseMultilingual's
+     * resolver reads the parent menu's central translation row.
+     *
+     * @param  array<string, array<string, string>>  $map
+     */
+    private function bindResolver(array $map): void
+    {
+        $resolver = new class($map) implements \App\Contracts\TranslationResolver
+        {
+            /** @param array<string, array<string, string>> $map */
+            public function __construct(private array $map) {}
+
+            public function resolve(\Illuminate\Database\Eloquent\Model $model, string $field, string $locale): mixed
+            {
+                return $this->map[$field][$locale] ?? null;
+            }
+
+            public function store(\Illuminate\Database\Eloquent\Model $model, string $field, mixed $value, string $locale): void {}
+
+            public function all(\Illuminate\Database\Eloquent\Model $model, string $field): array
+            {
+                return [];
+            }
+
+            public function exists(\Illuminate\Database\Eloquent\Model $model, string $field, string $locale): bool
+            {
+                return isset($this->map[$field][$locale]);
+            }
+
+            public function delete(\Illuminate\Database\Eloquent\Model $model, string $field, ?string $locale = null): void {}
+
+            public function getAvailableLocales(\Illuminate\Database\Eloquent\Model $model): array
+            {
+                return [];
+            }
+
+            public function copy(\Illuminate\Database\Eloquent\Model $source, \Illuminate\Database\Eloquent\Model $target, ?array $fields = null, ?array $locales = null): void {}
+        };
+
+        $this->app->instance(\App\Contracts\TranslationResolver::class, $resolver);
     }
 }
