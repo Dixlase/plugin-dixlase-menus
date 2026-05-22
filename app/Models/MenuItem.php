@@ -115,24 +115,40 @@ class MenuItem extends Model
     /**
      * Get the title resolved for the given locale.
      *
-     * The translatable entity is the parent Menu, not the item: a
-     * menu's translation row stores all its item labels under
-     * item_<id> keys (see Menu::translatableFieldDefinitions()). So we
-     * resolve the parent menu's translation for the key item_<this id>.
+     * Menu-item translations are stored inline on the item, in the
+     * `title_translations` array column. This is the storage mode
+     * declared in plugin.json (`multilingual_content.storage = "inline"`)
+     * and is checked first.
+     *
+     * As a secondary source — for older menus whose item labels still
+     * live on the parent Menu's translation row under `item_<id>` keys
+     * (see Menu::translatableFieldDefinitions()) — the multilingual
+     * resolver is consulted when it is bound and the menu relation
+     * exists.
      *
      * Falls back to this item's primary `title` column when the
-     * requested locale has no translation, when the menu relation is
-     * missing, or when the multilingual resolver is not bound (plugin
-     * absent / disabled). We deliberately do not let the resolver walk
-     * to app.fallback_locale: in multilingual sites that config value
-     * is the operator's *content* fallback (often JA), and walking
-     * there would make an English request return Japanese text.
+     * requested locale has no translation in either source. We
+     * deliberately do not let the resolver walk to app.fallback_locale:
+     * in multilingual sites that config value is the operator's
+     * *content* fallback (often JA), and walking there would make an
+     * English request return Japanese text.
      */
     public function getLocalizedTitle(?string $locale = null): string
     {
         $primary = (string) $this->getRawOriginal('title');
 
         $locale ??= app()->getLocale();
+
+        $translations = $this->title_translations;
+
+        if (is_array($translations)
+            && isset($translations[$locale])
+            && is_string($translations[$locale])
+            && $translations[$locale] !== ''
+        ) {
+            return $translations[$locale];
+        }
+
         $menu = $this->menu;
 
         if ($menu !== null && app()->bound(\App\Contracts\TranslationResolver::class)) {
