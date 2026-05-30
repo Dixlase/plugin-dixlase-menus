@@ -1,14 +1,23 @@
 {
-  "plugins/DixlaseMenus/resources/src/admin/js/app.js": {
-    "file": "admin/js/app.js",
-    "name": "app",
-    "src": "plugins/DixlaseMenus/resources/src/admin/js/app.js",
-    "isEntry": true
+  "resources/src/admin/js/app.js": {
+    "file": "admin/js/admin-app.js",
+    "name": "admin-app",
+    "src": "resources/src/admin/js/app.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/src/admin/js/data/fa-free-icons.json"
+    ]
   },
-  "plugins/DixlaseMenus/resources/src/js/app.js": {
+  "resources/src/admin/js/data/fa-free-icons.json": {
+    "file": "js/fa-free-icons.js",
+    "name": "fa-free-icons",
+    "src": "resources/src/admin/js/data/fa-free-icons.json",
+    "isDynamicEntry": true
+  },
+  "resources/src/js/app.js": {
     "file": "js/app.js",
     "name": "app",
-    "src": "plugins/DixlaseMenus/resources/src/js/app.js",
+    "src": "resources/src/js/app.js",
     "isEntry": true
   }
 }

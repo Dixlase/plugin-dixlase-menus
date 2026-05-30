@@ -52,6 +52,7 @@ document.addEventListener('alpine:init', () => {
     iconPickerData: [],
     iconPickerLoading: false,
     iconPickerLimit: 200,
+    iconPickerPage: 1,
 
     /**
      * 自動配置かどうか
@@ -126,6 +127,15 @@ document.addEventListener('alpine:init', () => {
 
         // リンクソースを読み込み
         this.loadLinkSources();
+
+        // Reset icon picker pagination to page 1 whenever any filter
+        // changes, so the user never lands on an out-of-range page.
+        ['iconPickerSearch', 'iconPickerStyle', 'iconPickerCategory'].forEach((key) => {
+            this.$watch(key, () => {
+                this.iconPickerPage = 1;
+                this._scrollIconGridToTop();
+            });
+        });
     },
 
     /**
@@ -647,6 +657,7 @@ document.addEventListener('alpine:init', () => {
         this.iconPickerSearch = '';
         this.iconPickerStyle = 'all';
         this.iconPickerCategory = 'all';
+        this.iconPickerPage = 1;
 
         if (this.iconPickerData.length === 0 && !this.iconPickerLoading) {
             this.iconPickerLoading = true;
@@ -690,16 +701,17 @@ document.addEventListener('alpine:init', () => {
     },
 
     /**
-     * The icon list filtered by the user's search term, style, and category.
-     * Capped at iconPickerLimit so the DOM doesn't have to render all 1900
-     * icons at once when the filter is broad.
+     * Full filtered icon list (pre-pagination), shared by filteredIcons
+     * and filteredIconsTotal. With 1895 source icons and a simple set of
+     * string checks per item, materialising the array once per render is
+     * cheaper than running the filter twice.
      */
-    get filteredIcons() {
+    get _filteredIconsAll() {
         const search = this.iconPickerSearch.trim().toLowerCase();
         const style = this.iconPickerStyle;
         const category = this.iconPickerCategory;
 
-        const matches = this.iconPickerData.filter((icon) => {
+        return this.iconPickerData.filter((icon) => {
             if (style !== 'all' && !icon.s.includes(style)) return false;
             if (category !== 'all' && !icon.c.includes(category)) return false;
             if (!search) return true;
@@ -707,28 +719,54 @@ document.addEventListener('alpine:init', () => {
             if (icon.l.toLowerCase().includes(search)) return true;
             return icon.t.some((term) => term.toLowerCase().includes(search));
         });
+    },
 
-        return matches.slice(0, this.iconPickerLimit);
+    /**
+     * Icons visible on the current page (slice of _filteredIconsAll).
+     */
+    get filteredIcons() {
+        const start = (this.iconPickerPage - 1) * this.iconPickerLimit;
+        return this._filteredIconsAll.slice(start, start + this.iconPickerLimit);
     },
 
     get filteredIconsTotal() {
-        const search = this.iconPickerSearch.trim().toLowerCase();
-        const style = this.iconPickerStyle;
-        const category = this.iconPickerCategory;
+        return this._filteredIconsAll.length;
+    },
 
-        return this.iconPickerData.reduce((count, icon) => {
-            if (style !== 'all' && !icon.s.includes(style)) return count;
-            if (category !== 'all' && !icon.c.includes(category)) return count;
-            if (!search) return count + 1;
-            if (
-                icon.n.includes(search) ||
-                icon.l.toLowerCase().includes(search) ||
-                icon.t.some((t) => t.toLowerCase().includes(search))
-            ) {
-                return count + 1;
-            }
-            return count;
-        }, 0);
+    get iconPickerPageCount() {
+        return Math.max(1, Math.ceil(this.filteredIconsTotal / this.iconPickerLimit));
+    },
+
+    /**
+     * 1-based index of the first icon on the current page. 0 when the
+     * filtered list is empty so the UI can render "0 of 0" cleanly.
+     */
+    get iconPickerRangeStart() {
+        if (this.filteredIconsTotal === 0) return 0;
+        return (this.iconPickerPage - 1) * this.iconPickerLimit + 1;
+    },
+
+    get iconPickerRangeEnd() {
+        return Math.min(this.iconPickerPage * this.iconPickerLimit, this.filteredIconsTotal);
+    },
+
+    iconPickerNextPage() {
+        if (this.iconPickerPage < this.iconPickerPageCount) {
+            this.iconPickerPage++;
+            this.$nextTick(() => this._scrollIconGridToTop());
+        }
+    },
+
+    iconPickerPrevPage() {
+        if (this.iconPickerPage > 1) {
+            this.iconPickerPage--;
+            this.$nextTick(() => this._scrollIconGridToTop());
+        }
+    },
+
+    _scrollIconGridToTop() {
+        const grid = document.getElementById('icon-picker-grid');
+        if (grid) grid.scrollTop = 0;
     },
 
     /**

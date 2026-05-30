@@ -86,10 +86,13 @@
                         </template>
                     </select>
 
-                    {{-- 結果カウント --}}
+                    {{-- 結果カウント (ページ範囲付き) --}}
                     <span class="ml-auto text-xs text-gray-500 dark:text-gray-400"
                           x-text="filteredIconsTotal > iconPickerLimit
-                            ? '{{ __('dixlase-menus::admin.menus.edit.icon_picker.results_capped') }}'.replace(':shown', iconPickerLimit).replace(':total', filteredIconsTotal)
+                            ? '{{ __('dixlase-menus::admin.menus.edit.icon_picker.results_capped') }}'
+                                .replace(':start', iconPickerRangeStart)
+                                .replace(':end', iconPickerRangeEnd)
+                                .replace(':total', filteredIconsTotal)
                             : '{{ __('dixlase-menus::admin.menus.edit.icon_picker.results') }}'.replace(':total', filteredIconsTotal)">
                     </span>
                 </div>
@@ -102,7 +105,8 @@
             </div>
 
             {{-- アイコングリッド --}}
-            <div x-show="!iconPickerLoading"
+            <div id="icon-picker-grid"
+                 x-show="!iconPickerLoading"
                  class="px-6 pb-4 max-h-96 overflow-y-auto">
                 <template x-if="filteredIcons.length === 0">
                     <div class="text-center py-8 text-sm text-gray-500 dark:text-gray-400">
@@ -120,6 +124,30 @@
                         </button>
                     </template>
                 </div>
+            </div>
+
+            {{-- Pagination controls. Only rendered when the filtered list
+                 exceeds one page; for narrow searches the modal stays
+                 visually clean with just the grid. --}}
+            <div x-show="!iconPickerLoading && iconPickerPageCount > 1"
+                 class="px-6 pt-4 pb-5 flex items-center justify-center gap-3 text-xs border-t border-gray-200 dark:border-gray-700">
+                <button type="button"
+                        @click="iconPickerPrevPage()"
+                        :disabled="iconPickerPage <= 1"
+                        class="px-3 py-1.5 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <i class="fas fa-chevron-left mr-1"></i>
+                    <span>{{ __('dixlase-menus::admin.menus.edit.icon_picker.prev_page') }}</span>
+                </button>
+                <span class="text-gray-500 dark:text-gray-400"
+                      x-text="'{{ __('dixlase-menus::admin.menus.edit.icon_picker.page_indicator') }}'.replace(':current', iconPickerPage).replace(':total', iconPickerPageCount)">
+                </span>
+                <button type="button"
+                        @click="iconPickerNextPage()"
+                        :disabled="iconPickerPage >= iconPickerPageCount"
+                        class="px-3 py-1.5 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <span>{{ __('dixlase-menus::admin.menus.edit.icon_picker.next_page') }}</span>
+                    <i class="fas fa-chevron-right ml-1"></i>
+                </button>
             </div>
         </div>
 
