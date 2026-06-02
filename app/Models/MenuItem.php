@@ -50,7 +50,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $source_id
  * @property string $target
  * @property string|null $css_class
- * @property string|null $icon_class
+ * @property string|null $icon_class Opaque icon reference. Today a Font Awesome class
+ *     (e.g. "fas fa-home"); future schemes will share this field via prefixes such as
+ *     "media:<id>" (uploaded SVG via the media manager) or "url:<href>" (external icon
+ *     URL). Renderers MUST dispatch by prefix and treat bare values as Font Awesome
+ *     for backward compatibility. See Core .backlog/menus-custom-icon-upload.md
  * @property string|null $description
  * @property int $depth
  * @property int $display_order

@@ -177,7 +177,7 @@ return [
             'css_class' => 'CSS Class',
             'css_class_help' => 'Custom CSS classes (space-separated)',
             'icon_class' => 'Icon Class',
-            'icon_class_help' => 'Icon class such as Font Awesome (e.g., fas fa-home)',
+            'icon_class_help' => 'Font Awesome icon class (e.g., fas fa-home). Future schemes (media:, url:) will be accepted via prefix.',
             'display_order' => 'Display Order',
             'is_active' => 'Activate Item',
             'is_active_help' => 'Uncheck to hide this item',

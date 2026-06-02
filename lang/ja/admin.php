@@ -177,7 +177,7 @@ return [
             'css_class' => 'CSSクラス',
             'css_class_help' => 'カスタムCSSクラス（スペース区切りで複数指定可能）',
             'icon_class' => 'アイコンクラス',
-            'icon_class_help' => 'Font Awesomeなどのアイコンクラス（例: fas fa-home）',
+            'icon_class_help' => 'Font Awesomeのアイコンクラス（例: fas fa-home）。将来は media: / url: などの prefix もサポート予定。',
             'display_order' => '表示順',
             'is_active' => 'アイテムを有効化',
             'is_active_help' => 'チェックを外すとアイテムが非表示になります',
