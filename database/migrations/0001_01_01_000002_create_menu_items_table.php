@@ -55,7 +55,17 @@ return new class extends Migration
             // 表示設定
             $table->string('target')->default('_self')->comment('リンクターゲット（_self, _blank）');
             $table->string('css_class')->nullable()->comment('CSSクラス');
-            $table->string('icon_class')->nullable()->comment('アイコンクラス（Font Awesomeなど）');
+            // icon_class is treated as an *opaque icon reference*, not as a
+            // CSS class. Today its values are Font Awesome class strings
+            // ("fas fa-home", "far fa-bell"), but the column is reserved to
+            // also hold future prefixed schemes that share the same row
+            // without any schema change:
+            //   - "media:<id>"  → uploaded SVG via the media manager
+            //   - "url:<href>"  → external icon URL
+            // Renderers MUST dispatch by prefix and treat bare (un-prefixed)
+            // values as Font Awesome for backward compatibility.
+            // See: Core .backlog/menus-custom-icon-upload.md
+            $table->string('icon_class')->nullable()->comment('Opaque icon reference. Today: FA class (e.g. fas fa-home). Future: media:<id> / url:<href> prefixes.');
             $table->text('description')->nullable()->comment('アイテムの説明');
             
             // 階層・順序
