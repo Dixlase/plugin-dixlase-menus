@@ -2,7 +2,7 @@
 
 For Japanese, see [README.ja.md](./README.ja.md).
 
-Menu management for Dixlase: multiple named menus per location and language, a drag-and-drop hierarchy editor up to a configurable depth, pluggable link sources so other plugins can surface their content as link candidates, label-only menu-group nodes for dropdown / mega menus, a Font Awesome icon picker, and centrally-managed translations via DixlaseMultilingual.
+Menu management for Dixlase: multiple named menus per location and language, a drag-and-drop hierarchy editor up to a configurable depth, pluggable link sources so other plugins can surface their content as link candidates, label-only menu-group nodes for dropdown / mega menus, a Font Awesome icon picker, and central translation-manager integration for per-locale labels.
 
 ## Features
 
@@ -13,7 +13,7 @@ Menu management for Dixlase: multiple named menus per location and language, a d
 - **Menu groups** — Add label-only items with no URL to act as dropdown or mega-menu parents. Available when the target depth has room for children.
 - **Icon picker (Font Awesome Free)** — Search the full ~1,895-icon set, filter by style (Solid / Regular / Brands) and category, paginated 200 per page. Icons are stored as an *opaque icon reference*; future schemes (`media:<id>`, `url:<href>`) will share the same column without a schema change.
 - **Custom URL items** — Free-text label + URL + target (`_self` / `_blank`) for ad-hoc links that aren't backed by a content source.
-- **Centrally-managed translations** — Per-menu translation type (`dixlase-menus:menu`) registered with DixlaseMultilingual. Each menu item's label is a dynamic per-instance field, so new items become editable in the central translation editor without a code change.
+- **Centrally-managed translations** — When a compatible central translation manager is enabled, each menu becomes a translatable entity with a *dynamic* per-item field set. New items added in the menu editor become editable in the central translation manager without a code change.
 - **Theme integration via DTO** — Public-side consumers (themes) receive a `MenuItemDTO` graph rather than raw Eloquent models. The DTO carries the locale-resolved label, composed URL, icon reference, and children, keeping the render contract stable across schema changes.
 
 ## Installation
@@ -30,17 +30,13 @@ After enable, **Dashboard → Menus** appears in the admin sidebar.
 - **New menu** sets the menu's identity (name, slug, location, language) and its placement type.
 - **Edit** opens the menu editor with a left-side item tree (drag to reorder, click to expand children) and a right-side detail panel. **+ Add item** launches a tabbed picker offering each registered link source, a custom URL, or a menu group.
 - **Icon picker** is opened from each item's icon button. Search across all ~1,895 FA Free icons; the result list paginates 200 per page.
-- **Translations** are edited through the central DixlaseMultilingual admin (**Dashboard → Multilingual → Translations → `dixlase-menus:menu`**). Picking a menu surfaces each of its items as a translatable field.
+- **Translations** are edited through the central translation manager when one is enabled; selecting a menu there surfaces each of its items as a translatable field.
 
 Themes read menus through `MenuItemDTO`; the DTO carries the resolved label (in the current locale), composed URL, icon reference, and children.
 
 ## Capabilities
 
-This plugin declares the following capability in `plugin.json` so other plugins can plug into it through a stable contract:
-
-- **`multilingual-content`** — Registers one translatable type: `dixlase-menus:menu`. The type uses per-menu cardinality and a *dynamic* field set — each menu item becomes a translatable field at runtime, so adding items in the menu editor immediately surfaces them in the central translation editor without a code change.
-
-The plugin also consumes (rather than declares) one contract:
+The plugin consumes one contract that other plugins can implement:
 
 - **`MenuLinkSource`** — Defined in `plugins/DixlaseMenus/app/Contracts/`. Other plugins implement this contract to make their content selectable in the menu editor's "Add item" picker. DixlasePages, for example, exposes its pages through its `linkable` capability; the menu plugin's `LinkableProviderAdapter` then adapts that capability to `MenuLinkSource` automatically.
 
@@ -53,7 +49,7 @@ Dixlase Menus is distributed under a **dual license**:
 
 A short overview of how these files fit together is in [NOTICE](./NOTICE) ([日本語](./NOTICE.ja)).
 
-Contributions to this plugin repository are governed by the [Dixlase Copyright Policy](https://github.com/Dixlase/dixlase-core/blob/main/COPYRIGHT-POLICY.md) and the Dixlase Contributor License Agreement (see CONTRIBUTING.md).
+External contributions are not yet accepted on this initial release while review of the Dixlase Contributor License Agreement (CLA) is still in progress. Once the CLA is finalized, contributions to this plugin repository will be welcomed under the [Dixlase Copyright Policy](https://github.com/Dixlase/dixlase-core/blob/main/COPYRIGHT-POLICY.md) and the Dixlase CLA (see CONTRIBUTING.md).
 
 ---
 (C) exc-D inc. - 2026

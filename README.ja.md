@@ -9,7 +9,7 @@ Dixlase 用のメニュー管理プラグイン。
 - 他プラグインがコンテンツをリンク候補として差し出せるプラガブルなリンクソース
 - ドロップダウン / メガメニュー用のラベル専用ノード(メニューグループ)
 - Font Awesome アイコンピッカー
-- DixlaseMultilingual 経由の中央翻訳管理
+- 中央翻訳マネージャと連携した locale 別ラベル管理
 
 ## 機能
 
@@ -28,7 +28,7 @@ Dixlase 用のメニュー管理プラグイン。
 - **カスタム URL アイテム**
   任意のラベル + URL + ターゲット(`_self` / `_blank`)を直接入力できます。コンテンツソースに紐付かないリンクに使います。
 - **中央翻訳管理**
-  per-menu 型の翻訳タイプ `dixlase-menus:menu` を DixlaseMultilingual に登録します。各メニューアイテムのラベルは *動的に決まるフィールド* で、新規アイテムを追加すれば自動的に中央翻訳エディタで編集できます(コード変更不要)。
+  互換性のある中央翻訳マネージャが有効なときは、各メニューが翻訳対象エンティティとして公開されます。アイテムごとのラベルは *動的に決まるフィールド* で、新規アイテムを追加すれば自動的に中央翻訳マネージャ上で編集できます(コード変更不要)。
 - **DTO によるテーマ連携**
   公開側の利用者(テーマ)は Eloquent モデルではなく `MenuItemDTO` のグラフを受け取ります。DTO はロケール解決済みラベル・組み立て済み URL・アイコン参照・子アイテムを保持しており、スキーマが変わってもレンダリング契約は安定です。
 
@@ -51,18 +51,13 @@ Dixlase 用のメニュー管理プラグイン。
 - **アイコンピッカー**:
   各アイテムのアイコンボタンから開きます。約 1,895 件の FA Free アイコンを横断検索できます。検索結果は 1 ページ 200 件のページネーションです。
 - **翻訳**:
-  中央 DixlaseMultilingual 管理画面(**ダッシュボード → 多言語 → 翻訳 → `dixlase-menus:menu`**)から編集します。メニューを選ぶと、各アイテムが翻訳フィールドとして並びます。
+  中央翻訳マネージャが有効なときは、その管理画面からメニューを選択すると、各アイテムが翻訳フィールドとして並びます。
 
 テーマは `MenuItemDTO` 経由でメニューを読み取ります。DTO には現在のロケールで解決済みのラベル、組み立て済みの URL、アイコン参照、子アイテムが含まれています。
 
 ## Capabilities
 
-本プラグインは `plugin.json` で以下の capability を宣言しており、他プラグインとの連携が可能です。
-
-- **`multilingual-content`**
-  — 翻訳タイプ `dixlase-menus:menu` を 1 件登録します。per-menu cardinality + *動的フィールドセット* で、メニューエディタにアイテムを追加すると、コード変更なしで即座に中央翻訳エディタに翻訳対象フィールドとして現れます。
-
-また、本プラグインは以下の契約を **利用側として消費** しています(declares しているのではなく)。
+本プラグインは以下の契約を **利用側として消費** しています(他プラグインがこの契約を実装することで連携が成立します)。
 
 - **`MenuLinkSource`**
   — `plugins/DixlaseMenus/app/Contracts/` で定義。他プラグインがこの契約を実装すると、その提供コンテンツがメニューエディタの「アイテム追加」ピッカーに候補として現れます。例えば DixlasePages は `linkable` capability でページを公開しており、メニュー側の `LinkableProviderAdapter` が自動的にそれを `MenuLinkSource` として吸い上げます。
@@ -76,7 +71,7 @@ Dixlase Menus は **デュアルライセンス** で配布されています。
 
 各ファイルの関係概要は [NOTICE.ja](./NOTICE.ja)([English](./NOTICE))にあります。
 
-本プラグインリポジトリへのコントリビューションは、[Dixlase Copyright Policy](https://github.com/Dixlase/dixlase-core/blob/main/COPYRIGHT-POLICY.md) および Dixlase Contributor License Agreement の対象となります(詳細は CONTRIBUTING.md を参照)。
+本プラグインの初期バージョンでは、Dixlase Contributor License Agreement (CLA) のレビューが完了していないため、外部からのコントリビューションを受け付けていません。CLA の内容が確定次第、[Dixlase Copyright Policy](https://github.com/Dixlase/dixlase-core/blob/main/COPYRIGHT-POLICY.md) および Dixlase CLA(詳細は CONTRIBUTING.md を参照)のもとでコントリビューションを受け付けます。
 
 ---
 
