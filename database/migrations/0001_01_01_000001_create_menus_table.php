@@ -47,6 +47,7 @@ return new class extends Migration
             $table->string('slug')->comment('メニュースラッグ（識別子）');
             $table->string('lang', 10)->comment('言語コード');
             $table->string('location')->nullable()->comment('表示位置（header, footer, sidebarなど）');
+            $table->string('placement_type', 20)->default('manual')->comment('メニューの配置方式 (manual / auto)');
             $table->text('description')->nullable()->comment('メニューの説明');
             $table->boolean('is_active')->default(true)->comment('有効/無効');
             $table->integer('display_order')->default(0)->comment('表示順');
