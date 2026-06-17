@@ -1,63 +1,44 @@
 # Contributing to Dixlase Menus
 
-Thank you for your interest in contributing to **Dixlase Menus**. This plugin is part of the Dixlase Project, and all contributions are governed by the project-wide policies documented in the **Dixlase Core repository**.
+This plugin is part of the Dixlase Project. Contribution policies are single-sourced in the **Dixlase Core repository**.
 
-The Japanese version of this guide is published as [CONTRIBUTING.ja.md](./CONTRIBUTING.ja.md).
+Japanese version: [CONTRIBUTING.ja.md](./CONTRIBUTING.ja.md).
 
----
+## Current status (v0.x)
 
-## Project-wide policies (canonical)
+Dixlase as a whole is **not currently accepting external code Pull Requests**. They will reopen once the Dixlase-wide Contributor License Agreement (CLA) clears legal review.
 
-The following documents in the Dixlase Core repository are authoritative and apply to all contributions, including contributions to this plugin:
+**Welcomed now**
 
-- **[Contribution Guide](https://github.com/Dixlase/dixlase-core/blob/main/CONTRIBUTING.md)** — overall workflow, code style, testing, PR conventions
-- **[Copyright Policy](https://github.com/Dixlase/dixlase-core/blob/main/COPYRIGHT-POLICY.md)** — high-level licensing stance
-- **[Individual CLA](https://github.com/Dixlase/dixlase-core/blob/main/CLA-INDIVIDUAL.md)** — contributor license agreement for individuals
-- **[Corporate CLA](https://github.com/Dixlase/dixlase-core/blob/main/CLA-CORPORATE.md)** — contributor license agreement for organizations
+- Bug reports and feature suggestions via [Issues](https://github.com/Dixlase/plugin-dixlase-menus/issues)
+- Cross-cutting topics via [Core Discussions](https://github.com/Dixlase/dixlase-core/discussions)
 
-This plugin does **not** maintain its own copies of the CLA. The canonical CLA in the Core repository is the single source of truth. This avoids drift across plugin repositories.
+**Not accepted now**
 
-## Why a CLA is required
+- Pull Requests of any kind (code, docs, translations) — please file an Issue instead
 
-**Dixlase Menus is dual-licensed** under GPL-3.0 + a commercial license offered by exc-D inc. Maintaining this dual-license model legally requires that exc-D be able to sublicense incoming contributions under both license tracks. The CLA grants exc-D the rights necessary to do so, while you retain ownership of your contributions.
+Code snippets in bug reports are welcome as **reference only**; a maintainer will re-implement any fix independently.
 
-In summary, by signing the CLA:
+## Why
 
-- You **retain ownership** of your contribution
-- You **grant exc-D inc.** a perpetual, worldwide, irrevocable, sublicensable license sufficient to support the dual-license model
-- You **agree not to assert moral rights** in a way that would prevent the exercise of that license
-- You **confirm** you are authorized to grant the license (employer permission, original creation, third-party material disclosure)
+Dixlase Menus is dual-licensed (GPL-3.0 + a commercial license from exc-D inc.). The CLA framework that lets exc-D sublicense incoming contributions under both tracks — while contributors retain ownership — is in legal review. Once it lands, contributions will be governed by:
 
-## How to submit your CLA
+- [`CLA.md`](https://github.com/Dixlase/dixlase-core/blob/main/CLA.md) in Core — a single document covering individual and entity signing
+- [`COPYRIGHT-POLICY.md`](https://github.com/Dixlase/dixlase-core/blob/main/COPYRIGHT-POLICY.md) in Core
+- [`CONTRIBUTING-FUTURE.md`](https://github.com/Dixlase/dixlase-core/blob/main/CONTRIBUTING-FUTURE.md) in Core (informational until activation)
 
-While the Dixlase Project is in v0.1.x, CLA submission is handled by email:
+One CLA will cover the entire Dixlase Project — Core and all official plugins.
 
-1. Read the canonical [Individual CLA](https://github.com/Dixlase/dixlase-core/blob/main/CLA-INDIVIDUAL.md) (and [Corporate CLA](https://github.com/Dixlase/dixlase-core/blob/main/CLA-CORPORATE.md) if applicable) in full
-2. Fill in the contributor information fields and sign at the bottom
-3. Email the completed file to **info@dixlase.org** with the subject `CLA submission — <your name or organization>` and mention which plugin(s) you intend to contribute to
+## Bug reports
 
-A single CLA covers contributions to the entire Dixlase Project — Core and all official plugins. You do not need to sign separate CLAs per repository.
+Please include: a clear description, repro steps, expected vs. actual behavior, environment (Dixlase Core / PHP / MySQL / browser / OS), and relevant logs.
 
-In a future v0.1.x release, this manual workflow will be replaced by [CLA Assistant](https://cla-assistant.io/), which automates signature collection in the PR flow. When that happens, this section will be updated.
+Issues spanning multiple plugins or Core itself: file them on the [Dixlase Core repository](https://github.com/Dixlase/dixlase-core/issues).
 
-## Submitting a pull request
+## Security and Trademark
 
-1. Fork this repository and create a feature branch
-2. Make your changes following the conventions in the [Core Contribution Guide](https://github.com/Dixlase/dixlase-core/blob/main/CONTRIBUTING.md)
-3. Add tests covering your changes
-4. Ensure all tests pass and code is formatted (`vendor/bin/pint`)
-5. Open a pull request against this plugin's `main` branch
-6. Reference any related issue numbers
-7. The maintainers will review and provide feedback
-
-## Reporting issues
-
-- **Bugs and feature requests for Dixlase Menus**: open an issue in this plugin's repository
-- **Issues spanning multiple plugins or the Core**: open an issue in the [Dixlase Core repository](https://github.com/Dixlase/dixlase-core/issues)
-
-## Code of Conduct
-
-All contributions to Dixlase Menus and the wider Dixlase Project are subject to the [Dixlase Code of Conduct](https://github.com/Dixlase/dixlase-core/blob/main/CODE_OF_CONDUCT.md), if one is published in the Core repository.
+- Security vulnerabilities: see [SECURITY.md](./SECURITY.md) — **do not** use public Issues.
+- "Dixlase" / "Dixlase Menus" names and logos: [Trademark Policy](https://github.com/Dixlase/dixlase-core/blob/main/TRADEMARK-POLICY.md) in Core.
 
 ---
 

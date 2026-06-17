@@ -1,8 +1,7 @@
 {
-    "software": "Dixlase Menu",
+    "software": "Dixlase Menus",
     "author": "exc-D inc.",
-    "email": "info@dixlase.org",
     "website": "https://exc-d.com",
-    "license": "GPL",
+    "license": "GPL-3.0",
     "template": "license-gpl.txt"
 }

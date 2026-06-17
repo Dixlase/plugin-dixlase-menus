@@ -1,63 +1,44 @@
 # Dixlase Menus へのコントリビューション
 
-**Dixlase Menus** へのコントリビューションにご関心をお寄せいただきありがとうございます。本プラグインは Dixlase プロジェクトの一部であり、コントリビューションはすべて **Dixlase Core リポジトリ** に置かれているプロジェクト全体のポリシーに従います。
+本プラグインは Dixlase プロジェクトの一部です。コントリビューションに関する方針はすべて **Dixlase Core リポジトリ** が単一ソースです。
 
-英語版は [CONTRIBUTING.md](./CONTRIBUTING.md) をご覧ください。
+英語版: [CONTRIBUTING.md](./CONTRIBUTING.md)
 
----
+## 現在の受付状況 (v0.x)
 
-## プロジェクト全体のポリシー(正本)
+Dixlase 全体として **現在、外部からのコード Pull Request は受け付けていません**。Dixlase 全体で運用する Contributor License Agreement (CLA) の正式法務レビューが完了次第、再開します。
 
-以下の Dixlase Core リポジトリの文書が正本であり、本プラグインを含む全てのコントリビューションに適用されます:
+**現在歓迎しているもの**
 
-- **[コントリビューションガイド](https://github.com/Dixlase/dixlase-core/blob/main/CONTRIBUTING.ja.md)** — 全体的なワークフロー、コーディングスタイル、テスト、PR 規約
-- **[コピーライトポリシー](https://github.com/Dixlase/dixlase-core/blob/main/COPYRIGHT-POLICY.ja.md)** — 高水準のライセンス方針
-- **[個人 CLA](https://github.com/Dixlase/dixlase-core/blob/main/CLA-INDIVIDUAL.ja.md)** — 個人向けコントリビューターライセンス契約
-- **[法人 CLA](https://github.com/Dixlase/dixlase-core/blob/main/CLA-CORPORATE.ja.md)** — 法人向けコントリビューターライセンス契約
+- バグ報告・機能提案 — 本リポジトリの [Issues](https://github.com/Dixlase/plugin-dixlase-menus/issues)
+- 横断的なテーマ — Core リポジトリの [Discussions](https://github.com/Dixlase/dixlase-core/discussions)
 
-本プラグインは、CLA の独自コピーを保持 **しません**。Core リポジトリの正本 CLA が単一ソースです。これにより、プラグインリポジトリ間でのドリフトを防ぎます。
+**現在受け付けていないもの**
 
-## なぜ CLA が必要か
+- あらゆる Pull Request(コード・ドキュメント・翻訳)— Issue でお知らせください
 
-**Dixlase Menus は GPL-3.0 + exc-D inc. が提供する商用ライセンスのデュアルライセンス方式** で配布されています。このモデルを維持するためには、exc-D が受領したコントリビューションを両方のライセンスでサブライセンスできることが法的に必要です。CLA は、コントリビューターが所有権を保持しつつ、exc-D に対しその目的に必要な権利を許諾するための仕組みです。
+バグ報告中のコードスニペットは **参考情報としてのみ** 歓迎します。メンテナーが独立して修正を再実装するため、提供いただいたスニペットがそのままコミットされることは通常ありません。
 
-CLA に署名することにより、以下に同意したことになります:
+## 理由
 
-- コントリビューションの **所有権を保持** します
-- exc-D inc. に対し、デュアルライセンス方式を支えるに足る、永続的、全世界的、取消不能、サブライセンス可能なライセンスを **許諾** します
-- 当該ライセンスの行使を妨げる態様で **著作者人格権を主張しない** ことに同意します
-- ライセンス許諾の **権限を有する** ことを確認します(雇用主の許可、原始的創作、第三者素材の開示)
+Dixlase Menus は GPL-3.0 + exc-D inc. の商用ライセンスのデュアルライセンス方式で配布されています。受領コントリビューションを両ライセンスでサブライセンスする権利を exc-D に許諾しつつ、コントリビューターが所有権を保持できる CLA 枠組みが現在法務レビュー中です。稼働後、本プラグインへのコントリビューションは以下に従います:
 
-## CLA の提出方法
+- Core の [`CLA.md`](https://github.com/Dixlase/dixlase-core/blob/main/CLA.md) — 個人・法人の署名区分を 1 本に統合した文書
+- Core の [`COPYRIGHT-POLICY.ja.md`](https://github.com/Dixlase/dixlase-core/blob/main/COPYRIGHT-POLICY.ja.md)
+- Core の [`CONTRIBUTING-FUTURE.ja.md`](https://github.com/Dixlase/dixlase-core/blob/main/CONTRIBUTING-FUTURE.ja.md)(稼働開始までは情報提供目的)
 
-Dixlase プロジェクトが v0.1.x の期間中、CLA はメールで提出します:
-
-1. [個人 CLA](https://github.com/Dixlase/dixlase-core/blob/main/CLA-INDIVIDUAL.ja.md) (該当する場合は [法人 CLA](https://github.com/Dixlase/dixlase-core/blob/main/CLA-CORPORATE.ja.md) も) を全文お読みください
-2. コントリビューター情報欄に記入し、末尾に署名してください
-3. 件名 `CLA 提出 — <氏名または組織名>` で **info@dixlase.org** に提出ファイルを添付してメール送信してください。コントリビューションを予定しているプラグインも明記してください
-
-1 通の CLA で Core および公式プラグイン全体のコントリビューションをカバーします。リポジトリごとに別個の CLA に署名する必要はありません。
-
-将来の v0.1.x リリースで、この手動ワークフローは [CLA Assistant](https://cla-assistant.io/) に置き換わり、PR フロー内で署名収集が自動化されます。その際、本セクションは更新されます。
-
-## プルリクエストの提出方法
-
-1. 本リポジトリを fork し、機能ブランチを作成
-2. [Core コントリビューションガイド](https://github.com/Dixlase/dixlase-core/blob/main/CONTRIBUTING.ja.md) の規約に従って変更を加える
-3. 変更内容に対するテストを追加
-4. 全テストが通り、コードがフォーマット済みであることを確認(`vendor/bin/pint`)
-5. 本プラグインの `main` ブランチに対して PR を開く
-6. 関連する Issue 番号を参照
-7. メンテナがレビューしフィードバックを提供します
+1 通の CLA で Dixlase プロジェクト全体(Core および全公式プラグイン)をカバーします。
 
 ## 不具合報告
 
-- **Dixlase Menus に関する不具合・機能要望**: 本プラグインリポジトリで Issue を作成
-- **複数プラグインまたは Core にまたがる問題**: [Dixlase Core リポジトリ](https://github.com/Dixlase/dixlase-core/issues) で Issue を作成
+以下を含めてください: 明確な説明、再現手順、期待される動作と実際の動作、環境(Dixlase Core / PHP / MySQL / ブラウザ / OS のバージョン)、関連ログ。
 
-## 行動規範
+複数プラグインまたは Core にまたがる問題は、[Dixlase Core リポジトリ](https://github.com/Dixlase/dixlase-core/issues) に Issue を立ててください。
 
-Dixlase Menus および Dixlase プロジェクト全体へのコントリビューションは、Core リポジトリで公開されている場合 [Dixlase Code of Conduct](https://github.com/Dixlase/dixlase-core/blob/main/CODE_OF_CONDUCT.md) に従います。
+## セキュリティ・商標
+
+- セキュリティ脆弱性: [SECURITY.ja.md](./SECURITY.ja.md) を参照。**公開 Issue は不可。**
+- 「Dixlase」「Dixlase Menus」の名称・ロゴ: Core の [商標ポリシー](https://github.com/Dixlase/dixlase-core/blob/main/TRADEMARK-POLICY.ja.md)
 
 ---
 

@@ -16,7 +16,7 @@
     "license_template": "license-dual-gpl.txt",
     "commercial_license": {
         "available": true,
-        "file": "LICENSE.commercial",
+        "file": "LICENSE-COMMERCIAL",
         "contact": "info@dixlase.org"
     },
     "assets": {
