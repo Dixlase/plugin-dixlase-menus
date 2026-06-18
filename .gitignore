@@ -1,6 +1,7 @@
 /node_modules
 /vendor
-/resources/assets
+/resources/assets/*
+!/resources/assets/thumbnail.*
 package-lock.json
 .env
 .env.backup
