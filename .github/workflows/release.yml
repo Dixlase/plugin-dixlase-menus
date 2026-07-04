@@ -1,0 +1,111 @@
+name: Release
+
+# Package the plugin as a downloadable ZIP whenever a `v*.*.*` tag is
+# pushed (or the workflow is dispatched manually). The ZIP contains the
+# **prebuilt** `resources/assets/`, so admin-panel installs on servers
+# without Node / npm can drop the ZIP in and run — no server-side build
+# step required. This is the extension side of the design documented in
+# Core backlog `extension-update-prebuilt-assets-no-npm.md`.
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag / version label for the release (e.g. v0.1.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Build and publish release ZIP
+
+    steps:
+      - name: Resolve release tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "value=${{ github.event.inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build frontend assets (into resources/assets/)
+        run: NODE_ENV=production npm run build
+
+      - name: Package release ZIP
+        id: zip
+        run: |
+          # ZIP name follows the plugin slug + tag convention so consumers
+          # can pin a specific version by URL:
+          #   dixlase-menus-v0.1.0.zip
+          TAG="${{ steps.tag.outputs.value }}"
+          NAME="dixlase-menus-${TAG}"
+          STAGING="/tmp/${NAME}"
+
+          # Assemble the release tree under a plugin-named parent so the
+          # ZIP unpacks straight into `plugins/DixlaseMenus/`.
+          mkdir -p "${STAGING}/DixlaseMenus"
+          # `rsync -a` preserves the whole tree; we then prune the
+          # dev-only and repo-metadata paths that have no runtime role.
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='.backlog/' \
+            --exclude='node_modules/' \
+            --exclude='tests/' \
+            --exclude='.vscode/' \
+            --exclude='.idea/' \
+            --exclude='.zed/' \
+            --exclude='.fleet/' \
+            --exclude='.nova/' \
+            --exclude='.editorconfig' \
+            --exclude='.gitignore' \
+            --exclude='phpunit.xml' \
+            --exclude='package-lock.json' \
+            ./ "${STAGING}/DixlaseMenus/"
+
+          # `resources/assets/` is gitignored, so `rsync -a ./` above
+          # already picked it up from the freshly-built working tree.
+          # Belt-and-braces: assert the built manifest and admin bundle
+          # are actually in the staging dir before we zip.
+          if [ ! -f "${STAGING}/DixlaseMenus/resources/assets/manifest.json" ]; then
+            echo "ERROR: resources/assets/manifest.json missing from staging dir." >&2
+            echo "       The frontend build step did not produce the expected output." >&2
+            exit 1
+          fi
+
+          cd /tmp
+          zip -r "${NAME}.zip" "${NAME}" > /dev/null
+          echo "zip_path=/tmp/${NAME}.zip" >> "$GITHUB_OUTPUT"
+          echo "zip_name=${NAME}.zip" >> "$GITHUB_OUTPUT"
+
+          echo "Release ZIP contents summary:"
+          unzip -l "/tmp/${NAME}.zip" | tail -3
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.value }}
+          name: ${{ steps.tag.outputs.value }}
+          files: ${{ steps.zip.outputs.zip_path }}
+          draft: false
+          prerelease: ${{ contains(steps.tag.outputs.value, '-') }}
+          generate_release_notes: true
