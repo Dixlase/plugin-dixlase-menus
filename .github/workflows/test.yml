@@ -26,6 +26,24 @@ jobs:
         with:
           path: plugin
 
+      # Verify the frontend build stays green on every PR / non-main push
+      # so build breakage is caught before it reaches main (where deploy.yml
+      # would then ship a broken artifact). Guarded on `package.json` so the
+      # step remains a clean no-op for plugins that do not carry a Node
+      # build yet.
+      - name: Setup Node.js (for frontend build verification)
+        if: hashFiles('plugin/package.json') != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Verify frontend build
+        if: hashFiles('plugin/package.json') != ''
+        working-directory: plugin
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+
       - name: Checkout core
         uses: actions/checkout@v4
         with:
