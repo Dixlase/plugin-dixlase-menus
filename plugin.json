@@ -61,7 +61,7 @@
     },
     "declares": {
         "configs": {
-            "roles": false,
+            "roles": true,
             "database_cleanup": false,
             "navigation": true
         },
