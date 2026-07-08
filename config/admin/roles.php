@@ -30,30 +30,33 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+use App\Enums\MemberRole;
+
+/**
+ * Plugin default permission settings
+ *
+ * Defines default permissions for each menu/feature.
+ * Only when changed in the admin panel, differences are saved to the
+ * role_permission_overrides table.
+ *
+ * Structure follows the same nested format as config/admin/navigation.php.
+ * Menu management is an administrator-level operation (matches the
+ * navigation `can => admin` gate).
+ */
+
 return [
-    // メニュー管理
-    'menus' => [
-        '_insert_before' => 'media',
-        'text' => 'dixlase-menus::admin/navigation.menus.text',
-        'icon' => 'fas fa-fw fa-bars',
-        // Route the sidebar permission check through this plugin's
-        // config/admin/roles.php. Without it the check falls back to core's
-        // PermissionRegistry (no `menus` entry) and the menu is hidden for
-        // everyone below SUPER_ADMIN. Value is the plugin directory basename.
-        'plugin_slug' => 'DixlaseMenus',
-        'can' => 'admin',
-        'children' => [
-            'index' => [
-                'text' => 'dixlase-menus::admin/navigation.menus.index',
-                'route' => 'dixlase-menus::admin.menus.index',
-                'icon' => 'fas fa-fw fa-list',
-                'can' => 'admin',
-            ],
-            'create' => [
-                'text' => 'dixlase-menus::admin/navigation.menus.create',
-                'route' => 'dixlase-menus::admin.menus.create',
-                'icon' => 'fas fa-fw fa-plus',
-                'can' => 'admin',
+    'permissions' => [
+        // Menu management
+        'menus' => [
+            'children' => [
+                'index' => [
+                    'access_roles' => MemberRole::ADMIN->value,
+                    'view_roles' => MemberRole::ADMIN->value,
+                ],
+                'create' => [
+                    'access_roles' => MemberRole::ADMIN->value,
+                    'view_roles' => MemberRole::ADMIN->value,
+                ],
             ],
         ],
     ],
