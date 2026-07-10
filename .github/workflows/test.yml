@@ -61,8 +61,10 @@ jobs:
 
       - name: Place plugin into core directory
         run: |
-          # コアには gitlink で空の plugins/DixlaseMenus ディレクトリが存在するため
-          # 一度削除してからプラグインを配置する
+          # Core no longer tracks plugins/ (it is gitignored), so a fresh
+          # core checkout has no plugins/ directory. Create it before moving
+          # the plugin in, otherwise `mv` fails with "No such file or directory".
+          mkdir -p core/plugins
           rm -rf core/plugins/DixlaseMenus
           mv plugin core/plugins/DixlaseMenus
 
