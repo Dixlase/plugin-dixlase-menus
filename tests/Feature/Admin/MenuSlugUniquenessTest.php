@@ -137,6 +137,23 @@ class MenuSlugUniquenessTest extends TestCase
                 'placement_type' => 'manual',
             ]);
 
+        // === TEMP DIAGNOSTIC — remove before merging ===
+        $errs = session()->get('errors');
+        $errsStr = is_null($errs) ? 'NULL' : (is_object($errs) ? get_class($errs).':'.json_encode($errs->getBag('default')->all()) : var_export($errs, true));
+        fwrite(STDERR, PHP_EOL.'[DIAG] status='.$response->status().PHP_EOL);
+        fwrite(STDERR, '[DIAG] location='.($response->headers->get('Location') ?? 'NULL').PHP_EOL);
+        fwrite(STDERR, '[DIAG] session_errors='.$errsStr.PHP_EOL);
+        fwrite(STDERR, '[DIAG] session_all='.json_encode(session()->all()).PHP_EOL);
+        fwrite(STDERR, '[DIAG] rows='.json_encode(\DB::table('plg_dixlase_menus')->get()->toArray()).PHP_EOL);
+        fwrite(STDERR, '[DIAG] route_store='.route('dixlase-menus::admin.menus.store').PHP_EOL);
+        fwrite(STDERR, '[DIAG] admin_url='.var_export(config('admin.admin_url'), true).PHP_EOL);
+        fwrite(STDERR, '[DIAG] db_conn='.config('database.default').PHP_EOL);
+        fwrite(STDERR, '[DIAG] session_drv='.config('session.driver').PHP_EOL);
+        fwrite(STDERR, '[DIAG] installed_env='.var_export(env('INSTALLED'), true).PHP_EOL);
+        fwrite(STDERR, '[DIAG] exception='.($response->exception ? get_class($response->exception).':'.$response->exception->getMessage() : 'none').PHP_EOL);
+        fwrite(STDERR, '[DIAG] body_head='.substr($response->getContent(), 0, 400).PHP_EOL);
+        // === END TEMP DIAGNOSTIC ===
+
         $response->assertSessionHasErrors('slug');
     }
 
