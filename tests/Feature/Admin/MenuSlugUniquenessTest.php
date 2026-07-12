@@ -152,6 +152,24 @@ class MenuSlugUniquenessTest extends TestCase
         fwrite(STDERR, '[DIAG] installed_env='.var_export(env('INSTALLED'), true).PHP_EOL);
         fwrite(STDERR, '[DIAG] exception='.($response->exception ? get_class($response->exception).':'.$response->exception->getMessage() : 'none').PHP_EOL);
         fwrite(STDERR, '[DIAG] body_head='.substr($response->getContent(), 0, 400).PHP_EOL);
+
+        // Enumerate all registered routes matching POST /admin/menus/
+        $router = app('router');
+        $routes = $router->getRoutes();
+        $matches = [];
+        foreach ($routes as $route) {
+            $uri = $route->uri();
+            $methods = $route->methods();
+            if (in_array('POST', $methods, true) && str_contains($uri, 'menus') && !str_contains($uri, '{')) {
+                $matches[] = [
+                    'uri' => $uri,
+                    'name' => $route->getName(),
+                    'action' => is_string($route->getActionName()) ? $route->getActionName() : 'closure',
+                    'middleware' => $route->gatherMiddleware(),
+                ];
+            }
+        }
+        fwrite(STDERR, '[DIAG] matched_routes='.json_encode($matches, JSON_PRETTY_PRINT).PHP_EOL);
         // === END TEMP DIAGNOSTIC ===
 
         $response->assertSessionHasErrors('slug');
