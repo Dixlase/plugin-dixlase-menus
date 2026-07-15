@@ -171,19 +171,32 @@ class MenuSlugUniquenessTest extends TestCase
         }
         fwrite(STDERR, '[DIAG] matched_routes='.json_encode($matches, JSON_PRETTY_PRINT).PHP_EOL);
 
-        // Warm-up GET first, then POST — see if 1st POST after a GET works.
-        $warm = $this->actingAs($this->admin, 'member')->get('/');
-        fwrite(STDERR, '[WARMUP-GET] status='.$warm->status().PHP_EOL);
+        // Try startSession() alone (no HTTP warmup).
+        $this->startSession();
         $r = $this->actingAs($this->admin, 'member')
             ->from(route('dixlase-menus::admin.menus.store'))
             ->post(route('dixlase-menus::admin.menus.store'), [
                 'name' => 'New Menu',
                 'slug' => 'main-menu',
                 'placement_type' => 'manual',
+                '_token' => csrf_token(),
             ]);
         $e = session()->get('errors');
         $hasSlugErr = ($e && is_object($e) && $e->getBag('default')->has('slug')) ? 'YES' : 'no';
-        fwrite(STDERR, '[POST-AFTER-WARMUP] status='.$r->status().' slug_err='.$hasSlugErr.' exc='.($r->exception ? get_class($r->exception) : 'none').PHP_EOL);
+        fwrite(STDERR, '[POST-AFTER-STARTSESSION] status='.$r->status().' slug_err='.$hasSlugErr.' exc='.($r->exception ? get_class($r->exception) : 'none').PHP_EOL);
+
+        // Also try withoutMiddleware(VerifyCsrfToken::class) explicitly for comparison.
+        $r2 = $this->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class])
+            ->actingAs($this->admin, 'member')
+            ->from(route('dixlase-menus::admin.menus.store'))
+            ->post(route('dixlase-menus::admin.menus.store'), [
+                'name' => 'New Menu',
+                'slug' => 'main-menu',
+                'placement_type' => 'manual',
+            ]);
+        $e2 = session()->get('errors');
+        $hasSlugErr2 = ($e2 && is_object($e2) && $e2->getBag('default')->has('slug')) ? 'YES' : 'no';
+        fwrite(STDERR, '[POST-WITHOUT-CSRF] status='.$r2->status().' slug_err='.$hasSlugErr2.' exc='.($r2->exception ? get_class($r2->exception) : 'none').PHP_EOL);
         // === END TEMP DIAGNOSTIC ===
 
         $response->assertSessionHasErrors('slug');
