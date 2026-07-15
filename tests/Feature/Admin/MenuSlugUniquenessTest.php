@@ -105,6 +105,15 @@ class MenuSlugUniquenessTest extends TestCase
             'role' => MemberRole::SUPER_ADMIN,
             'status' => MemberStatus::Active,
         ]);
+
+        // Warm up the HTTP kernel. On CI (clean sqlite + fresh env) the very
+        // first HTTP request in a test method sometimes short-circuits with a
+        // silent 302-back — the request completes without exception, the
+        // controller is never reached, and validation never runs, so
+        // assertSessionHasErrors() fails. Subsequent HTTP requests in the
+        // same method work correctly. Firing one throwaway GET here means
+        // every test's own first HTTP call is already the "second" one.
+        $this->actingAs($this->admin, 'member')->get('/');
     }
 
     protected function tearDown(): void
@@ -136,68 +145,6 @@ class MenuSlugUniquenessTest extends TestCase
                 'slug' => 'main-menu',
                 'placement_type' => 'manual',
             ]);
-
-        // === TEMP DIAGNOSTIC — remove before merging ===
-        $errs = session()->get('errors');
-        $errsStr = is_null($errs) ? 'NULL' : (is_object($errs) ? get_class($errs).':'.json_encode($errs->getBag('default')->all()) : var_export($errs, true));
-        fwrite(STDERR, PHP_EOL.'[DIAG] status='.$response->status().PHP_EOL);
-        fwrite(STDERR, '[DIAG] location='.($response->headers->get('Location') ?? 'NULL').PHP_EOL);
-        fwrite(STDERR, '[DIAG] session_errors='.$errsStr.PHP_EOL);
-        fwrite(STDERR, '[DIAG] session_all='.json_encode(session()->all()).PHP_EOL);
-        fwrite(STDERR, '[DIAG] rows='.json_encode(\DB::table('plg_dixlase_menus')->get()->toArray()).PHP_EOL);
-        fwrite(STDERR, '[DIAG] route_store='.route('dixlase-menus::admin.menus.store').PHP_EOL);
-        fwrite(STDERR, '[DIAG] admin_url='.var_export(config('admin.admin_url'), true).PHP_EOL);
-        fwrite(STDERR, '[DIAG] db_conn='.config('database.default').PHP_EOL);
-        fwrite(STDERR, '[DIAG] session_drv='.config('session.driver').PHP_EOL);
-        fwrite(STDERR, '[DIAG] installed_env='.var_export(env('INSTALLED'), true).PHP_EOL);
-        fwrite(STDERR, '[DIAG] exception='.($response->exception ? get_class($response->exception).':'.$response->exception->getMessage() : 'none').PHP_EOL);
-        fwrite(STDERR, '[DIAG] body_head='.substr($response->getContent(), 0, 400).PHP_EOL);
-
-        // Enumerate all registered routes matching POST /admin/menus/
-        $router = app('router');
-        $routes = $router->getRoutes();
-        $matches = [];
-        foreach ($routes as $route) {
-            $uri = $route->uri();
-            $methods = $route->methods();
-            if (in_array('POST', $methods, true) && str_contains($uri, 'menus') && !str_contains($uri, '{')) {
-                $matches[] = [
-                    'uri' => $uri,
-                    'name' => $route->getName(),
-                    'action' => is_string($route->getActionName()) ? $route->getActionName() : 'closure',
-                    'middleware' => $route->gatherMiddleware(),
-                ];
-            }
-        }
-        fwrite(STDERR, '[DIAG] matched_routes='.json_encode($matches, JSON_PRETTY_PRINT).PHP_EOL);
-
-        // Try startSession() alone (no HTTP warmup).
-        $this->startSession();
-        $r = $this->actingAs($this->admin, 'member')
-            ->from(route('dixlase-menus::admin.menus.store'))
-            ->post(route('dixlase-menus::admin.menus.store'), [
-                'name' => 'New Menu',
-                'slug' => 'main-menu',
-                'placement_type' => 'manual',
-                '_token' => csrf_token(),
-            ]);
-        $e = session()->get('errors');
-        $hasSlugErr = ($e && is_object($e) && $e->getBag('default')->has('slug')) ? 'YES' : 'no';
-        fwrite(STDERR, '[POST-AFTER-STARTSESSION] status='.$r->status().' slug_err='.$hasSlugErr.' exc='.($r->exception ? get_class($r->exception) : 'none').PHP_EOL);
-
-        // Also try withoutMiddleware(VerifyCsrfToken::class) explicitly for comparison.
-        $r2 = $this->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class])
-            ->actingAs($this->admin, 'member')
-            ->from(route('dixlase-menus::admin.menus.store'))
-            ->post(route('dixlase-menus::admin.menus.store'), [
-                'name' => 'New Menu',
-                'slug' => 'main-menu',
-                'placement_type' => 'manual',
-            ]);
-        $e2 = session()->get('errors');
-        $hasSlugErr2 = ($e2 && is_object($e2) && $e2->getBag('default')->has('slug')) ? 'YES' : 'no';
-        fwrite(STDERR, '[POST-WITHOUT-CSRF] status='.$r2->status().' slug_err='.$hasSlugErr2.' exc='.($r2->exception ? get_class($r2->exception) : 'none').PHP_EOL);
-        // === END TEMP DIAGNOSTIC ===
 
         $response->assertSessionHasErrors('slug');
     }
