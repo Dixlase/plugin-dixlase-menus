@@ -171,22 +171,37 @@ class MenuSlugUniquenessTest extends TestCase
         }
         fwrite(STDERR, '[DIAG] matched_routes='.json_encode($matches, JSON_PRETTY_PRINT).PHP_EOL);
 
-        // Retry the same POST with ALL middleware disabled — if this reaches
-        // validation and returns errors, the culprit is one of the middleware.
-        $bypass = $this->withoutMiddleware()->actingAs($this->admin, 'member')
-            ->from(route('dixlase-menus::admin.menus.store'))
-            ->post(route('dixlase-menus::admin.menus.store'), [
-                'name' => 'New Menu',
-                'slug' => 'main-menu',
-                'placement_type' => 'manual',
-            ]);
-        $bErrs = session()->get('errors');
-        $bErrsStr = is_null($bErrs) ? 'NULL' : (is_object($bErrs) ? get_class($bErrs).':'.json_encode($bErrs->getBag('default')->all()) : var_export($bErrs, true));
-        fwrite(STDERR, '[DIAG-BYPASS] status='.$bypass->status().PHP_EOL);
-        fwrite(STDERR, '[DIAG-BYPASS] location='.($bypass->headers->get('Location') ?? 'NULL').PHP_EOL);
-        fwrite(STDERR, '[DIAG-BYPASS] session_errors='.$bErrsStr.PHP_EOL);
-        fwrite(STDERR, '[DIAG-BYPASS] rows='.json_encode(\DB::table('plg_dixlase_menus')->get()->toArray()).PHP_EOL);
-        fwrite(STDERR, '[DIAG-BYPASS] exception='.($bypass->exception ? get_class($bypass->exception).':'.$bypass->exception->getMessage() : 'none').PHP_EOL);
+        // Bisect: try each suspect middleware bypass individually.
+        $suspects = [
+            'csrf' => \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+            'demo-guard' => \App\Http\Middleware\DemoGuard::class,
+            'maintenance' => \App\Http\Middleware\CheckMaintenanceMode::class,
+            'safe-mode' => \App\Http\Middleware\SafeMode::class,
+            'block-plugin' => \App\Http\Middleware\BlockPluginRoutes::class,
+            'set-admin-locale' => \App\Http\Middleware\SetAdminLocale::class,
+            'set-member-locale' => \App\Http\Middleware\SetMemberLocale::class,
+            'installation-ready' => \App\Http\Middleware\CheckInstallationReady::class,
+            'resolve-site' => \App\Http\Middleware\ResolveSiteContext::class,
+            'apply-session' => \App\Http\Middleware\ApplySessionConfig::class,
+            'csp' => \App\Http\Middleware\ContentSecurityPolicy::class,
+        ];
+        foreach ($suspects as $tag => $mw) {
+            if (! class_exists($mw)) {
+                fwrite(STDERR, "[BISECT $tag] SKIP — class not found: $mw".PHP_EOL);
+                continue;
+            }
+            \DB::table('plg_dixlase_menus')->where('slug', '!=', 'main-menu')->delete();
+            $r = $this->withoutMiddleware([$mw])->actingAs($this->admin, 'member')
+                ->from(route('dixlase-menus::admin.menus.store'))
+                ->post(route('dixlase-menus::admin.menus.store'), [
+                    'name' => 'New Menu',
+                    'slug' => 'main-menu',
+                    'placement_type' => 'manual',
+                ]);
+            $e = session()->get('errors');
+            $hasSlugErr = ($e && is_object($e) && $e->getBag('default')->has('slug')) ? 'YES' : 'no';
+            fwrite(STDERR, "[BISECT $tag] status=".$r->status().' slug_err='.$hasSlugErr.' exc='.($r->exception ? get_class($r->exception) : 'none').PHP_EOL);
+        }
         // === END TEMP DIAGNOSTIC ===
 
         $response->assertSessionHasErrors('slug');
