@@ -170,6 +170,23 @@ class MenuSlugUniquenessTest extends TestCase
             }
         }
         fwrite(STDERR, '[DIAG] matched_routes='.json_encode($matches, JSON_PRETTY_PRINT).PHP_EOL);
+
+        // Retry the same POST with ALL middleware disabled — if this reaches
+        // validation and returns errors, the culprit is one of the middleware.
+        $bypass = $this->withoutMiddleware()->actingAs($this->admin, 'member')
+            ->from(route('dixlase-menus::admin.menus.store'))
+            ->post(route('dixlase-menus::admin.menus.store'), [
+                'name' => 'New Menu',
+                'slug' => 'main-menu',
+                'placement_type' => 'manual',
+            ]);
+        $bErrs = session()->get('errors');
+        $bErrsStr = is_null($bErrs) ? 'NULL' : (is_object($bErrs) ? get_class($bErrs).':'.json_encode($bErrs->getBag('default')->all()) : var_export($bErrs, true));
+        fwrite(STDERR, '[DIAG-BYPASS] status='.$bypass->status().PHP_EOL);
+        fwrite(STDERR, '[DIAG-BYPASS] location='.($bypass->headers->get('Location') ?? 'NULL').PHP_EOL);
+        fwrite(STDERR, '[DIAG-BYPASS] session_errors='.$bErrsStr.PHP_EOL);
+        fwrite(STDERR, '[DIAG-BYPASS] rows='.json_encode(\DB::table('plg_dixlase_menus')->get()->toArray()).PHP_EOL);
+        fwrite(STDERR, '[DIAG-BYPASS] exception='.($bypass->exception ? get_class($bypass->exception).':'.$bypass->exception->getMessage() : 'none').PHP_EOL);
         // === END TEMP DIAGNOSTIC ===
 
         $response->assertSessionHasErrors('slug');
