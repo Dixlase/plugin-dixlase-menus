@@ -15,7 +15,7 @@
     </testsuites>
     <source>
         <include>
-            <directory>src</directory>
+            <directory>app</directory>
         </include>
     </source>
     <php>
@@ -30,9 +30,4 @@
         <env name="TELESCOPE_ENABLED" value="false" force="true"/>
         <env name="INSTALLED" value="true" force="true"/>
     </php>
-    <coverage processUncoveredFiles="true">
-        <include>
-            <directory suffix=".php">./src</directory>
-        </include>
-    </coverage>
 </phpunit>
