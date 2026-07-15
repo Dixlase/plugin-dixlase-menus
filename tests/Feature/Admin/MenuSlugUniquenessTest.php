@@ -105,6 +105,15 @@ class MenuSlugUniquenessTest extends TestCase
             'role' => MemberRole::SUPER_ADMIN,
             'status' => MemberStatus::Active,
         ]);
+
+        // Warm up the HTTP kernel. On CI (clean sqlite + fresh env) the very
+        // first HTTP request in a test method sometimes short-circuits with a
+        // silent 302-back — the request completes without exception, the
+        // controller is never reached, and validation never runs, so
+        // assertSessionHasErrors() fails. Subsequent HTTP requests in the
+        // same method work correctly. Firing one throwaway GET here means
+        // every test's own first HTTP call is already the "second" one.
+        $this->actingAs($this->admin, 'member')->get('/');
     }
 
     protected function tearDown(): void

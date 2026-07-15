@@ -87,6 +87,14 @@ jobs:
           # 通常は pre-autoload-dump フックで実行されるが --no-scripts のため明示実行
           php scripts/sync-local-autoload.php
           composer dump-autoload --no-scripts --optimize
+          # bootstrap/cache/{packages,services}.php を事前生成する。
+          # `--no-scripts` により post-autoload-dump がスキップされるため、
+          # phpunit の最初のテスト boot 時に PackageManifest::build() が lazy
+          # に走り、そのプロセス内の最初のリクエストで session errors が
+          # flash されない first-boot flake を踏むことがある
+          # （MenuSlugUniquenessTest::test_store_fails_when_slug_already_exists
+          # がこれで落ちていた）。ここで明示的に warm しておく。
+          php artisan package:discover --ansi
 
       - name: Setup test environment
         working-directory: core
