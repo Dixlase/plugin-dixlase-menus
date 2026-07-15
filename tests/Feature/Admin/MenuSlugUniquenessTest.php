@@ -171,20 +171,19 @@ class MenuSlugUniquenessTest extends TestCase
         }
         fwrite(STDERR, '[DIAG] matched_routes='.json_encode($matches, JSON_PRETTY_PRINT).PHP_EOL);
 
-        // Hypothesis: 1st HTTP in a test method fails; 2nd+ pass. Test WITHOUT
-        // any middleware bypass — just repeat the same POST.
-        for ($i = 2; $i <= 4; $i++) {
-            $r = $this->actingAs($this->admin, 'member')
-                ->from(route('dixlase-menus::admin.menus.store'))
-                ->post(route('dixlase-menus::admin.menus.store'), [
-                    'name' => 'New Menu',
-                    'slug' => 'main-menu',
-                    'placement_type' => 'manual',
-                ]);
-            $e = session()->get('errors');
-            $hasSlugErr = ($e && is_object($e) && $e->getBag('default')->has('slug')) ? 'YES' : 'no';
-            fwrite(STDERR, "[RETRY #$i (no bypass)] status=".$r->status().' slug_err='.$hasSlugErr.' exc='.($r->exception ? get_class($r->exception) : 'none').PHP_EOL);
-        }
+        // Warm-up GET first, then POST — see if 1st POST after a GET works.
+        $warm = $this->actingAs($this->admin, 'member')->get('/');
+        fwrite(STDERR, '[WARMUP-GET] status='.$warm->status().PHP_EOL);
+        $r = $this->actingAs($this->admin, 'member')
+            ->from(route('dixlase-menus::admin.menus.store'))
+            ->post(route('dixlase-menus::admin.menus.store'), [
+                'name' => 'New Menu',
+                'slug' => 'main-menu',
+                'placement_type' => 'manual',
+            ]);
+        $e = session()->get('errors');
+        $hasSlugErr = ($e && is_object($e) && $e->getBag('default')->has('slug')) ? 'YES' : 'no';
+        fwrite(STDERR, '[POST-AFTER-WARMUP] status='.$r->status().' slug_err='.$hasSlugErr.' exc='.($r->exception ? get_class($r->exception) : 'none').PHP_EOL);
         // === END TEMP DIAGNOSTIC ===
 
         $response->assertSessionHasErrors('slug');
