@@ -171,19 +171,24 @@ class MenuSlugUniquenessTest extends TestCase
         }
         fwrite(STDERR, '[DIAG] matched_routes='.json_encode($matches, JSON_PRETTY_PRINT).PHP_EOL);
 
-        // Bisect: try each suspect middleware bypass individually.
+        // Bisect: bypass one middleware at a time. IMPORTANT: withoutMiddleware
+        // ACCUMULATES on $this->app across calls, so once one middleware is
+        // bypassed it stays bypassed. Reorder deliberately: put the least
+        // likely culprits first; the first line whose exc flips to
+        // ValidationException from "none" is the actual culprit (or one of
+        // them). Put CSRF last so we can distinguish.
         $suspects = [
-            'csrf' => \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
-            'demo-guard' => \App\Http\Middleware\DemoGuard::class,
-            'maintenance' => \App\Http\Middleware\CheckMaintenanceMode::class,
-            'safe-mode' => \App\Http\Middleware\SafeMode::class,
-            'block-plugin' => \App\Http\Middleware\BlockPluginRoutes::class,
-            'set-admin-locale' => \App\Http\Middleware\SetAdminLocale::class,
-            'set-member-locale' => \App\Http\Middleware\SetMemberLocale::class,
-            'installation-ready' => \App\Http\Middleware\CheckInstallationReady::class,
-            'resolve-site' => \App\Http\Middleware\ResolveSiteContext::class,
-            'apply-session' => \App\Http\Middleware\ApplySessionConfig::class,
             'csp' => \App\Http\Middleware\ContentSecurityPolicy::class,
+            'apply-session' => \App\Http\Middleware\ApplySessionConfig::class,
+            'resolve-site' => \App\Http\Middleware\ResolveSiteContext::class,
+            'installation-ready' => \App\Http\Middleware\CheckInstallationReady::class,
+            'set-member-locale' => \App\Http\Middleware\SetMemberLocale::class,
+            'set-admin-locale' => \App\Http\Middleware\SetAdminLocale::class,
+            'block-plugin' => \App\Http\Middleware\BlockPluginRoutes::class,
+            'safe-mode' => \App\Http\Middleware\SafeMode::class,
+            'maintenance' => \App\Http\Middleware\CheckMaintenanceMode::class,
+            'demo-guard' => \App\Http\Middleware\DemoGuard::class,
+            'csrf' => \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
         ];
         foreach ($suspects as $tag => $mw) {
             if (! class_exists($mw)) {
