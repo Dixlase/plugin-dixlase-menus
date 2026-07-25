@@ -126,6 +126,8 @@
         }
     },
     "files": {
+        ".backlog/SPINOFF-extension-prebuilt-assets-release.ja.md": "sha256:c5b79561e4d94b9909ac2c2d609620b939b632bc65a085ccafbcdb2c278f4ed8",
+        ".backlog/SPINOFF-extension-prebuilt-assets-release.md": "sha256:cb389be98e08fc5839d05e147d3cf1fbe921163de078f577ca8fad5ed2974831",
         "CONTRIBUTING.ja.md": "sha256:6523a70c6ff304460208bdb8104bad22901f537b9a9998bece9c1ce113df5230",
         "CONTRIBUTING.md": "sha256:134b1bb20c74d653eb7356f309be33024993f7a74a9583bbbfc1eb4116e51003",
         "COPYRIGHT-POLICY.ja.md": "sha256:673949ebddd61d66818bde91f8f79abf5ee8aa7f24d204b9bf99d7511cba31ae",
@@ -170,7 +172,8 @@
         "app/Shortcodes/MenuShortcode.php": "sha256:ef7b83115c7a4fd840e9b1ba6201603fbe274e623199277114df3f82f239dab4",
         "composer.json": "sha256:37eafa22a9aceabcb43006b5bb820e3e4e0e6bb3cf024c6dd6eb16b3bcdcadb6",
         "config/admin.php": "sha256:7db021c61ecbe8c0e18281a6c6d75084856ea09be01b18ba5c9fb03856f176c6",
-        "config/admin/navigation.php": "sha256:5d2ed19305f36071daf37da8abc95315bd9ae3ddbd41ebcacb65ace186d2a3b8",
+        "config/admin/navigation.php": "sha256:c04a5f079f661bc28c5a869699e17ce44ec35e004b8a680d87bccf9cc954d1c1",
+        "config/admin/roles.php": "sha256:cb74679e368ee006a3bed92e397fbc8ccd10ba0429841332784bc5f0aba9d7f5",
         "config/dixlase_menus.php": "sha256:32d4130eb20739423edabc36ecadad646e276d8b0bc2c54356e80d14f906ade7",
         "database/migrations/0001_01_01_000001_create_menus_table.php": "sha256:b226f145f99b26c0684cde329c74afd0b61ab95f3189c341c7e872098f4f549b",
         "database/migrations/0001_01_01_000002_create_menu_items_table.php": "sha256:4315bf0d1ac4dbe9c76da59659be46939bceefbfea9601682dee15e54480dfab",
@@ -192,15 +195,16 @@
         "lang/ja/menu.php": "sha256:a36952da0e9b78d7ecdd3efa29b40c26b17dcf1fa41277c600ce3bad034a0cbe",
         "lang/ja/multilingual_types.php": "sha256:fc32ab5a4e7c915e18706174d1e0299a34bc827e0df0f60e1c748b37452fce19",
         "lang/ja/validation.php": "sha256:ab290b35827159c1128327bc87bed1d57b1b5c39ef66aa0be653791491e85663",
-        "lisence-info.json": "sha256:d1531925718ed803242eea97f91c513cb02d00f683a353ad1d346f0c0ce0cec9",
-        "phpunit.xml": "sha256:a62c7bf3af58570a66f10121b1b7ed535a567edaf9317d6ca3c1b81df98ae009",
-        "resources/assets/thumbnail.png": "sha256:5c1572ce328bd9bb5141ee77f0803545cbe16c8a2d1dd5cd2a2d4cefbbe41e9b",
+        "license-info.json": "sha256:d1531925718ed803242eea97f91c513cb02d00f683a353ad1d346f0c0ce0cec9",
+        "package-lock.json": "sha256:3958a64b5af0f371f034fb65209b4c15f02e88a8b5d4c209dbbeb36a40d4a01e",
+        "package.json": "sha256:497f313f8f6c955ffe3ecab07c8de6353bccc624fc505d0e9b186ca39f114266",
+        "phpunit.xml": "sha256:f225108082235b198d7ec40fdf64701e51394d34678217d19d8ea37445e093ae",
+        "resources/assets/thumbnail.png": "sha256:b326701006d5862091fc76cfcccb3b05ee6265c50ac64ebed0ca775a3a548c7d",
         "resources/src/admin/js/app.js": "sha256:f4bce7d4b25a5a7289b3c266e5693aa5b8e7db4ee98448d26ae24913b9b27372",
         "resources/src/admin/js/data/fa-free-icons.json": "sha256:e2c7751799591820f626f38f9473537c85430741bd3ec6ddf3c5d378d4d3524c",
         "resources/src/admin/js/menu-editor.js": "sha256:af7afbbe08d72489c3331c90f9010c9b416388d6d7cf76e449bc298ac4d28ffe",
         "resources/src/admin/js/menu-form.js": "sha256:7813970280c7c6bae846dd68159ac131858b89c9f7791cac4b84a564d896efef",
         "resources/src/admin/js/menu-list.js": "sha256:13567206f82e0931825f48fcb167e7933a55c765597f27421ebd6982265fe75e",
-        "resources/src/css/style.scss": "sha256:89d7305ddfb72b54faa56fafc836082491ce802da9597ea1b9ea2d5b9589f746",
         "resources/src/js/app.js": "sha256:0ef787e36c23004072e99a5ff9dbb2815e98f3f08b19fba4c2e1ce7986ddcb21",
         "resources/views/admin/menus/create.blade.php": "sha256:f71bffe942587196da75f829a085777bb01d09cd228a5f8020d9778d1684f71a",
         "resources/views/admin/menus/edit.blade.php": "sha256:e20ccbdd6b74f0366ed4266ac24fb9006253c25a8b60203b4899b8b9cc7b0ea1",
@@ -217,7 +221,7 @@
         "routes/admin.php": "sha256:8325e210e3e0e3bfe6732505ef9fba81b6071457d7260ff1eac6f229388fe23f",
         "routes/web.php": "sha256:5d756de9f5e189b1c28d2de5d530721ae60e26a5449fd1ddc117e404aa8d932b",
         "scripts/generate-fa-icons.cjs": "sha256:2a6191c413adc28e12b7f028cefeeea1b332018c8c28ca1e9d4debe4d7e66cc0",
-        "tests/Feature/Admin/MenuSlugUniquenessTest.php": "sha256:4ac1fc637220042e8cae0676b56090a6bc3c6de8bc862e58772292b02d322f60",
+        "tests/Feature/Admin/MenuSlugUniquenessTest.php": "sha256:47196a69d9d26801145ba614ff39390bc2c689a064ffbbccd35a43f079124eae",
         "tests/Feature/Database/SampleMenuSeederTest.php": "sha256:36e0b9f544cce50420c2273e63ad89093bdce4069cd5f3709ea434fbbd77febd",
         "tests/Feature/ExampleTest.php": "sha256:76384f10f1a6df7972533715b3ded3b008b325615f2634e57c29da3f81548169",
         "tests/Feature/Http/Controllers/Admin/AdminMenuLinkSourceControllerTest.php": "sha256:efe9e75b73af830913f0f1f3daad2a31a05856260d5c538cb8045f6fe2497eb9",
@@ -232,6 +236,6 @@
     "signing": {
         "algo": "ed25519",
         "key_id": "dixlase-authority-2026",
-        "signed_at": "2026-06-18T16:16:02+00:00"
+        "signed_at": "2026-07-25T12:51:02+00:00"
     }
 }
