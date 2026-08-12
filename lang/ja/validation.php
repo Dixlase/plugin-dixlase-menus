@@ -41,7 +41,7 @@ return [
     'description_max' => '説明は1000文字以内で入力してください',
     'display_order_integer' => '表示順は整数で入力してください',
     'display_order_min' => '表示順は0以上で入力してください',
-    
+
     // メニューアイテム
     'parent_not_found' => '親アイテムが見つかりません',
     'title_required' => 'タイトルは必須です',
@@ -52,11 +52,12 @@ return [
     'css_class_max' => 'CSSクラスは255文字以内で入力してください',
     'icon_class_max' => 'アイコンクラスは255文字以内で入力してください',
     'visibility_condition_json' => '表示条件は正しいJSON形式で入力してください',
-    
+
     // 設定
     'default_target_invalid' => 'デフォルトターゲットの値が不正です',
     'menu_label_required' => 'メニューラベルは必須です',
     'menu_label_max' => 'メニューラベルは255文字以内で入力してください',
     'menu_url_max' => 'URLは2048文字以内で入力してください',
     'menu_target_invalid' => 'ターゲットの値が無効です',
+    'menu_url_scheme_not_allowed' => 'このリンクは許可されていないスキームを使用しています。http、https、mailto、tel、または / で始まるパスを指定してください。',
 ];

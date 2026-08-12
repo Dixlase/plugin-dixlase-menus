@@ -35,6 +35,7 @@ namespace Plugins\DixlaseMenus\App\Services;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuItemRepositoryInterface;
 use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuRepositoryInterface;
 use Plugins\DixlaseMenus\App\Models\Menu;
@@ -121,6 +122,59 @@ class MenuService
     }
 
     /**
+     * Reject link schemes that execute rather than navigate.
+     *
+     * Menu item URLs are rendered straight into `href="{{ $url }}"` on every
+     * front-end page. Blade escapes the HTML but does nothing about the
+     * scheme, so a stored `javascript:` URL runs for every visitor who clicks
+     * the item. The plugin already had a validateUrl() helper for this, but it
+     * was never called from anywhere and would not have helped: it delegates
+     * to FILTER_VALIDATE_URL, which accepts `javascript://%0aalert(1)`.
+     *
+     * This sits in saveItem() rather than the Form Requests because the menu
+     * editor saves through /sync, which takes raw request input and never
+     * constructs a Form Request at all -- validation added there would guard
+     * the paths that were already fine and miss the one that matters.
+     *
+     * @throws ValidationException
+     */
+    protected function assertAllowedUrlScheme(?string $url): ?string
+    {
+        if ($url === null || trim($url) === '') {
+            return $url;
+        }
+
+        $trimmed = trim($url);
+
+        // Browsers ignore control characters and whitespace inside a scheme, so
+        // `java\tscript:` and `java\nscript:` navigate exactly like
+        // `javascript:`. Strip them before looking for the colon, or the check
+        // reads a scheme the browser will never see.
+        $forSchemeCheck = preg_replace('/[\x00-\x20]/', '', $trimmed) ?? '';
+
+        // `//evil.com` carries no scheme but is not a site-relative path: it
+        // inherits the page's scheme and sends the visitor to another origin.
+        if (str_starts_with($forSchemeCheck, '//')) {
+            throw ValidationException::withMessages([
+                'url' => __('dixlase-menus::validation.menu_url_scheme_not_allowed'),
+            ]);
+        }
+
+        if (preg_match('/^([A-Za-z][A-Za-z0-9+.\-]*):/', $forSchemeCheck, $matches) !== 1) {
+            // No scheme at all: a relative path, query or fragment. Safe.
+            return $trimmed;
+        }
+
+        if (! in_array(strtolower($matches[1]), ['http', 'https', 'mailto', 'tel'], true)) {
+            throw ValidationException::withMessages([
+                'url' => __('dixlase-menus::validation.menu_url_scheme_not_allowed'),
+            ]);
+        }
+
+        return $trimmed;
+    }
+
+    /**
      * 単一のメニューアイテムを保存
      */
     protected function saveItem(
@@ -139,7 +193,9 @@ class MenuService
             'menu_id' => $menuId,
             'parent_id' => $parentId,
             'title' => $data['label'] ?? $data['title'] ?? '',
-            'url' => ($data['source_type'] ?? '') === 'menu_group' ? null : ($data['url'] ?? ''),
+            'url' => ($data['source_type'] ?? '') === 'menu_group'
+                ? null
+                : $this->assertAllowedUrlScheme($data['url'] ?? ''),
             'source_type' => $data['source_type'] ?? 'custom_url',
             'source_id' => $data['source_id'] ?? null,
             'target' => $data['target'] ?? '_self',
