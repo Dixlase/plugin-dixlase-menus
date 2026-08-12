@@ -41,7 +41,7 @@ return [
     'description_max' => 'Description must not exceed 1000 characters',
     'display_order_integer' => 'Display order must be an integer',
     'display_order_min' => 'Display order must be at least 0',
-    
+
     // Menu item
     'parent_not_found' => 'Parent item not found',
     'title_required' => 'Title is required',
@@ -52,11 +52,12 @@ return [
     'css_class_max' => 'CSS class must not exceed 255 characters',
     'icon_class_max' => 'Icon class must not exceed 255 characters',
     'visibility_condition_json' => 'Visibility condition must be valid JSON',
-    
+
     // Settings
     'default_target_invalid' => 'Invalid default target value',
     'menu_label_required' => 'Menu label is required',
     'menu_label_max' => 'Menu label must not exceed 255 characters',
     'menu_url_max' => 'URL must not exceed 2048 characters',
     'menu_target_invalid' => 'Invalid target value',
+    'menu_url_scheme_not_allowed' => 'This link uses a scheme that is not allowed. Use http, https, mailto, tel, or a path beginning with /.',
 ];
