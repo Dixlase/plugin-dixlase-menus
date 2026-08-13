@@ -32,8 +32,8 @@
 
 namespace Plugins\DixlaseMenus\App\Contracts\Repositories;
 
-use Plugins\DixlaseMenus\App\Models\MenuItem;
 use Illuminate\Database\Eloquent\Collection;
+use Plugins\DixlaseMenus\App\Models\MenuItem;
 
 /**
  * メニューアイテムリポジトリインターフェース
@@ -42,142 +42,104 @@ interface MenuItemRepositoryInterface
 {
     /**
      * IDでメニューアイテムを取得
-     *
-     * @param int $id
-     * @return MenuItem|null
      */
     public function find(int $id): ?MenuItem;
 
     /**
      * IDでメニューアイテムを取得（見つからない場合は例外）
      *
-     * @param int $id
-     * @return MenuItem
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function findOrFail(int $id): MenuItem;
 
     /**
      * 特定のメニューのアイテムを取得
-     *
-     * @param int $menuId
-     * @return Collection
      */
     public function getByMenuId(int $menuId): Collection;
 
     /**
      * 特定のメニューのルートアイテムを取得
-     *
-     * @param int $menuId
-     * @return Collection
      */
     public function getRootItems(int $menuId): Collection;
 
     /**
      * 特定のメニューの有効なアイテムを取得
-     *
-     * @param int $menuId
-     * @return Collection
      */
     public function getActiveItems(int $menuId): Collection;
 
     /**
      * 特定の親の子アイテムを取得
-     *
-     * @param int $parentId
-     * @return Collection
      */
     public function getChildren(int $parentId): Collection;
 
     /**
      * 階層構造でアイテムを取得
      *
-     * @param int $menuId
-     * @param int $depth 取得する階層の深さ
-     * @return Collection
+     * @param  int  $depth  取得する階層の深さ
      */
     public function getHierarchy(int $menuId, int $depth = 3): Collection;
 
     /**
      * メニューアイテムを作成
-     *
-     * @param array $data
-     * @return MenuItem
      */
     public function create(array $data): MenuItem;
 
     /**
      * メニューアイテムを更新
-     *
-     * @param int $id
-     * @param array $data
-     * @return MenuItem
      */
     public function update(int $id, array $data): MenuItem;
 
     /**
      * メニューアイテムを削除
-     *
-     * @param int $id
-     * @return bool
      */
     public function delete(int $id): bool;
 
     /**
      * メニューアイテムと子孫を削除
-     *
-     * @param int $id
-     * @return bool
      */
     public function deleteWithDescendants(int $id): bool;
 
     /**
+     * メニューアイテムを完全に削除（復元不可）
+     *
+     * delete() はソフト削除。こちらは行ごと消す。
+     */
+    public function forceDelete(int $id): bool;
+
+    /**
+     * ソフト削除されたメニューアイテムを復元
+     */
+    public function restore(int $id): bool;
+
+    /**
      * 表示順を更新
      *
-     * @param array $items [['id' => 1, 'order' => 1], ...]
-     * @return bool
+     * @param  array  $items  [['id' => 1, 'order' => 1], ...]
      */
     public function updateOrder(array $items): bool;
 
     /**
      * 親を変更
-     *
-     * @param int $id
-     * @param int|null $newParentId
-     * @return MenuItem
      */
     public function moveToParent(int $id, ?int $newParentId): MenuItem;
 
     /**
      * 深さを再計算
-     *
-     * @param int $menuId
-     * @return void
      */
     public function recalculateDepth(int $menuId): void;
 
     /**
      * 特定のソースタイプのアイテムを取得
-     *
-     * @param string $sourceType
-     * @param string|int $sourceId
-     * @return Collection
      */
     public function getBySource(string $sourceType, string|int $sourceId): Collection;
 
     /**
      * メニューアイテムが存在するかチェック
-     *
-     * @param int $id
-     * @return bool
      */
     public function exists(int $id): bool;
 
     /**
      * 子アイテムを持つかチェック
-     *
-     * @param int $id
-     * @return bool
      */
     public function hasChildren(int $id): bool;
 }

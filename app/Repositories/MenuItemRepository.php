@@ -32,10 +32,10 @@
 
 namespace Plugins\DixlaseMenus\App\Repositories;
 
-use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuItemRepositoryInterface;
-use Plugins\DixlaseMenus\App\Models\MenuItem;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuItemRepositoryInterface;
+use Plugins\DixlaseMenus\App\Models\MenuItem;
 
 /**
  * メニューアイテムリポジトリ実装
@@ -106,7 +106,7 @@ class MenuItemRepository implements MenuItemRepositoryInterface
     public function getHierarchy(int $menuId, int $depth = 3): Collection
     {
         $with = $this->buildHierarchyRelations($depth);
-        
+
         return MenuItem::where('menu_id', $menuId)
             ->root()
             ->with($with)
@@ -124,7 +124,7 @@ class MenuItemRepository implements MenuItemRepositoryInterface
             $parent = $this->find($data['parent_id']);
             $data['depth'] = $parent ? $parent->depth + 1 : 0;
         }
-        
+
         return MenuItem::create($data);
     }
 
@@ -134,7 +134,7 @@ class MenuItemRepository implements MenuItemRepositoryInterface
     public function update(int $id, array $data): MenuItem
     {
         $item = $this->findOrFail($id);
-        
+
         // 親が変更された場合、深さを再計算
         if (isset($data['parent_id']) && $data['parent_id'] !== $item->parent_id) {
             if ($data['parent_id']) {
@@ -144,9 +144,9 @@ class MenuItemRepository implements MenuItemRepositoryInterface
                 $data['depth'] = 0;
             }
         }
-        
+
         $item->update($data);
-        
+
         return $item->fresh();
     }
 
@@ -156,7 +156,31 @@ class MenuItemRepository implements MenuItemRepositoryInterface
     public function delete(int $id): bool
     {
         $item = $this->findOrFail($id);
+
+        // Soft delete. MenuItem uses SoftDeletes; calling forceDelete() here
+        // stepped straight past it, so removing an item from a menu destroyed
+        // the row with no way back.
+        return $item->delete();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function forceDelete(int $id): bool
+    {
+        $item = MenuItem::withTrashed()->findOrFail($id);
+
         return $item->forceDelete();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function restore(int $id): bool
+    {
+        $item = MenuItem::withTrashed()->findOrFail($id);
+
+        return $item->restore();
     }
 
     /**
@@ -165,19 +189,20 @@ class MenuItemRepository implements MenuItemRepositoryInterface
     public function deleteWithDescendants(int $id): bool
     {
         $item = $this->findOrFail($id);
-        
+
         DB::beginTransaction();
         try {
             // すべての子孫を取得して削除
             $descendants = $item->descendants();
             foreach ($descendants as $descendant) {
-                $descendant->forceDelete();
+                $descendant->delete();
             }
-            
+
             // 自身を削除
-            $result = $item->forceDelete();
-            
+            $result = $item->delete();
+
             DB::commit();
+
             return $result;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -196,11 +221,13 @@ class MenuItemRepository implements MenuItemRepositoryInterface
                 MenuItem::where('id', $item['id'])
                     ->update(['display_order' => $item['order']]);
             }
-            
+
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -211,7 +238,7 @@ class MenuItemRepository implements MenuItemRepositoryInterface
     public function moveToParent(int $id, ?int $newParentId): MenuItem
     {
         $item = $this->findOrFail($id);
-        
+
         // 新しい深さを計算
         if ($newParentId) {
             $newParent = $this->find($newParentId);
@@ -219,7 +246,7 @@ class MenuItemRepository implements MenuItemRepositoryInterface
         } else {
             $newDepth = 0;
         }
-        
+
         DB::beginTransaction();
         try {
             // アイテムを移動
@@ -227,11 +254,12 @@ class MenuItemRepository implements MenuItemRepositoryInterface
                 'parent_id' => $newParentId,
                 'depth' => $newDepth,
             ]);
-            
+
             // 子孫の深さも再計算
             $this->recalculateDescendantsDepth($item);
-            
+
             DB::commit();
+
             return $item->fresh();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -245,7 +273,7 @@ class MenuItemRepository implements MenuItemRepositoryInterface
     public function recalculateDepth(int $menuId): void
     {
         $rootItems = $this->getRootItems($menuId);
-        
+
         foreach ($rootItems as $item) {
             $this->recalculateItemDepth($item, 0);
         }
@@ -279,31 +307,25 @@ class MenuItemRepository implements MenuItemRepositoryInterface
 
     /**
      * 階層構造のリレーション文字列を構築
-     *
-     * @param int $depth
-     * @return array
      */
     protected function buildHierarchyRelations(int $depth): array
     {
         $relations = [];
-        
+
         for ($i = 1; $i < $depth; $i++) {
-            $relations[] = str_repeat('children.', $i - 1) . 'children';
+            $relations[] = str_repeat('children.', $i - 1).'children';
         }
-        
+
         return $relations;
     }
 
     /**
      * アイテムとその子孫の深さを再計算
-     *
-     * @param MenuItem $item
-     * @return void
      */
     protected function recalculateDescendantsDepth(MenuItem $item): void
     {
         $children = $item->children;
-        
+
         foreach ($children as $child) {
             $child->update(['depth' => $item->depth + 1]);
             $this->recalculateDescendantsDepth($child);
@@ -312,15 +334,11 @@ class MenuItemRepository implements MenuItemRepositoryInterface
 
     /**
      * アイテムの深さを再帰的に再計算
-     *
-     * @param MenuItem $item
-     * @param int $depth
-     * @return void
      */
     protected function recalculateItemDepth(MenuItem $item, int $depth): void
     {
         $item->update(['depth' => $depth]);
-        
+
         $children = $item->children;
         foreach ($children as $child) {
             $this->recalculateItemDepth($child, $depth + 1);
@@ -329,21 +347,14 @@ class MenuItemRepository implements MenuItemRepositoryInterface
 
     /**
      * メニューのすべてのアイテムを削除
-     *
-     * @param int $menuId
-     * @return bool
      */
     public function deleteByMenuId(int $menuId): bool
     {
-        return MenuItem::where('menu_id', $menuId)->forceDelete() > 0;
+        return MenuItem::where('menu_id', $menuId)->delete() > 0;
     }
 
     /**
      * メニューアイテムを一括同期（既存を削除して新規作成）
-     *
-     * @param int $menuId
-     * @param array $items
-     * @return Collection
      */
     public function syncItems(int $menuId, array $items): Collection
     {
@@ -351,12 +362,12 @@ class MenuItemRepository implements MenuItemRepositoryInterface
         try {
             // 既存のアイテムを削除
             $this->deleteByMenuId($menuId);
-            
+
             // 新しいアイテムを作成
             $createdItems = $this->createItemsRecursively($menuId, $items, null, 0);
-            
+
             DB::commit();
-            
+
             // 階層構造で取得して返す
             return $this->getHierarchy($menuId);
         } catch (\Exception $e) {
@@ -367,25 +378,19 @@ class MenuItemRepository implements MenuItemRepositoryInterface
 
     /**
      * メニューアイテムを再帰的に作成
-     *
-     * @param int $menuId
-     * @param array $items
-     * @param int|null $parentId
-     * @param int $depth
-     * @return array
      */
     protected function createItemsRecursively(int $menuId, array $items, ?int $parentId, int $depth): array
     {
         $created = [];
         $order = 0;
-        
+
         foreach ($items as $itemData) {
             // 空のラベルはスキップ
             $label = $itemData['label'] ?? $itemData['title'] ?? '';
             if (empty($label)) {
                 continue;
             }
-            
+
             $item = MenuItem::create([
                 'menu_id' => $menuId,
                 'parent_id' => $parentId,
@@ -401,15 +406,15 @@ class MenuItemRepository implements MenuItemRepositoryInterface
                 'is_active' => true,
                 'is_visible' => true,
             ]);
-            
+
             $created[] = $item;
-            
+
             // 子アイテムがある場合は再帰的に作成
-            if (!empty($itemData['children']) && is_array($itemData['children'])) {
+            if (! empty($itemData['children']) && is_array($itemData['children'])) {
                 $this->createItemsRecursively($menuId, $itemData['children'], $item->id, $depth + 1);
             }
         }
-        
+
         return $created;
     }
 }
