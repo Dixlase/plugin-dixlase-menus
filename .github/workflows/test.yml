@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout plugin
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: plugin
 
@@ -33,7 +33,7 @@ jobs:
       # build yet.
       - name: Setup Node.js (for frontend build verification)
         if: hashFiles('plugin/package.json') != ''
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '20'
 
@@ -45,7 +45,7 @@ jobs:
           npm run build
 
       - name: Checkout core
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: Dixlase/dixlase-core
           ref: main
@@ -69,7 +69,7 @@ jobs:
           mv plugin core/plugins/DixlaseMenus
 
       - name: Cache composer dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: core/vendor
           key: ${{ runner.os }}-php83-composer-${{ hashFiles('core/composer.lock') }}
