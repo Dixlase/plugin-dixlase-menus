@@ -134,11 +134,13 @@ class Menu extends Model
      * DixlaseMultilingual translation editor (duck-typed; see that
      * plugin's DixlaseMultilingualAdminTranslationsController::resolveFields).
      *
-     * A menu's translatable content is the label of each of its items,
-     * so this returns one field per menu item -- name keyed by item id
-     * (item_<id>), label/source set to the item's primary-locale title,
-     * and depth carrying the tree level so the editor can render the
-     * parent / child / grandchild hierarchy with indentation.
+     * The first field is the menu container's own display name (keyed
+     * 'name'); it feeds the drawer / sheet header that themes render
+     * via MenuDTO->name. Everything below it is one field per menu
+     * item -- name keyed item_<id>, label/source set to the item's
+     * primary-locale title, and depth carrying the tree level so the
+     * editor can render the parent / child / grandchild hierarchy
+     * with indentation.
      *
      * The list reflects the menu's CURRENT items every time it is
      * called: items added after a translation was first written show up
@@ -158,10 +160,57 @@ class Menu extends Model
             $childrenOf[$item->parent_id ?? 0][] = $item;
         }
 
-        $definitions = [];
+        $primaryName = (string) $this->getRawOriginal('name');
+
+        $definitions = [
+            [
+                'name' => 'name',
+                'label' => $primaryName,
+                'source' => $primaryName,
+                'type' => 'text',
+                'rules' => 'nullable|string|max:255',
+                'depth' => 0,
+            ],
+        ];
+
         $this->appendItemFieldDefinitions($childrenOf, 0, 0, $definitions);
 
         return $definitions;
+    }
+
+    /**
+     * Get the menu container's display name resolved for the given
+     * locale.
+     *
+     * The translatable entity is this Menu, and the container name
+     * lives in the same central translation row as the item labels,
+     * keyed 'name' (item_<id> keys sit alongside it -- see
+     * translatableFieldDefinitions()). Falls back to this menu's
+     * primary `name` column when the requested locale has no
+     * translation, when the multilingual resolver is not bound (plugin
+     * absent / disabled), or when the resolver returns an empty
+     * string. We deliberately do not let the resolver walk to
+     * app.fallback_locale: in multilingual sites that config value is
+     * the operator's *content* fallback (often JA), and walking there
+     * would make an English request return Japanese text for the
+     * drawer header.
+     */
+    public function getLocalizedName(?string $locale = null): string
+    {
+        $primary = (string) $this->getRawOriginal('name');
+
+        $locale ??= app()->getLocale();
+
+        if (app()->bound(\App\Contracts\TranslationResolver::class)) {
+            $resolver = app(\App\Contracts\TranslationResolver::class);
+            $value = $resolver->resolve($this, 'name', $locale);
+
+            if (is_string($value) && $value !== '') {
+                return $value;
+            }
+        }
+
+        return $primary;
     }
 
     /**
