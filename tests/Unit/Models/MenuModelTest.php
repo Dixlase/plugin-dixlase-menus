@@ -194,4 +194,91 @@ class MenuModelTest extends TestCase
 
         $this->assertEquals(2, $menu->items_count);
     }
+
+    // =========================================================================
+    // 多言語対応: メニューコンテナ名の翻訳
+    // =========================================================================
+
+    /**
+     * The container's display name is translatable alongside the item
+     * labels. When the DixlaseMultilingual resolver is not bound --
+     * this plugin's isolated test suite, or any site without the
+     * multilingual plugin -- there is no translation source and the
+     * primary `name` column is the correct answer for every locale.
+     * Regression guard for the mobile drawer header, which used to
+     * render `$menu->name` raw and showed the Japanese primary name
+     * even on English requests.
+     */
+    public function test_get_localized_name_falls_back_to_primary_when_no_resolver(): void
+    {
+        $this->app->forgetInstance(\App\Contracts\TranslationResolver::class);
+
+        $menu = $this->createMenu(['name' => 'メインメニュー']);
+
+        $this->assertSame('メインメニュー', $menu->getLocalizedName('en'));
+        $this->assertSame('メインメニュー', $menu->getLocalizedName('ja'));
+    }
+
+    /**
+     * With a resolver bound, getLocalizedName() returns the value the
+     * resolver yields for the `name` field on this menu -- keyed
+     * alongside the item_<id> fields on the same central translation
+     * row. Locales with no translation still fall back to the primary
+     * `name` column.
+     */
+    public function test_get_localized_name_reads_translation_via_resolver(): void
+    {
+        $menu = $this->createMenu(['name' => 'メインメニュー']);
+
+        $this->bindResolver([
+            'name' => ['en' => 'Main Menu'],
+        ]);
+
+        $this->assertSame('Main Menu', $menu->getLocalizedName('en'));
+        $this->assertSame('メインメニュー', $menu->getLocalizedName('ja'));
+    }
+
+    /**
+     * Bind a stand-in TranslationResolver that serves a fixed
+     * field => locale => value map, mimicking how DixlaseMultilingual's
+     * resolver reads the menu's central translation row.
+     *
+     * @param  array<string, array<string, string>>  $map
+     */
+    private function bindResolver(array $map): void
+    {
+        $resolver = new class($map) implements \App\Contracts\TranslationResolver
+        {
+            /** @param array<string, array<string, string>> $map */
+            public function __construct(private array $map) {}
+
+            public function resolve(\Illuminate\Database\Eloquent\Model $model, string $field, string $locale): mixed
+            {
+                return $this->map[$field][$locale] ?? null;
+            }
+
+            public function store(\Illuminate\Database\Eloquent\Model $model, string $field, mixed $value, string $locale): void {}
+
+            public function all(\Illuminate\Database\Eloquent\Model $model, string $field): array
+            {
+                return [];
+            }
+
+            public function exists(\Illuminate\Database\Eloquent\Model $model, string $field, string $locale): bool
+            {
+                return isset($this->map[$field][$locale]);
+            }
+
+            public function delete(\Illuminate\Database\Eloquent\Model $model, string $field, ?string $locale = null): void {}
+
+            public function getAvailableLocales(\Illuminate\Database\Eloquent\Model $model): array
+            {
+                return [];
+            }
+
+            public function copy(\Illuminate\Database\Eloquent\Model $source, \Illuminate\Database\Eloquent\Model $target, ?array $fields = null, ?array $locales = null): void {}
+        };
+
+        $this->app->instance(\App\Contracts\TranslationResolver::class, $resolver);
+    }
 }
