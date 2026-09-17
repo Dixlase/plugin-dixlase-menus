@@ -130,10 +130,35 @@ class DixlaseMenusMenuProvider implements MenuProviderInterface
 
         return new MenuDTO(
             id: $menu->id,
-            name: $menu->name,
+            name: $this->resolveName($menu),
             slug: $menu->slug,
             items: $items,
         );
+    }
+
+    /**
+     * Resolve the visible display name for a menu container, gated on
+     * whether the DixlaseMultilingual plugin's URL routing toggle is on.
+     * Mirrors resolveLabel() below, but for the container's own name
+     * (drives the sheet / drawer header themes render via MenuDTO->name).
+     *
+     * - Multilingual on  -> use getLocalizedName(), which reads
+     *   app()->getLocale() and looks up the 'name' field on this menu's
+     *   central translation row, falling back to the raw name column.
+     * - Multilingual off (or plugin missing) -> return the raw name
+     *   verbatim so per-locale translations are not consulted at all.
+     */
+    private function resolveName(Menu $menu): string
+    {
+        $name = (string) $menu->name;
+
+        if (! $this->isMultilingualEnabled()) {
+            return $name;
+        }
+
+        return method_exists($menu, 'getLocalizedName')
+            ? (string) $menu->getLocalizedName()
+            : $name;
     }
 
     /**
