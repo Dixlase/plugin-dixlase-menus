@@ -128,6 +128,8 @@
     "files": {
         ".backlog/SPINOFF-extension-prebuilt-assets-release.ja.md": "sha256:c5b79561e4d94b9909ac2c2d609620b939b632bc65a085ccafbcdb2c278f4ed8",
         ".backlog/SPINOFF-extension-prebuilt-assets-release.md": "sha256:cb389be98e08fc5839d05e147d3cf1fbe921163de078f577ca8fad5ed2974831",
+        "CHANGELOG.ja.md": "sha256:c95c5db053cde0cd469a3be90f281d144e804afac6083174215823a94a2f2d76",
+        "CHANGELOG.md": "sha256:14884e2c5ee9803a19d9f9d247311ee7b85d5cf72fb5b7d808843daef1c20c48",
         "CONTRIBUTING.ja.md": "sha256:6523a70c6ff304460208bdb8104bad22901f537b9a9998bece9c1ce113df5230",
         "CONTRIBUTING.md": "sha256:134b1bb20c74d653eb7356f309be33024993f7a74a9583bbbfc1eb4116e51003",
         "COPYRIGHT-POLICY.ja.md": "sha256:673949ebddd61d66818bde91f8f79abf5ee8aa7f24d204b9bf99d7511cba31ae",
@@ -155,7 +157,7 @@
         "app/Http/Requests/AdminMenuItemUpdateRequest.php": "sha256:1f4b2a25e12d98db6ceae1459942c0eaeb5a126d577905c33df4f9bc37a9a518",
         "app/Http/Requests/AdminMenuStoreRequest.php": "sha256:9b6c352a183d6b2525e4f16f99f19764d4378b0d5cacde6a521725cc69e06db0",
         "app/Http/Requests/AdminMenuUpdateRequest.php": "sha256:8589f8ac014ca154a01c2dab95a7e79c5a899915eb0f55d6fd67bdd8199b1645",
-        "app/Models/Menu.php": "sha256:b1c5094aef69d086a0bca511c23bd5262f3fe747ec16ca0eb04bda467e6a6b74",
+        "app/Models/Menu.php": "sha256:04c16693e0645eabbc00f2fcd8738b48e0686e4aa9f6d19f47c1b1dbf57928c3",
         "app/Models/MenuItem.php": "sha256:4d59703dc753af9ae42e1d2287a7dfb79a500429d496e2675d6a0fae786f0826",
         "app/Models/MenuSetting.php": "sha256:c2ceb253194dd63eb967be54b0ea95aaddede1b3066320a9ee96e58b8a36dbda",
         "app/Observers/MenuItemObserver.php": "sha256:18387ee05a95184a933dfe0477c6dac3e4977059e4431a36b23cedbbdc7558c7",
@@ -164,13 +166,13 @@
         "app/Repositories/MenuItemRepository.php": "sha256:ca65e1768ba632f0d5a4c440df4ab3c764a628cb22596ed411fdafbf7220a33e",
         "app/Repositories/MenuRepository.php": "sha256:43f9886eef1af1666df5fd2becac2134be50e3172f83aba8dcfc04aeba5c1764",
         "app/Repositories/MenuSettingRepository.php": "sha256:c75908b7af214b1ea5ec504a79c59d85b77a30ccda7c2796c386688a169c0eb5",
-        "app/Services/DixlaseMenusMenuProvider.php": "sha256:f1a1ad407bcf238b8232ece24963a501de530259285c540310a445220534046b",
+        "app/Services/DixlaseMenusMenuProvider.php": "sha256:1315a2c7914601956ce7f28e2935adaf0fae4d72d1bcda4d394f3f24f41b9098",
         "app/Services/MenuLinkSourceManager.php": "sha256:9e70369ea45d6413073fba80d8d7281bffe62bbae6b0d1c0dda9aefc4537a059",
         "app/Services/MenuLinkSources/CustomUrlSource.php": "sha256:db8a11fd9f1f70a57ab40fefbc654151eee41ac73d1c2071236df8d67055d4d7",
         "app/Services/MenuLinkSources/LinkableProviderAdapter.php": "sha256:ff7ba88ff332aaeb0e7096beb957367da0e297182b4cfb449668614bea504836",
         "app/Services/MenuService.php": "sha256:0fa3fee7a279b5668bd7b7555bef017a909e87e4fb98daf4093cc81e99150da7",
         "app/Shortcodes/MenuShortcode.php": "sha256:a16240cf2b092d05ee69eeb48dd508a40ccadd24b660c1bfd461a2730e22e3b9",
-        "composer.json": "sha256:6d90b1e19fb9e18ce23aecc0c1f842617afa05800235b77bd2e87abed1cfb8ee",
+        "composer.json": "sha256:32d630f49674b28bd99919f63732730ecd97e5b1218a9dc9db04884180b2175a",
         "config/admin.php": "sha256:1958ae819e58415ed78b1746a3da516f612ecec7f6f54912b3aa32eda7f5d194",
         "config/admin/navigation.php": "sha256:d4505ced6e3c7588ac24eac3f31dba047b6cb6b4abb0a0ef7c18acf47a77ff70",
         "config/admin/roles.php": "sha256:11f82ba6a76f57fb6f1f7234f9068cc1673aa62ce8e8c9eae21dec84b50b86b5",
@@ -181,6 +183,7 @@
         "database/seeders/DatabaseSeeder.php": "sha256:16b96663aa766dd8b45b82352c7753399ab40cc279f5f8cd013342587edd3ef0",
         "database/seeders/MenuSettingsSeeder.php": "sha256:286913e54aec5c5be0679c7ebbebbe1684e4631dfd27e03af2ba7aacf830852f",
         "database/seeders/SampleMenuSeeder.php": "sha256:ebe01c65c01eb8ea14c3c02be57e73f4b353f4d77422cd2ce1471e2608e1b3b4",
+        "docs/admin-usage.md": "sha256:a7dde66dab4de2f7bf6451e080b74c715157bde8bc23ccc3c7f17949a449c2ca",
         "docs/plugin-integration-guide.md": "sha256:cba404f20f6b18cc0388a2a427286afa07d2867efa0615a0f59e5abd8b607d52",
         "helpers.php": "sha256:e2188a05416341ea5e04ed4534085b3f8aa7fffb32dcbf36a922f3a28fee7472",
         "lang/en/admin.php": "sha256:168d6fac5d0a4b05ce33cc9628ef7f593b4d56897d3c2537cc553cfd895dc5bc",
@@ -230,16 +233,16 @@
         "tests/Unit/ExampleTest.php": "sha256:34938b4d96a5b438ec51f792f6b8b8d933774bfcb48b567a2a6d4a13e4046e0f",
         "tests/Unit/MenuUrlSchemeGuardTest.php": "sha256:3154a9465c150b42b0a99d6cc800d3db5b4396d357f98e39c2d2c15ff997e377",
         "tests/Unit/Models/MenuItemModelTest.php": "sha256:6170640a31cdd9b86af13b7a2a1438578a335ddb9fbc5f637a142ef3a166085e",
-        "tests/Unit/Models/MenuModelTest.php": "sha256:062a25d31a42d9f84a7b6a720f3fc737977ee39455f6aac258030f49280e388a",
+        "tests/Unit/Models/MenuModelTest.php": "sha256:f5c468807c4a6a63867000ac0594eebb9654a14315ac97460b2ce718a149e4ad",
         "tests/Unit/Models/MenuSettingModelTest.php": "sha256:7cfa31bef9a7d33b4e3cecc0cae57cf7c95b88cad2925f6d067501a571d51555",
         "tests/Unit/Services/LinkableProviderAdapterTest.php": "sha256:d6fd6f11481e6bb8f11fa4eeb50aa3d539ac66f9b72a616ec39c89cca3e50288",
         "tests/Unit/VersionManifestConsistencyTest.php": "sha256:e887c59bc9a1ab61ba459616eaee96229f5e683fb5779b1f3e8b258beef692df",
-        "thumbnail.png": "sha256:b326701006d5862091fc76cfcccb3b05ee6265c50ac64ebed0ca775a3a548c7d",
-        "vite.config.js": "sha256:13bc72c34286ba3f72bae93725db1a4a8c23690a72b9c1e85faf3ba7b03e71d1"
+        "thumbnail.png": "sha256:e40090a6fe1add769ae7154f8da1f30b55f09ed09379448fa5617573153b09d6",
+        "vite.config.js": "sha256:8dba36d2d57078e2ec2454d4df71c9f11650af396d59633896ceedaa8571f2ec"
     },
     "signing": {
         "algo": "ed25519",
         "key_id": "dixlase-authority-2026",
-        "signed_at": "2026-09-15T13:06:27+00:00"
+        "signed_at": "2026-09-25T16:23:33+00:00"
     }
 }
