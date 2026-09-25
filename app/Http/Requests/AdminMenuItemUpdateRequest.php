@@ -33,6 +33,7 @@
 namespace Plugins\DixlaseMenus\App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Plugins\DixlaseMenus\App\Support\MenuUrlPolicy;
 
 /**
  * メニューアイテム更新リクエスト
@@ -61,7 +62,8 @@ class AdminMenuItemUpdateRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'source_type' => ['required', 'string', 'max:50'],
             'source_id' => ['nullable', 'string', 'max:255'],
-            'url' => ['nullable', 'string', 'max:2048'],
+            // Same scheme allowlist as the /sync path (MenuUrlPolicy).
+            'url' => ['nullable', 'string', 'max:2048', MenuUrlPolicy::rule()],
             'target' => ['nullable', 'string', 'in:_self,_blank,_parent,_top'],
             'css_class' => ['nullable', 'string', 'max:255'],
             'icon_class' => ['nullable', 'string', 'max:255'],

@@ -115,4 +115,39 @@ class MenuUrlSchemeGuardTest extends TestCase
     {
         $this->assertSame('   ', $this->guard('   '));
     }
+
+    /**
+     * The classic item form (items.store / items.update) goes through Form
+     * Requests, not /sync, and validated the URL only as a string -- so a
+     * `javascript:` URL saved through it was rendered into every page.
+     *
+     * @return array<string, array{0: class-string}>
+     */
+    public static function itemFormRequests(): array
+    {
+        return [
+            'store' => [\Plugins\DixlaseMenus\App\Http\Requests\AdminMenuItemStoreRequest::class],
+            'update' => [\Plugins\DixlaseMenus\App\Http\Requests\AdminMenuItemUpdateRequest::class],
+        ];
+    }
+
+    #[DataProvider('itemFormRequests')]
+    public function test_the_item_form_requests_refuse_dangerous_urls(string $requestClass): void
+    {
+        $rule = (new $requestClass())->rules()['url'];
+
+        foreach (self::dangerousUrls() as $label => [$url]) {
+            $this->assertTrue(
+                \Illuminate\Support\Facades\Validator::make(['url' => $url], ['url' => $rule])->fails(),
+                "{$requestClass} accepted {$label}: {$url}"
+            );
+        }
+
+        foreach (self::legitimateUrls() as [$url]) {
+            $this->assertFalse(
+                \Illuminate\Support\Facades\Validator::make(['url' => $url], ['url' => $rule])->fails(),
+                "{$requestClass} rejected an ordinary link: {$url}"
+            );
+        }
+    }
 }
