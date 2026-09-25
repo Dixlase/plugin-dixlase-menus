@@ -172,7 +172,7 @@
         "app/Services/MenuLinkSources/LinkableProviderAdapter.php": "sha256:ff7ba88ff332aaeb0e7096beb957367da0e297182b4cfb449668614bea504836",
         "app/Services/MenuService.php": "sha256:0fa3fee7a279b5668bd7b7555bef017a909e87e4fb98daf4093cc81e99150da7",
         "app/Shortcodes/MenuShortcode.php": "sha256:a16240cf2b092d05ee69eeb48dd508a40ccadd24b660c1bfd461a2730e22e3b9",
-        "composer.json": "sha256:32d630f49674b28bd99919f63732730ecd97e5b1218a9dc9db04884180b2175a",
+        "composer.json": "sha256:82fe60cf224168aad72fa163d84a38d231704d98cb045df0a3afc159f5cc3a85",
         "config/admin.php": "sha256:1958ae819e58415ed78b1746a3da516f612ecec7f6f54912b3aa32eda7f5d194",
         "config/admin/navigation.php": "sha256:d4505ced6e3c7588ac24eac3f31dba047b6cb6b4abb0a0ef7c18acf47a77ff70",
         "config/admin/roles.php": "sha256:11f82ba6a76f57fb6f1f7234f9068cc1673aa62ce8e8c9eae21dec84b50b86b5",
@@ -243,6 +243,6 @@
     "signing": {
         "algo": "ed25519",
         "key_id": "dixlase-authority-2026",
-        "signed_at": "2026-09-25T16:23:33+00:00"
+        "signed_at": "2026-09-25T16:55:31+00:00"
     }
 }
