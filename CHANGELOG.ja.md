@@ -13,7 +13,6 @@ Dixlase Menus プラグインの主要な変更はすべてこのファイルに
 - 管理 UI によるメニュー管理 — ナビゲーションメニューの構築と並べ替え。
 - メニュー項目は、コアの `Linkable` プロバイダ機構を介して、登録済みの任意の
   リンクソース（ページ、法的ページ、カスタム URL）へリンク可能。
-- 多言語メニューコンテンツ（`multilingual-content` capability）。
 - 他のプラグイン・テーマが利用できるよう、`MenuRepositoryInterface`、
   `MenuItemRepositoryInterface`、`MenuSettingRepositoryInterface`、
   `MenuLinkSource` の各契約を公開。
