@@ -2,7 +2,7 @@
     "name": "Dixlase Menus",
     "package_name": "dixlase/dixlase-menus",
     "slug": "dixlase-menus",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": {
         "ja": "メニュー管理機能を提供するプラグインです。",
         "en": "This plugin provides menu management functionality."
@@ -128,8 +128,8 @@
     "files": {
         ".backlog/SPINOFF-extension-prebuilt-assets-release.ja.md": "sha256:c5b79561e4d94b9909ac2c2d609620b939b632bc65a085ccafbcdb2c278f4ed8",
         ".backlog/SPINOFF-extension-prebuilt-assets-release.md": "sha256:cb389be98e08fc5839d05e147d3cf1fbe921163de078f577ca8fad5ed2974831",
-        "CHANGELOG.ja.md": "sha256:ca347874516ddcc11d397ff8cbaac56e8f5fa9f1148feef9f6fb5915c5415333",
-        "CHANGELOG.md": "sha256:6acb6d807cbcf4034838b09bcd848053705af636a102ac8638d8cd795bd81c1c",
+        "CHANGELOG.ja.md": "sha256:08815dd84aabe087715b33d9bfcede15c813c8fb06dfe22eb3835672a42460e9",
+        "CHANGELOG.md": "sha256:2edfb4ebb008e0b3a5058f4bcd0380c247a38502ec4ac8097528c12983f5391a",
         "CONTRIBUTING.ja.md": "sha256:874ac0b697c244f5e84489e66eed21b6d665efb64914d2f78323142550d56111",
         "CONTRIBUTING.md": "sha256:ba9d6db2053d0a662405c1ec03c5e0b24b5bbd2614e4d3d15bb4a8c252c1ac44",
         "COPYRIGHT-POLICY.ja.md": "sha256:673949ebddd61d66818bde91f8f79abf5ee8aa7f24d204b9bf99d7511cba31ae",
@@ -173,7 +173,7 @@
         "app/Services/MenuService.php": "sha256:7753a4ec121b62d5bfd4a22f85dd23ccd3a432c960b1e40c1e80778574d601ee",
         "app/Shortcodes/MenuShortcode.php": "sha256:a16240cf2b092d05ee69eeb48dd508a40ccadd24b660c1bfd461a2730e22e3b9",
         "app/Support/MenuUrlPolicy.php": "sha256:516581d506748286bc78a1b923b5f1c98ed1d4ff5a42503afe10687ba7cd6005",
-        "composer.json": "sha256:82fe60cf224168aad72fa163d84a38d231704d98cb045df0a3afc159f5cc3a85",
+        "composer.json": "sha256:3b33950503b5408be22623a777fef2b4ee9d18b070af978e7baa65374e8ab8e6",
         "config/admin.php": "sha256:4a7dc923d42ee4c5f64424a82ef106f4ff59b65536e96271bd8d723c0a475bfb",
         "config/admin/navigation.php": "sha256:d4505ced6e3c7588ac24eac3f31dba047b6cb6b4abb0a0ef7c18acf47a77ff70",
         "config/admin/roles.php": "sha256:11f82ba6a76f57fb6f1f7234f9068cc1673aa62ce8e8c9eae21dec84b50b86b5",
@@ -201,7 +201,7 @@
         "lang/ja/validation.php": "sha256:afc4368bd9017456d9018a050df4dbb73da2ea740778d3bbeb2fba8c7d8a3e2d",
         "license-info.json": "sha256:d1531925718ed803242eea97f91c513cb02d00f683a353ad1d346f0c0ce0cec9",
         "package-lock.json": "sha256:3958a64b5af0f371f034fb65209b4c15f02e88a8b5d4c209dbbeb36a40d4a01e",
-        "package.json": "sha256:497f313f8f6c955ffe3ecab07c8de6353bccc624fc505d0e9b186ca39f114266",
+        "package.json": "sha256:6d9777e58d6db01c076098188187aa9f307b888f791b24eb6bad0442adce6cde",
         "phpunit.xml": "sha256:f225108082235b198d7ec40fdf64701e51394d34678217d19d8ea37445e093ae",
         "resources/src/admin/js/app.js": "sha256:f4bce7d4b25a5a7289b3c266e5693aa5b8e7db4ee98448d26ae24913b9b27372",
         "resources/src/admin/js/data/fa-free-icons.json": "sha256:e2c7751799591820f626f38f9473537c85430741bd3ec6ddf3c5d378d4d3524c",
@@ -244,6 +244,6 @@
     "signing": {
         "algo": "ed25519",
         "key_id": "dixlase-authority-2026",
-        "signed_at": "2026-09-26T16:54:02+00:00"
+        "signed_at": "2026-09-26T17:28:42+00:00"
     }
 }
