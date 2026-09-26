@@ -31,5 +31,14 @@
  */
 
 return [
-    // 注: ナビゲーション設定は config/admin/navigation.php に記載
+    // Route name for the plugin's admin entry.
+    //
+    // AdminPluginsSettingsController::getPluginSettingsUrl() reads this
+    // key to decide whether to render the "Settings" button on the
+    // installed-plugin card. The plugin is a management tool rather
+    // than a settings screen per se, so the button lands on the menu
+    // list — the primary place operators start from.
+    'settings_route' => 'dixlase-menus::admin.menus.index',
+
+    // Note: navigation settings live in config/admin/navigation.php.
 ];
