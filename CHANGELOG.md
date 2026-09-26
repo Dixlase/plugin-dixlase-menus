@@ -13,7 +13,6 @@ Initial release. Requires Dixlase `^0.1.0` (Plugin API `^0.1`), PHP `>= 8.3`.
 - Menu management with an admin UI — build and order navigation menus.
 - Menu items can link to any registered link source (pages, legal pages, custom
   URLs) via the core `Linkable` provider mechanism.
-- Multilingual menu content (`multilingual-content` capability).
 - Publishes the `MenuRepositoryInterface`, `MenuItemRepositoryInterface`,
   `MenuSettingRepositoryInterface`, and `MenuLinkSource` contracts for other
   plugins and themes to consume.
