@@ -39,6 +39,7 @@ use Illuminate\Validation\ValidationException;
 use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuItemRepositoryInterface;
 use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuRepositoryInterface;
 use Plugins\DixlaseMenus\App\Models\Menu;
+use Plugins\DixlaseMenus\App\Support\MenuUrlPolicy;
 use Plugins\DixlaseMenus\App\Models\MenuItem;
 
 /**
@@ -131,10 +132,11 @@ class MenuService
      * was never called from anywhere and would not have helped: it delegates
      * to FILTER_VALIDATE_URL, which accepts `javascript://%0aalert(1)`.
      *
-     * This sits in saveItem() rather than the Form Requests because the menu
-     * editor saves through /sync, which takes raw request input and never
-     * constructs a Form Request at all -- validation added there would guard
-     * the paths that were already fine and miss the one that matters.
+     * The menu editor saves through /sync, which takes raw request input and
+     * never constructs a Form Request, so the check has to live here. The
+     * item store / update routes do go through Form Requests, and those apply
+     * the same MenuUrlPolicy -- they were not guarded before, which let a
+     * `javascript:` URL in through the classic item form.
      *
      * @throws ValidationException
      */
@@ -144,34 +146,13 @@ class MenuService
             return $url;
         }
 
-        $trimmed = trim($url);
-
-        // Browsers ignore control characters and whitespace inside a scheme, so
-        // `java\tscript:` and `java\nscript:` navigate exactly like
-        // `javascript:`. Strip them before looking for the colon, or the check
-        // reads a scheme the browser will never see.
-        $forSchemeCheck = preg_replace('/[\x00-\x20]/', '', $trimmed) ?? '';
-
-        // `//evil.com` carries no scheme but is not a site-relative path: it
-        // inherits the page's scheme and sends the visitor to another origin.
-        if (str_starts_with($forSchemeCheck, '//')) {
+        if (! MenuUrlPolicy::isAllowed($url)) {
             throw ValidationException::withMessages([
                 'url' => __('dixlase-menus::validation.menu_url_scheme_not_allowed'),
             ]);
         }
 
-        if (preg_match('/^([A-Za-z][A-Za-z0-9+.\-]*):/', $forSchemeCheck, $matches) !== 1) {
-            // No scheme at all: a relative path, query or fragment. Safe.
-            return $trimmed;
-        }
-
-        if (! in_array(strtolower($matches[1]), ['http', 'https', 'mailto', 'tel'], true)) {
-            throw ValidationException::withMessages([
-                'url' => __('dixlase-menus::validation.menu_url_scheme_not_allowed'),
-            ]);
-        }
-
-        return $trimmed;
+        return trim($url);
     }
 
     /**
