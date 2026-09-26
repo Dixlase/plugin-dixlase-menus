@@ -128,8 +128,8 @@
     "files": {
         ".backlog/SPINOFF-extension-prebuilt-assets-release.ja.md": "sha256:c5b79561e4d94b9909ac2c2d609620b939b632bc65a085ccafbcdb2c278f4ed8",
         ".backlog/SPINOFF-extension-prebuilt-assets-release.md": "sha256:cb389be98e08fc5839d05e147d3cf1fbe921163de078f577ca8fad5ed2974831",
-        "CHANGELOG.ja.md": "sha256:32b3dc44c24a4bf42ed2098cb2dfc5517fb3737973cdb93cb6a909b3284e08c4",
-        "CHANGELOG.md": "sha256:6ebde479db227662a0b6ab10f922234561a0b59f9c0fce4cf33ab928cd7fafa4",
+        "CHANGELOG.ja.md": "sha256:ca347874516ddcc11d397ff8cbaac56e8f5fa9f1148feef9f6fb5915c5415333",
+        "CHANGELOG.md": "sha256:6acb6d807cbcf4034838b09bcd848053705af636a102ac8638d8cd795bd81c1c",
         "CONTRIBUTING.ja.md": "sha256:874ac0b697c244f5e84489e66eed21b6d665efb64914d2f78323142550d56111",
         "CONTRIBUTING.md": "sha256:ba9d6db2053d0a662405c1ec03c5e0b24b5bbd2614e4d3d15bb4a8c252c1ac44",
         "COPYRIGHT-POLICY.ja.md": "sha256:673949ebddd61d66818bde91f8f79abf5ee8aa7f24d204b9bf99d7511cba31ae",
@@ -184,7 +184,7 @@
         "database/seeders/DatabaseSeeder.php": "sha256:16b96663aa766dd8b45b82352c7753399ab40cc279f5f8cd013342587edd3ef0",
         "database/seeders/MenuSettingsSeeder.php": "sha256:286913e54aec5c5be0679c7ebbebbe1684e4631dfd27e03af2ba7aacf830852f",
         "database/seeders/SampleMenuSeeder.php": "sha256:ebe01c65c01eb8ea14c3c02be57e73f4b353f4d77422cd2ce1471e2608e1b3b4",
-        "docs/admin-usage.md": "sha256:a7dde66dab4de2f7bf6451e080b74c715157bde8bc23ccc3c7f17949a449c2ca",
+        "docs/admin-usage.md": "sha256:71c4938a0ae36988d132a2825fb75e354c6c7d90f3533dd62b1c263d5490a541",
         "docs/plugin-integration-guide.md": "sha256:cba404f20f6b18cc0388a2a427286afa07d2867efa0615a0f59e5abd8b607d52",
         "helpers.php": "sha256:e2188a05416341ea5e04ed4534085b3f8aa7fffb32dcbf36a922f3a28fee7472",
         "lang/en/admin.php": "sha256:168d6fac5d0a4b05ce33cc9628ef7f593b4d56897d3c2537cc553cfd895dc5bc",
@@ -244,6 +244,6 @@
     "signing": {
         "algo": "ed25519",
         "key_id": "dixlase-authority-2026",
-        "signed_at": "2026-09-26T03:03:42+00:00"
+        "signed_at": "2026-09-26T07:26:32+00:00"
     }
 }
