@@ -68,18 +68,13 @@ jobs:
           rsync -a \
             --exclude='.git/' \
             --exclude='.github/' \
-            --exclude='.backlog/' \
             --exclude='node_modules/' \
-            --exclude='tests/' \
             --exclude='.vscode/' \
             --exclude='.idea/' \
             --exclude='.zed/' \
             --exclude='.fleet/' \
             --exclude='.nova/' \
             --exclude='.editorconfig' \
-            --exclude='.gitignore' \
-            --exclude='phpunit.xml' \
-            --exclude='package-lock.json' \
             ./ "${STAGING}/DixlaseMenus/"
 
           # `resources/assets/` is gitignored, so `rsync -a ./` above
@@ -92,8 +87,11 @@ jobs:
             exit 1
           fi
 
-          cd /tmp
-          zip -r "${NAME}.zip" "${NAME}" > /dev/null
+          # Zip the plugin directory itself, not the staging parent: the
+          # updater strips exactly one wrapper level, so an extra one would
+          # land the tree at plugins/DixlaseMenus/DixlaseMenus/.
+          cd "${STAGING}"
+          zip -r "/tmp/${NAME}.zip" DixlaseMenus > /dev/null
           echo "zip_path=/tmp/${NAME}.zip" >> "$GITHUB_OUTPUT"
           echo "zip_name=${NAME}.zip" >> "$GITHUB_OUTPUT"
 
