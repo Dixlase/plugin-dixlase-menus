@@ -238,12 +238,12 @@
         "tests/Unit/Models/MenuSettingModelTest.php": "sha256:7cfa31bef9a7d33b4e3cecc0cae57cf7c95b88cad2925f6d067501a571d51555",
         "tests/Unit/Services/LinkableProviderAdapterTest.php": "sha256:d6fd6f11481e6bb8f11fa4eeb50aa3d539ac66f9b72a616ec39c89cca3e50288",
         "tests/Unit/VersionManifestConsistencyTest.php": "sha256:e887c59bc9a1ab61ba459616eaee96229f5e683fb5779b1f3e8b258beef692df",
-        "thumbnail.png": "sha256:e40090a6fe1add769ae7154f8da1f30b55f09ed09379448fa5617573153b09d6",
+        "thumbnail.png": "sha256:6809cd4292623f13ada132c609b02141d2e38d11432767efe588c28db2accdf0",
         "vite.config.js": "sha256:e67f6eae742ea888330a62cb04b21e77fc5558380bba8a2409bfaa58fa12d33e"
     },
     "signing": {
         "algo": "ed25519",
         "key_id": "dixlase-authority-2026",
-        "signed_at": "2026-09-26T16:54:02+00:00"
+        "signed_at": "2026-09-27T09:46:35+00:00"
     }
 }
