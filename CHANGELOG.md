@@ -5,6 +5,17 @@ All notable changes to the Dixlase Menus plugin are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this plugin follows Semantic Versioning.
 
+## [0.1.2] — 2026-10-12
+
+### Development
+
+- The built front-end assets (`resources/assets/`) are no longer tracked in git (#33,
+  fixes #32). Run `npm run build` in a local checkout; deployments and the release ZIP
+  build the assets as before. The assets were never part of the signature.
+- The test workflow no longer sets the unused `COMPOSER_AUTH` value (#35, fixes #34), and
+  checks out core with its default token instead of `CORE_REPO_TOKEN`, so Dependabot pull
+  requests can run their tests (#36, fixes Dixlase/dixlase-core#505).
+
 ## [0.1.1] — 2026-10-01
 
 ### Changed
