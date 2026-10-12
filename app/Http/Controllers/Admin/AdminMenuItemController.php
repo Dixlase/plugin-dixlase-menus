@@ -86,8 +86,8 @@ class AdminMenuItemController extends Controller
         
         // リンクソースを取得（ラベル付き配列）
         $linkSources = [];
-        foreach ($this->linkSourceManager->all() as $key => $source) {
-            $linkSources[$key] = $source->getLabel();
+        foreach ($this->linkSourceManager->getAvailableSources() as $key => $source) {
+            $linkSources[$key] = $source->getSourceLabel();
         }
 
         $this->viewParams['menu'] = $menu;
@@ -148,8 +148,8 @@ class AdminMenuItemController extends Controller
         
         // リンクソースを取得（ラベル付き配列）
         $linkSources = [];
-        foreach ($this->linkSourceManager->all() as $key => $source) {
-            $linkSources[$key] = $source->getLabel();
+        foreach ($this->linkSourceManager->getAvailableSources() as $key => $source) {
+            $linkSources[$key] = $source->getSourceLabel();
         }
 
         $this->viewParams['menuItem'] = $menuItem;
