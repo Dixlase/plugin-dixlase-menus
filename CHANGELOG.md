@@ -5,6 +5,20 @@ All notable changes to the Dixlase Menus plugin are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this plugin follows Semantic Versioning.
 
+## [0.1.3] — 2026-10-13
+
+### Fixed
+
+- Opening the screen to add or edit a menu item no longer fails with a server error. The
+  screen called methods that do not exist on the link-source manager and the link
+  sources; it now uses the real ones, and offers only the link sources that are
+  available (#39, fixes #38).
+
+### Development
+
+- A smoke test opens every admin GET route of the plugin as the admin and the editor
+  role and checks that none returns a server error (#40, fixes #37).
+
 ## [0.1.2] — 2026-10-12
 
 ### Development
