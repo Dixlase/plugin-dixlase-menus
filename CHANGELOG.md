@@ -5,6 +5,14 @@ All notable changes to the Dixlase Menus plugin are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this plugin follows Semantic Versioning.
 
+## [0.1.4] — 2026-10-16
+
+### Development
+
+- A self-audit test replays the admin plugin audit's own checks: it fails when a
+  permission declared in `plugin.json` does not match the code, or when a view breaks
+  the CSP strict mode (#42, fixes #41). No runtime code changed.
+
 ## [0.1.3] — 2026-10-13
 
 ### Fixed
