@@ -75,6 +75,9 @@
             ],
             "front": []
         },
+        "tailwind_content": [
+            "plugins/DixlaseMenus/resources/views"
+        ],
         "contracts": [
             "MenuItemRepositoryInterface",
             "MenuLinkSource",
