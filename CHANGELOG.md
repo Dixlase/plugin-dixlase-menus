@@ -5,6 +5,16 @@ All notable changes to the Dixlase Menus plugin are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this plugin follows Semantic Versioning.
 
+## [0.1.5] — 2026-10-17
+
+### Fixed
+
+- The icon picker on the menu edit screen shows its icons in a grid again, instead of one
+  column of full-width cells. `plugin.json` now declares `tailwind_content`, so the site's
+  Tailwind build scans the plugin's views and keeps the grid classes they use (#44, fixes #43).
+  The classes reach a site's CSS at the next core Tailwind build after the plugin sources are
+  regenerated (`dls:tailwind:regenerate-plugin-sources`).
+
 ## [0.1.4] — 2026-10-16
 
 ### Development
