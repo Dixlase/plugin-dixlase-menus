@@ -130,9 +130,10 @@ class Menu extends Model
     }
 
     /**
-     * Dynamic translatable-field definitions consumed by the
-     * DixlaseMultilingual translation editor (duck-typed; see that
-     * plugin's DixlaseMultilingualAdminTranslationsController::resolveFields).
+     * Dynamic translatable-field definitions consumed by a translation
+     * provider plugin's translation editor (duck-typed; the editor
+     * discovers this method on any model whose type is declared under
+     * the multilingual-content capability in plugin.json).
      *
      * The first field is the menu container's own display name (keyed
      * 'name'); it feeds the drawer / sheet header that themes render

@@ -264,8 +264,8 @@ document.addEventListener('alpine:init', () => {
      * @param {Object} newItem - The item data to add
      */
     _addItemToTarget(newItem) {
-        // Translations are now stored centrally in DixlaseMultilingual and
-        // edited through that plugin's translation manager UI. The menu
+        // Translations are now stored centrally and edited through a
+        // translation provider plugin's translation manager UI. The menu
         // editor only carries the primary-locale label (newItem.label)
         // and structural fields; no per-locale state is tracked here.
 

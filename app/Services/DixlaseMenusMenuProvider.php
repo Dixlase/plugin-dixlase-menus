@@ -138,14 +138,14 @@ class DixlaseMenusMenuProvider implements MenuProviderInterface
 
     /**
      * Resolve the visible display name for a menu container, gated on
-     * whether the DixlaseMultilingual plugin's URL routing toggle is on.
+     * whether a translation provider plugin's URL routing toggle is on.
      * Mirrors resolveLabel() below, but for the container's own name
      * (drives the sheet / drawer header themes render via MenuDTO->name).
      *
      * - Multilingual on  -> use getLocalizedName(), which reads
      *   app()->getLocale() and looks up the 'name' field on this menu's
      *   central translation row, falling back to the raw name column.
-     * - Multilingual off (or plugin missing) -> return the raw name
+     * - Multilingual off (or provider missing) -> return the raw name
      *   verbatim so per-locale translations are not consulted at all.
      */
     private function resolveName(Menu $menu): string
@@ -191,14 +191,14 @@ class DixlaseMenusMenuProvider implements MenuProviderInterface
     }
 
     /**
-     * Resolve the visible label for a menu item, gated on whether the
-     * DixlaseMultilingual plugin's URL routing toggle is on.
+     * Resolve the visible label for a menu item, gated on whether a
+     * translation provider plugin's URL routing toggle is on.
      *
      * - Multilingual on  -> use getLocalizedTitle(), which reads
-     *   app()->getLocale() (the multilingual plugin sets the runtime
-     *   locale for /, /ja/, /en/ etc. via its middleware chain) and
-     *   looks up title_translations[locale], falling back to title.
-     * - Multilingual off (or plugin missing) -> return title verbatim
+     *   app()->getLocale() (the provider sets the runtime locale for
+     *   /, /ja/, /en/ etc. via its middleware chain) and looks up
+     *   title_translations[locale], falling back to title.
+     * - Multilingual off (or provider missing) -> return title verbatim
      *   so per-locale translations are not consulted at all.
      */
     private function resolveLabel(mixed $item): string
@@ -221,13 +221,14 @@ class DixlaseMenusMenuProvider implements MenuProviderInterface
      *   "capabilities": ["multilingual-content"],
      *   "multilingual_content": { "types": [{ "key": "dixlase-menus:menu", ... }] }
      *
-     * The DixlaseMultilingual plugin's TranslatableContentRegistry discovers
-     * that declaration during boot and registers the menu type. If the
-     * declaration is removed from plugin.json the registry no longer has the
-     * type and this method returns false, so the menu silently stops
-     * consulting translations. The locale_url_routing_enabled config check
-     * additionally ensures the operator has actually turned multilingual on
-     * (registry presence alone does not mean the feature is active).
+     * A translation provider plugin's TranslatableContentRegistry
+     * discovers that declaration during boot and registers the menu
+     * type. If the declaration is removed from plugin.json the registry
+     * no longer has the type and this method returns false, so the menu
+     * silently stops consulting translations. The
+     * locale_url_routing_enabled config check additionally ensures the
+     * operator has actually turned multilingual on (registry presence
+     * alone does not mean the feature is active).
      *
      * NB: this key must match plugin.json's multilingual_content type key.
      * It moved from dixlase-menus:menu-item to dixlase-menus:menu when the

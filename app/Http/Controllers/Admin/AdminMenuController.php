@@ -112,11 +112,12 @@ class AdminMenuController extends Controller
     /**
      * Resolve the language-picker context for the menu create / edit forms.
      *
-     * When DixlaseMultilingual is active (URL routing on) the operator
-     * picks which locale the menu's primary labels are authored in; the
-     * picker offers that plugin's enabled locales. When it is off (or
-     * absent) there is a single content language -- the site default --
-     * so no picker is shown and the controller auto-fills `lang`.
+     * When a translation provider plugin is active (URL routing on)
+     * the operator picks which locale the menu's primary labels are
+     * authored in; the picker offers that provider's enabled locales.
+     * When it is off (or absent) there is a single content language --
+     * the site default -- so no picker is shown and the controller
+     * auto-fills `lang`.
      *
      * @return array{enabled: bool, options: array<string, string>, default: string}
      */
@@ -183,12 +184,12 @@ class AdminMenuController extends Controller
         }
 
         // Per-item translations are now stored in the central
-        // plg_dixlase_multilingual_translations table and edited from the
-        // DixlaseMultilingual translation manager UI (the menu-item type
-        // is registered there via plugin.json's multilingual-content
-        // capability, now without the "storage: inline" flag). The menu
-        // edit page is structure + primary-locale title only, mirroring
-        // how Pages and Legal behave -- no inline per-locale fields here.
+        // plg_dixlase_multilingual_translations table and edited from a
+        // translation provider plugin's translation manager UI (the
+        // menu-item type is registered there via plugin.json's
+        // multilingual-content capability, now without the "storage:
+        // inline" flag). The menu edit page is structure + primary-locale
+        // title only -- no inline per-locale fields here.
 
         // Map each MenuItem into the array shape the editor's JS state
         // expects. We read the primary `title` via getRawOriginal so the

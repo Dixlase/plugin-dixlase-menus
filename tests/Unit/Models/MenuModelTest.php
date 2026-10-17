@@ -201,9 +201,9 @@ class MenuModelTest extends TestCase
 
     /**
      * The container's display name is translatable alongside the item
-     * labels. When the DixlaseMultilingual resolver is not bound --
-     * this plugin's isolated test suite, or any site without the
-     * multilingual plugin -- there is no translation source and the
+     * labels. When the TranslationResolver contract is not bound --
+     * this plugin's isolated test suite, or any site without a
+     * translation provider -- there is no translation source and the
      * primary `name` column is the correct answer for every locale.
      * Regression guard for the mobile drawer header, which used to
      * render `$menu->name` raw and showed the Japanese primary name
@@ -240,8 +240,9 @@ class MenuModelTest extends TestCase
 
     /**
      * Bind a stand-in TranslationResolver that serves a fixed
-     * field => locale => value map, mimicking how DixlaseMultilingual's
-     * resolver reads the menu's central translation row.
+     * field => locale => value map, mimicking how a translation
+     * provider plugin's resolver reads the menu's central translation
+     * row.
      *
      * @param  array<string, array<string, string>>  $map
      */
