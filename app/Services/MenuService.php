@@ -166,10 +166,11 @@ class MenuService
         int $order
     ): MenuItem {
         // Translations are now persisted centrally in
-        // plg_dixlase_multilingual_translations via the DixlaseMultilingual
-        // translation manager UI. We no longer accept title_translations /
-        // label_translations from the menu editor payload; the title column
-        // alone carries the primary-locale value.
+        // plg_dixlase_multilingual_translations via a translation provider
+        // plugin's translation manager UI. We no longer accept
+        // title_translations / label_translations from the menu editor
+        // payload; the title column alone carries the primary-locale
+        // value.
         $itemData = [
             'menu_id' => $menuId,
             'parent_id' => $parentId,

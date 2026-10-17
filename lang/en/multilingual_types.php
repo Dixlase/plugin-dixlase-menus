@@ -31,8 +31,8 @@
  */
 
 // Human-readable labels for the translatable types this plugin exposes
-// via the multilingual-content capability. The DixlaseMultilingual
-// editor resolves "<plugin-slug>::multilingual_types.<type>" for each
+// via the multilingual-content capability. A translation provider
+// plugin resolves "<plugin-slug>::multilingual_types.<type>" for each
 // declared type key, falling back to the raw "dixlase-menus:menu" key
 // when no entry exists here.
 return [

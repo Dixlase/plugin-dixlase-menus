@@ -74,7 +74,6 @@
 ## 他プラグインとの連携（運用者向け視点）
 
 - **DixlasePages**: ページを作成 → メニューに「ページ」ソースで追加
-- **DixlaseOfficialDocs**: docs サイトのサイドバーは自動生成（DixlaseMenus とは別系統）
 
 ## トラブルシューティング
 

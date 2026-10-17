@@ -31,7 +31,7 @@
  */
 
 // multilingual-content capability で公開する翻訳対象タイプの表示名。
-// DixlaseMultilingual エディタは各タイプキーについて
+// 翻訳提供プラグインは各タイプキーについて
 // "<plugin-slug>::multilingual_types.<type>" を解決し、ここに該当
 // エントリが無い場合は生のキー "dixlase-menus:menu" にフォールバックする。
 return [

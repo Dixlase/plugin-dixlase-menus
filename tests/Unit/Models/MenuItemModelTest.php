@@ -196,13 +196,13 @@ class MenuItemModelTest extends TestCase
     }
 
     /**
-     * Menu item translations live in the DixlaseMultilingual plugin's
+     * Menu item translations live in a translation provider plugin's
      * central table, keyed by the *parent menu* with item_<id> fields;
      * getLocalizedTitle() reads them through the TranslationResolver
      * contract. When that contract is not bound -- this plugin's
-     * isolated test suite, or any site without DixlaseMultilingual --
-     * there is no translation source and the primary `title` column is
-     * the correct answer for every locale.
+     * isolated test suite, or any site without a translation provider
+     * -- there is no translation source and the primary `title` column
+     * is the correct answer for every locale.
      */
     public function test_get_localized_title_falls_back_to_primary_when_no_resolver(): void
     {
@@ -262,8 +262,9 @@ class MenuItemModelTest extends TestCase
 
     /**
      * Bind a stand-in TranslationResolver that serves a fixed
-     * field => locale => value map, mimicking how DixlaseMultilingual's
-     * resolver reads the parent menu's central translation row.
+     * field => locale => value map, mimicking how a translation
+     * provider plugin's resolver reads the parent menu's central
+     * translation row.
      *
      * @param  array<string, array<string, string>>  $map
      */
