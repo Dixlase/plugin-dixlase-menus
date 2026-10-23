@@ -204,8 +204,8 @@
         "lang/ja/multilingual_types.php": "sha256:d64b792292b1544a4ce5b634bf7c25a3ee363dc07694368407b688b4a7e9b792",
         "lang/ja/validation.php": "sha256:afc4368bd9017456d9018a050df4dbb73da2ea740778d3bbeb2fba8c7d8a3e2d",
         "license-info.json": "sha256:d1531925718ed803242eea97f91c513cb02d00f683a353ad1d346f0c0ce0cec9",
-        "package-lock.json": "sha256:5a5857e52c1cb5f36ee7cd13b8d53172134167a215affff6e303ada0b2bc2b23",
-        "package.json": "sha256:fb42134551c6c51e00e30c482afad0e6abe9a165dd49a7ba710ceb82d7b86f69",
+        "package-lock.json": "sha256:8eda05f251d11ef59a2f93c68e6a1be2428eafa558a8ed85b2379c7a03746370",
+        "package.json": "sha256:4e4e1abfe90d8f6187e02e0bb2625ebf218fc2565acf3d55d73c3f3dfd249514",
         "phpunit.xml": "sha256:f225108082235b198d7ec40fdf64701e51394d34678217d19d8ea37445e093ae",
         "resources/src/admin/js/app.js": "sha256:f4bce7d4b25a5a7289b3c266e5693aa5b8e7db4ee98448d26ae24913b9b27372",
         "resources/src/admin/js/data/fa-free-icons.json": "sha256:e2c7751799591820f626f38f9473537c85430741bd3ec6ddf3c5d378d4d3524c",
@@ -251,6 +251,6 @@
     "signing": {
         "algo": "ed25519",
         "key_id": "dixlase-authority-2026",
-        "signed_at": "2026-10-17T15:11:42+00:00"
+        "signed_at": "2026-10-23T13:59:49+00:00"
     }
 }
