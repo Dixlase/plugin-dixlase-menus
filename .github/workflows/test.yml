@@ -6,6 +6,7 @@ on:
       - main  # main は deploy.yml が実行する
   pull_request:
     branches:
+      - next
       - main
 
 jobs:
