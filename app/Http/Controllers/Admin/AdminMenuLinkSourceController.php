@@ -77,7 +77,7 @@ class AdminMenuLinkSourceController extends Controller
             return response()->json(['error' => 'Source not found'], 404);
         }
 
-        $search = $request->query('search', '');
+        $search = (string) $request->query('search');
 
         $items = $search !== ''
             ? $source->searchItems($search)

@@ -106,5 +106,9 @@ class AdminMenuItemUpdateRequest extends FormRequest
         if (!$this->has('is_active')) {
             $this->merge(['is_active' => false]);
         }
+
+        if (!$this->filled('target')) {
+            $this->merge(['target' => '_self']);
+        }
     }
 }

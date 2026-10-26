@@ -112,8 +112,7 @@ class AdminMenuItemStoreRequest extends FormRequest
             $this->merge(['display_order' => 0]);
         }
 
-        // targetがない場合は_selfとして扱う
-        if (!$this->has('target')) {
+        if (!$this->filled('target')) {
             $this->merge(['target' => '_self']);
         }
     }

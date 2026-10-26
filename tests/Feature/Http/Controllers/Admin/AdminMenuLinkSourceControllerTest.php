@@ -215,4 +215,38 @@ class AdminMenuLinkSourceControllerTest extends TestCase
         $response->assertJsonCount(1, 'items');
         $response->assertJsonPath('items.0.title', 'Hello Page');
     }
+
+    /**
+     * A present-but-empty search parameter must not call searchItems().
+     * Once core restores `ConvertEmptyStringsToNull`, `search=` arrives as
+     * `null` and the previous `$request->query('search', '')` returned
+     * `null` (the default only fires when the KEY is missing), which was
+     * forwarded into `searchItems(string $query)` and threw a TypeError.
+     * The cast to `(string)` in the controller folds both `''` and `null`
+     * into the "no filter" branch, so getAvailableItems() is used instead.
+     */
+    public function test_items_treats_null_search_as_no_filter(): void
+    {
+        $mockSource = $this->createMock(MenuLinkSource::class);
+        $mockSource->method('getSourceType')->willReturn('test-source');
+        $mockSource->method('getSourceLabel')->willReturn('Test Source');
+        $mockSource->method('isAvailable')->willReturn(true);
+        $mockSource->expects($this->once())
+            ->method('getAvailableItems')
+            ->willReturn([
+                ['id' => '1', 'title' => 'Item 1', 'url' => '/item-1'],
+            ]);
+        $mockSource->expects($this->never())->method('searchItems');
+
+        $this->manager->register($mockSource);
+
+        $url = route('dixlase-menus::admin.menus.link-sources.items', [
+            'sourceType' => 'test-source',
+        ]).'?search=';
+
+        $response = $this->actingAs($this->admin, 'member')->getJson($url);
+
+        $response->assertOk();
+        $response->assertJsonCount(1, 'items');
+    }
 }
