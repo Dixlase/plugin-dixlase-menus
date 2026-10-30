@@ -2,7 +2,7 @@
     "name": "dixlase/dixlase-menus",
     "description": "This is the Dixlase Menus plugin.",
     "type": "dixlase-plugin",
-    "version": "0.1.8",
+    "version": "0.1.9-dev",
     "license": "GPL-3.0-or-later",
     "authors": [
         {
