@@ -1,3 +1,7 @@
+<p align="center">
+  <img src=".github/assets/social-preview.png" alt="Dixlase Menus" width="640">
+</p>
+
 # Dixlase Menus
 
 For Japanese, see [README.ja.md](./README.ja.md).
