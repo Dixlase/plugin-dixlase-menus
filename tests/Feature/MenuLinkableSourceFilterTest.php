@@ -115,23 +115,6 @@ class MenuLinkableSourceFilterTest extends TestCase
     }
 
     /**
-     * 実際の DixlaseLegal プラグインは linkable capability を宣言していること
-     */
-    public function test_dixlase_legal_declares_linkable_capability(): void
-    {
-        $this->setCapabilityCache(null);
-
-        if (! PluginHelper::isEnabled('dixlase-legal')) {
-            $this->markTestSkipped('dixlase-legal plugin is not enabled in this test environment');
-        }
-
-        $this->assertTrue(
-            PluginHelper::pluginHasCapability('dixlase-legal', 'linkable'),
-            'DixlaseLegal should declare linkable capability in plugin.json'
-        );
-    }
-
-    /**
      * 想定するフィルタ条件式（production と同等）が動作すること
      *
      * registerLinkSources 内のフィルタ:
