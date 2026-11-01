@@ -5,6 +5,17 @@ All notable changes to the Dixlase Menus plugin are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this plugin follows Semantic Versioning.
 
+## [0.1.9] — 2026-11-01
+
+### Changed
+
+- Both READMEs open with the social preview image (#58, fixes #57).
+
+### Development
+
+- A test that named an extension not available to readers of this repository is removed; the
+  fixture-based tests cover the same filter (#61, fixes #60).
+
 ## [0.1.8] — 2026-10-30
 
 ### Fixed
