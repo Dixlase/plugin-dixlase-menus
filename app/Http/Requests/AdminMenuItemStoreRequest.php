@@ -33,6 +33,8 @@
 namespace Plugins\DixlaseMenus\App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Plugins\DixlaseMenus\App\Models\MenuItem;
 use Plugins\DixlaseMenus\App\Support\MenuUrlPolicy;
 
 /**
@@ -58,7 +60,11 @@ class AdminMenuItemStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'parent_id' => ['nullable', 'integer', 'exists:menu_items,id'],
+            // Resolve the table through the model, not by name: it is
+            // plg_dixlase_menu_items, and the connection adds its own
+            // prefix on top, so a literal name here queries a table that
+            // does not exist and the save answers 500 (#62).
+            'parent_id' => ['nullable', 'integer', Rule::exists(MenuItem::class, 'id')],
             'title' => ['required', 'string', 'max:255'],
             'source_type' => ['required', 'string', 'max:50'],
             'source_id' => ['nullable', 'string', 'max:255'],
