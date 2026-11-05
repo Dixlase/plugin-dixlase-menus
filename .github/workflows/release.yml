@@ -47,16 +47,12 @@ jobs:
         # Dixlase/dixlase-core#520.
         run: .github/scripts/check-manifest.sh plugin.json
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm ci --no-audit --no-fund
-
-      - name: Build frontend assets (into resources/assets/)
-        run: NODE_ENV=production npm run build
+      # No front-end build here any more. resources/assets is committed, so
+      # the step above has already compared those bytes against the signed
+      # manifest: a release whose assets were not rebuilt and re-signed
+      # fails there rather than shipping a tree the signature does not
+      # describe. Building here would overwrite the signed bytes with new
+      # hashed filenames and break every hash in the manifest.
 
       - name: Package release ZIP
         id: zip
