@@ -5,6 +5,13 @@ All notable changes to the Dixlase Menus plugin are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this plugin follows Semantic Versioning.
 
+## [0.1.10] — 2026-11-05
+
+### Fixed
+
+- Saving a menu item with a parent selected no longer fails with a server error, so nested menus can
+  be created and edited again (#63, fixes #62).
+
 ## [0.1.9] — 2026-11-01
 
 ### Changed
