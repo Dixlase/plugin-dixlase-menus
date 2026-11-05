@@ -2,7 +2,7 @@
     "name": "Dixlase Menus",
     "package_name": "dixlase/dixlase-menus",
     "slug": "dixlase-menus",
-    "version": "0.1.11-dev",
+    "version": "0.1.11",
     "description": {
         "ja": "メニュー管理機能を提供するプラグインです。",
         "en": "This plugin provides menu management functionality."
@@ -132,8 +132,8 @@
     "files": {
         ".backlog/SPINOFF-extension-prebuilt-assets-release.ja.md": "sha256:c5b79561e4d94b9909ac2c2d609620b939b632bc65a085ccafbcdb2c278f4ed8",
         ".backlog/SPINOFF-extension-prebuilt-assets-release.md": "sha256:cb389be98e08fc5839d05e147d3cf1fbe921163de078f577ca8fad5ed2974831",
-        "CHANGELOG.ja.md": "sha256:33d3862952f5934ab422b61a1ca2b40b5e71ca2d6b54a6cdd7e5299236653fef",
-        "CHANGELOG.md": "sha256:df6ba1294fcd705565a5fad6171b3a45d4ef3efc47858f0ee0fb97531635997f",
+        "CHANGELOG.ja.md": "sha256:d7565f1a210e02049c5ee586ac182b0bdf71cb9d5f4ce082a736b9d5956e9dec",
+        "CHANGELOG.md": "sha256:78a3193cef5d3433283fb79c2abc74e0af5e755491ed2ea73982a1fcdf8f8e27",
         "CONTRIBUTING.ja.md": "sha256:874ac0b697c244f5e84489e66eed21b6d665efb64914d2f78323142550d56111",
         "CONTRIBUTING.md": "sha256:ba9d6db2053d0a662405c1ec03c5e0b24b5bbd2614e4d3d15bb4a8c252c1ac44",
         "COPYRIGHT-POLICY.ja.md": "sha256:673949ebddd61d66818bde91f8f79abf5ee8aa7f24d204b9bf99d7511cba31ae",
@@ -177,7 +177,7 @@
         "app/Services/MenuService.php": "sha256:1d707339287289545ac36a50aa006a568ac5c0662ff495cb761c67e96caf6347",
         "app/Shortcodes/MenuShortcode.php": "sha256:a16240cf2b092d05ee69eeb48dd508a40ccadd24b660c1bfd461a2730e22e3b9",
         "app/Support/MenuUrlPolicy.php": "sha256:516581d506748286bc78a1b923b5f1c98ed1d4ff5a42503afe10687ba7cd6005",
-        "composer.json": "sha256:8418ef0aad9aa893182af37d86b3acfcafd208340974f986b566e1a21f749142",
+        "composer.json": "sha256:f1cc72a3e7082c0e836d98b147b63d44fd40847c820080f4a459dc11a250ee2d",
         "config/admin.php": "sha256:4a7dc923d42ee4c5f64424a82ef106f4ff59b65536e96271bd8d723c0a475bfb",
         "config/admin/navigation.php": "sha256:d4505ced6e3c7588ac24eac3f31dba047b6cb6b4abb0a0ef7c18acf47a77ff70",
         "config/admin/roles.php": "sha256:11f82ba6a76f57fb6f1f7234f9068cc1673aa62ce8e8c9eae21dec84b50b86b5",
@@ -205,8 +205,12 @@
         "lang/ja/validation.php": "sha256:afc4368bd9017456d9018a050df4dbb73da2ea740778d3bbeb2fba8c7d8a3e2d",
         "license-info.json": "sha256:d1531925718ed803242eea97f91c513cb02d00f683a353ad1d346f0c0ce0cec9",
         "package-lock.json": "sha256:8eda05f251d11ef59a2f93c68e6a1be2428eafa558a8ed85b2379c7a03746370",
-        "package.json": "sha256:5e18944e32bc792ddf5e14dad71fe2f2ff176d1d24f576f53e388a57928e3434",
+        "package.json": "sha256:bf37250e50b07521439a9ef2cca053e90069f5e281474a081f4873d61e698aeb",
         "phpunit.xml": "sha256:f225108082235b198d7ec40fdf64701e51394d34678217d19d8ea37445e093ae",
+        "resources/assets/admin/js/admin-app-DricrItJ.js": "sha256:c65b37409de1ab14a874f6202690d2c321e96434b190c0889968cef48de7b446",
+        "resources/assets/js/app-64H-EzZc.js": "sha256:d8b620400f334d8daae057856442671fb1731251e05d6a615331ff1047f1a4c6",
+        "resources/assets/js/fa-free-icons-CHav-nyy.js": "sha256:c58986d832d0ab94d7fe20315b590f1014e5a1f15b4b036ec76395a3d37808b2",
+        "resources/assets/manifest.json": "sha256:94de95c23b7391a64abccc17090f9055568012eea6cc7373011d1c7187b7149d",
         "resources/src/admin/js/app.js": "sha256:f4bce7d4b25a5a7289b3c266e5693aa5b8e7db4ee98448d26ae24913b9b27372",
         "resources/src/admin/js/data/fa-free-icons.json": "sha256:e2c7751799591820f626f38f9473537c85430741bd3ec6ddf3c5d378d4d3524c",
         "resources/src/admin/js/menu-editor.js": "sha256:b79640c88baf1c1f40d163839bfabf1e0741fed796147dde712fc0c29c7e0c10",
@@ -254,6 +258,6 @@
     "signing": {
         "algo": "ed25519",
         "key_id": "dixlase-authority-2026",
-        "signed_at": "2026-11-05T13:02:31+00:00"
+        "signed_at": "2026-11-05T18:44:27+00:00"
     }
 }

@@ -1,0 +1,23 @@
+{
+  "resources/src/admin/js/app.js": {
+    "file": "admin/js/admin-app-DricrItJ.js",
+    "name": "admin-app",
+    "src": "resources/src/admin/js/app.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/src/admin/js/data/fa-free-icons.json"
+    ]
+  },
+  "resources/src/admin/js/data/fa-free-icons.json": {
+    "file": "js/fa-free-icons-CHav-nyy.js",
+    "name": "fa-free-icons",
+    "src": "resources/src/admin/js/data/fa-free-icons.json",
+    "isDynamicEntry": true
+  },
+  "resources/src/js/app.js": {
+    "file": "js/app-64H-EzZc.js",
+    "name": "app",
+    "src": "resources/src/js/app.js",
+    "isEntry": true
+  }
+}
