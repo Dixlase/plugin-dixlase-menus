@@ -33,6 +33,7 @@
 namespace Plugins\DixlaseMenus\App\Http\Controllers\Admin;
 
 use Illuminate\Routing\Controller;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 use App\Traits\AdminInterfaceTrait;
 use App\Traits\AdminLoggedInTrait;
@@ -331,7 +332,17 @@ class AdminMenuItemController extends Controller
 
         $items = $request->input('items', []);
 
-        $result = $this->menuService->syncMenuItems($menuId, $items);
+        try {
+            $result = $this->menuService->syncMenuItems($menuId, $items);
+        } catch (ValidationException $e) {
+            // A refused value is an input error: answer with it, so the
+            // editor can show what is wrong instead of a generic failure.
+            return response()->json([
+                'success' => false,
+                'message' => $e->validator->errors()->first(),
+                'errors' => $e->errors(),
+            ], 422);
+        }
 
         if ($result) {
             return response()->json([

@@ -60,4 +60,5 @@ return [
     'menu_url_max' => 'URL must not exceed 2048 characters',
     'menu_target_invalid' => 'Invalid target value',
     'menu_url_scheme_not_allowed' => 'This link uses a scheme that is not allowed. Use http, https, mailto, tel, or a path beginning with /.',
+    'menu_url_scheme_not_allowed_for' => '":title" uses a link scheme that is not allowed. Use http, https, mailto, tel, or a path beginning with /.',
 ];

@@ -386,6 +386,27 @@ document.addEventListener('alpine:init', () => {
     },
 
     /**
+     * Report a failed save and release the confirmation modal.
+     *
+     * The modal is what asked for this save: `confirmSubmit()` set its
+     * `submitting` flag and only clears it when `submitModalForm()`
+     * returns false, which a form that saves asynchronously never does.
+     * The flag also disables the modal's own close paths, so without this
+     * the modal spins and cannot even be dismissed. A programmatic
+     * `closeModal()` is honoured unconditionally, which is the case it
+     * exists for.
+     */
+    failSave(message) {
+        this.message = message || this.$el.dataset.errorMessage;
+        this.messageType = 'error';
+        this.saving = false;
+
+        if (typeof window.closeModal === 'function') {
+            window.closeModal('confirmationModal');
+        }
+    },
+
+    /**
      * 統合保存: メニューアイテムをAJAX保存後、フォームをPOST送信
      */
     async saveAll() {
@@ -407,9 +428,7 @@ document.addEventListener('alpine:init', () => {
                 const data = await response.json();
 
                 if (!data.success) {
-                    this.message = data.message || this.$el.dataset.errorMessage;
-                    this.messageType = 'error';
-                    this.saving = false;
+                    this.failSave(data.message);
                     return;
                 }
 
@@ -419,9 +438,7 @@ document.addEventListener('alpine:init', () => {
                 this.hasChanges = false;
             } catch (error) {
                 console.error('Save error:', error);
-                this.message = this.$el.dataset.errorMessage;
-                this.messageType = 'error';
-                this.saving = false;
+                this.failSave(null);
                 return;
             }
 
