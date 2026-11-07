@@ -39,8 +39,8 @@ use Illuminate\Validation\ValidationException;
 use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuItemRepositoryInterface;
 use Plugins\DixlaseMenus\App\Contracts\Repositories\MenuRepositoryInterface;
 use Plugins\DixlaseMenus\App\Models\Menu;
-use Plugins\DixlaseMenus\App\Support\MenuUrlPolicy;
 use Plugins\DixlaseMenus\App\Models\MenuItem;
+use Plugins\DixlaseMenus\App\Support\MenuUrlPolicy;
 
 /**
  * メニュー操作サービス
@@ -89,6 +89,16 @@ class MenuService
             DB::commit();
 
             return true;
+        } catch (ValidationException $e) {
+            // A refused value is the operator's input, not a fault of the
+            // software. It used to land in the branch below, which logs at
+            // error level -- and the default log stack carries that to the
+            // system-notification handler, so a mistyped link mailed the
+            // administrator a system error. Rolled back and rethrown: the
+            // controller answers 422 with the message.
+            DB::rollBack();
+
+            throw $e;
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('MenuService: Failed to sync menu items', [
@@ -138,9 +148,13 @@ class MenuService
      * the same MenuUrlPolicy -- they were not guarded before, which let a
      * `javascript:` URL in through the classic item form.
      *
+     * The message names the item. The editor saves every item in one
+     * request and can hold dozens, so "a link is not allowed" does not say
+     * which one; the title is at hand where the check runs.
+     *
      * @throws ValidationException
      */
-    protected function assertAllowedUrlScheme(?string $url): ?string
+    protected function assertAllowedUrlScheme(?string $url, string $title = ''): ?string
     {
         if ($url === null || trim($url) === '') {
             return $url;
@@ -148,7 +162,9 @@ class MenuService
 
         if (! MenuUrlPolicy::isAllowed($url)) {
             throw ValidationException::withMessages([
-                'url' => __('dixlase-menus::validation.menu_url_scheme_not_allowed'),
+                'url' => trim($title) === ''
+                    ? __('dixlase-menus::validation.menu_url_scheme_not_allowed')
+                    : __('dixlase-menus::validation.menu_url_scheme_not_allowed_for', ['title' => trim($title)]),
             ]);
         }
 
@@ -177,7 +193,7 @@ class MenuService
             'title' => $data['label'] ?? $data['title'] ?? '',
             'url' => ($data['source_type'] ?? '') === 'menu_group'
                 ? null
-                : $this->assertAllowedUrlScheme($data['url'] ?? ''),
+                : $this->assertAllowedUrlScheme($data['url'] ?? '', $data['label'] ?? $data['title'] ?? ''),
             'source_type' => $data['source_type'] ?? 'custom_url',
             'source_id' => $data['source_id'] ?? null,
             'target' => $data['target'] ?? '_self',

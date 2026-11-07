@@ -60,4 +60,5 @@ return [
     'menu_url_max' => 'URLは2048文字以内で入力してください',
     'menu_target_invalid' => 'ターゲットの値が無効です',
     'menu_url_scheme_not_allowed' => 'このリンクは許可されていないスキームを使用しています。http、https、mailto、tel、または / で始まるパスを指定してください。',
+    'menu_url_scheme_not_allowed_for' => '「:title」のリンクは許可されていないスキームを使用しています。http、https、mailto、tel、または / で始まるパスを指定してください。',
 ];
