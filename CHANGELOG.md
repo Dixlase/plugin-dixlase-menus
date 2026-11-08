@@ -5,6 +5,13 @@ All notable changes to the Dixlase Menus plugin are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this plugin follows Semantic Versioning.
 
+## [0.1.12] — 2026-11-08
+
+### Fixed
+
+- A refused link is reported as an input error on the field, instead of failing in a way that
+  does not say what was wrong (#71, fixes #70).
+
 ## [0.1.11] — 2026-11-06
 
 ### Changed
